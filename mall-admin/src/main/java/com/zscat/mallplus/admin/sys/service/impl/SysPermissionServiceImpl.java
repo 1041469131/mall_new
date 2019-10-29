@@ -3,13 +3,12 @@ package com.zscat.mallplus.admin.sys.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zscat.mallplus.admin.bo.Tree;
+import com.zscat.mallplus.admin.sys.service.ISysPermissionService;
+import com.zscat.mallplus.admin.sys.service.ISysUserService;
 import com.zscat.mallplus.admin.util.BuildTree;
 import com.zscat.mallplus.mbg.sys.entity.SysPermission;
 import com.zscat.mallplus.mbg.sys.entity.SysPermissionNode;
 import com.zscat.mallplus.mbg.sys.mapper.SysPermissionMapper;
-import com.zscat.mallplus.sys.service.ISysPermissionService;
-import com.zscat.mallplus.sys.service.ISysUserService;
-import com.zscat.mallplus.util.BuildTree;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 

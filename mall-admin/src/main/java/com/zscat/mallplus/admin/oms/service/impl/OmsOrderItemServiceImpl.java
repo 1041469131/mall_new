@@ -1,10 +1,9 @@
 package com.zscat.mallplus.admin.oms.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zscat.mallplus.admin.oms.service.IOmsOrderItemService;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrderItem;
 import com.zscat.mallplus.mbg.oms.mapper.OmsOrderItemMapper;
-import com.zscat.mallplus.oms.service.IOmsOrderItemService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**

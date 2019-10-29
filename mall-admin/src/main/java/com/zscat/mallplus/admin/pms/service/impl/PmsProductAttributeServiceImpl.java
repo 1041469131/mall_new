@@ -1,11 +1,11 @@
 package com.zscat.mallplus.admin.pms.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zscat.mallplus.admin.pms.service.IPmsProductAttributeService;
 import com.zscat.mallplus.mbg.pms.entity.PmsProductAttribute;
 import com.zscat.mallplus.mbg.pms.entity.PmsProductAttributeCategory;
 import com.zscat.mallplus.mbg.pms.mapper.PmsProductAttributeCategoryMapper;
 import com.zscat.mallplus.mbg.pms.mapper.PmsProductAttributeMapper;
-import com.zscat.mallplus.pms.service.IPmsProductAttributeService;
 import com.zscat.mallplus.mbg.pms.vo.ProductAttrInfo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

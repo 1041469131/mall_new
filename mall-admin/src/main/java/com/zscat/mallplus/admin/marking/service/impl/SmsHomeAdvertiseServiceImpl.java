@@ -2,11 +2,11 @@ package com.zscat.mallplus.admin.marking.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zscat.mallplus.admin.marking.service.ISmsHomeAdvertiseService;
 import com.zscat.mallplus.mbg.marking.entity.SmsHomeAdvertise;
 import com.zscat.mallplus.mbg.marking.entity.SmsHomeNewProduct;
 import com.zscat.mallplus.mbg.marking.mapper.SmsHomeAdvertiseMapper;
 import com.zscat.mallplus.mbg.marking.mapper.SmsHomeNewProductMapper;
-import com.zscat.mallplus.marking.service.ISmsHomeAdvertiseService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

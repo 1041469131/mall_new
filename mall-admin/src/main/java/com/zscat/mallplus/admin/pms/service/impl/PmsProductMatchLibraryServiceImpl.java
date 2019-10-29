@@ -1,9 +1,9 @@
 package com.zscat.mallplus.admin.pms.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zscat.mallplus.admin.pms.service.IPmsProductMatchLibraryService;
 import com.zscat.mallplus.mbg.pms.entity.PmsProductMatchLibrary;
 import com.zscat.mallplus.mbg.pms.mapper.PmsProductMatchLibraryMapper;
-import com.zscat.mallplus.pms.service.IPmsProductMatchLibraryService;
 import org.springframework.stereotype.Service;
 
 /**

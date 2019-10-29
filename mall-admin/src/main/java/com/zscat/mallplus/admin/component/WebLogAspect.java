@@ -3,8 +3,6 @@ package com.zscat.mallplus.admin.component;
 import com.zscat.mallplus.admin.bo.WebLog;
 import com.zscat.mallplus.admin.util.JsonUtil;
 import com.zscat.mallplus.admin.util.RequestUtil;
-import com.zscat.mallplus.util.JsonUtil;
-import com.zscat.mallplus.util.RequestUtil;
 import io.swagger.annotations.ApiOperation;
 import net.logstash.logback.marker.Markers;
 import org.aspectj.lang.JoinPoint;

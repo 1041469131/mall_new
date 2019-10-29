@@ -1,7 +1,6 @@
 package com.zscat.mallplus.admin.component;
 
 import com.zscat.mallplus.admin.util.JwtTokenUtil;
-import com.zscat.mallplus.util.JwtTokenUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

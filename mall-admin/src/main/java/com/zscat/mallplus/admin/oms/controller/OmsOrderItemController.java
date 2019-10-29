@@ -2,9 +2,9 @@ package com.zscat.mallplus.admin.oms.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zscat.mallplus.admin.oms.service.IOmsOrderItemService;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrderItem;
-import com.zscat.mallplus.oms.service.IOmsOrderItemService;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.ValidatorUtils;
 import io.swagger.annotations.Api;
@@ -31,7 +31,7 @@ import java.util.List;
 @RequestMapping("/oms/OmsOrderItem")
 public class OmsOrderItemController {
     @Resource
-    private com.zscat.mallplus.admin.oms.service.IOmsOrderItemService IOmsOrderItemService;
+    private IOmsOrderItemService IOmsOrderItemService;
 
     @SysLog(MODULE = "oms", REMARK = "根据条件查询所有订单中所包含的商品列表")
     @ApiOperation("根据条件查询所有订单中所包含的商品列表")

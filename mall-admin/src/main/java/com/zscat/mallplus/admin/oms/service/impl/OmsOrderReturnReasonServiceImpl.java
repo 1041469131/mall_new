@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zscat.mallplus.admin.oms.service.IOmsOrderReturnReasonService;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrderReturnReason;
 import com.zscat.mallplus.mbg.oms.mapper.OmsOrderReturnReasonMapper;
-import com.zscat.mallplus.oms.service.IOmsOrderReturnReasonService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

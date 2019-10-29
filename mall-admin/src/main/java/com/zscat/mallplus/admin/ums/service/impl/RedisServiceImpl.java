@@ -1,7 +1,7 @@
 package com.zscat.mallplus.admin.ums.service.impl;
 
 
-import com.zscat.mallplus.ums.service.RedisService;
+import com.zscat.mallplus.admin.ums.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;

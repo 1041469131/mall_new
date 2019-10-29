@@ -1,19 +1,16 @@
 package com.zscat.mallplus.admin.ums.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zscat.mallplus.admin.ums.service.IUmsMemberMemberTagRelationService;
+import com.zscat.mallplus.mbg.annotation.SysLog;
+import com.zscat.mallplus.mbg.ums.entity.UmsMemberMemberTagRelation;
 import com.zscat.mallplus.mbg.utils.CommonResult;
-
-
-
+import com.zscat.mallplus.mbg.utils.ValidatorUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
-import com.zscat.mallplus.mbg.ums.entity.UmsMemberMemberTagRelation;
-import com.zscat.mallplus.ums.service.IUmsMemberMemberTagRelationService;
-import com.zscat.mallplus.mbg.utils.ValidatorUtils;
-import com.zscat.mallplus.mbg.annotation.SysLog;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 

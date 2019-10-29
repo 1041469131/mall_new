@@ -1,19 +1,16 @@
 package com.zscat.mallplus.admin.pms.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zscat.mallplus.admin.pms.service.IPmsProductLadderService;
+import com.zscat.mallplus.mbg.annotation.SysLog;
+import com.zscat.mallplus.mbg.pms.entity.PmsProductLadder;
 import com.zscat.mallplus.mbg.utils.CommonResult;
-
-
-
+import com.zscat.mallplus.mbg.utils.ValidatorUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
-import com.zscat.mallplus.mbg.pms.entity.PmsProductLadder;
-import com.zscat.mallplus.pms.service.IPmsProductLadderService;
-import com.zscat.mallplus.mbg.utils.ValidatorUtils;
-import com.zscat.mallplus.mbg.annotation.SysLog;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 

@@ -2,9 +2,9 @@ package com.zscat.mallplus.admin.pms.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zscat.mallplus.admin.pms.service.IPmsBrandService;
 import com.zscat.mallplus.mbg.pms.entity.PmsBrand;
 import com.zscat.mallplus.mbg.pms.mapper.PmsBrandMapper;
-import com.zscat.mallplus.pms.service.IPmsBrandService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

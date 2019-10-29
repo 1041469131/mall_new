@@ -1,10 +1,9 @@
 package com.zscat.mallplus.admin.sys.service.impl;
 
 
+import com.zscat.mallplus.admin.sys.service.GeneratorService;
 import com.zscat.mallplus.admin.util.GenUtils;
 import com.zscat.mallplus.mbg.sys.mapper.GeneratorMapper;
-import com.zscat.mallplus.sys.service.GeneratorService;
-import com.zscat.mallplus.util.GenUtils;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

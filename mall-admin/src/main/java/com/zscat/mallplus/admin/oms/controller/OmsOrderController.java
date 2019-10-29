@@ -2,9 +2,9 @@ package com.zscat.mallplus.admin.oms.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zscat.mallplus.admin.oms.service.IOmsOrderService;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrder;
-import com.zscat.mallplus.oms.service.IOmsOrderService;
 import com.zscat.mallplus.mbg.oms.vo.OmsMoneyInfoParam;
 import com.zscat.mallplus.mbg.oms.vo.OmsOrderDeliveryParam;
 import com.zscat.mallplus.mbg.oms.vo.OmsReceiverInfoParam;
@@ -34,7 +34,7 @@ import java.util.List;
 @RequestMapping("/oms/OmsOrder")
 public class OmsOrderController {
     @Resource
-    private com.zscat.mallplus.admin.oms.service.IOmsOrderService IOmsOrderService;
+    private IOmsOrderService IOmsOrderService;
 
     @SysLog(MODULE = "oms", REMARK = "根据条件查询所有订单表列表")
     @ApiOperation("根据条件查询所有订单表列表")

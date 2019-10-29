@@ -4,7 +4,6 @@ package com.zscat.mallplus.admin.util;
 import com.zscat.mallplus.admin.bo.ColumnDO;
 import com.zscat.mallplus.admin.bo.TableDO;
 import com.zscat.mallplus.admin.config.Constant;
-import com.zscat.mallplus.config.Constant;
 import com.zscat.mallplus.mbg.exception.ApiMallPlusException;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.PropertiesConfiguration;

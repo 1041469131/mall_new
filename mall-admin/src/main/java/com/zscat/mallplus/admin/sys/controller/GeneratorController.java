@@ -2,9 +2,8 @@ package com.zscat.mallplus.admin.sys.controller;
 
 
 import com.alibaba.fastjson.JSON;
+import com.zscat.mallplus.admin.sys.service.GeneratorService;
 import com.zscat.mallplus.admin.util.GenUtils;
-import com.zscat.mallplus.sys.service.GeneratorService;
-import com.zscat.mallplus.util.GenUtils;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.PropertiesConfiguration;

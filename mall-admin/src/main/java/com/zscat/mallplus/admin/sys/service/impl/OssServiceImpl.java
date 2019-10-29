@@ -4,7 +4,7 @@ import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.model.MatchMode;
 import com.aliyun.oss.model.PolicyConditions;
-import com.zscat.mallplus.sys.service.OssService;
+import com.zscat.mallplus.admin.sys.service.OssService;
 import com.zscat.mallplus.mbg.sys.vo.OssCallbackResult;
 import com.zscat.mallplus.mbg.sys.vo.OssPolicyResult;
 import org.slf4j.Logger;

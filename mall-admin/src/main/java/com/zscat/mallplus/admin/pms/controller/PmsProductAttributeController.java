@@ -2,9 +2,9 @@ package com.zscat.mallplus.admin.pms.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zscat.mallplus.admin.pms.service.IPmsProductAttributeService;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.pms.entity.PmsProductAttribute;
-import com.zscat.mallplus.pms.service.IPmsProductAttributeService;
 import com.zscat.mallplus.mbg.pms.vo.ProductAttrInfo;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.ValidatorUtils;

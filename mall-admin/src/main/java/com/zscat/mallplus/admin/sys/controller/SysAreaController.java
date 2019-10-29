@@ -2,9 +2,9 @@ package com.zscat.mallplus.admin.sys.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zscat.mallplus.admin.sys.service.ISysAreaService;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.sys.entity.SysArea;
-import com.zscat.mallplus.sys.service.ISysAreaService;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.ValidatorUtils;
 import io.swagger.annotations.Api;

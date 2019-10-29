@@ -1,19 +1,16 @@
 package com.zscat.mallplus.admin.oms.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zscat.mallplus.admin.oms.service.IOmsOrderOperateHistoryService;
+import com.zscat.mallplus.mbg.annotation.SysLog;
+import com.zscat.mallplus.mbg.oms.entity.OmsOrderOperateHistory;
 import com.zscat.mallplus.mbg.utils.CommonResult;
-
-
-
+import com.zscat.mallplus.mbg.utils.ValidatorUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
-import com.zscat.mallplus.mbg.oms.entity.OmsOrderOperateHistory;
-import com.zscat.mallplus.oms.service.IOmsOrderOperateHistoryService;
-import com.zscat.mallplus.mbg.utils.ValidatorUtils;
-import com.zscat.mallplus.mbg.annotation.SysLog;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +31,7 @@ import java.util.List;
 @RequestMapping("/oms/OmsOrderOperateHistory")
 public class OmsOrderOperateHistoryController {
     @Resource
-    private com.zscat.mallplus.admin.oms.service.IOmsOrderOperateHistoryService IOmsOrderOperateHistoryService;
+    private IOmsOrderOperateHistoryService IOmsOrderOperateHistoryService;
 
     @SysLog(MODULE = "oms", REMARK = "根据条件查询所有订单操作历史记录列表")
     @ApiOperation("根据条件查询所有订单操作历史记录列表")

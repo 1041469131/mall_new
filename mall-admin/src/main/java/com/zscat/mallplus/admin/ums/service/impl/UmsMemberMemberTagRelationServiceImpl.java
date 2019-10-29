@@ -1,9 +1,9 @@
 package com.zscat.mallplus.admin.ums.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zscat.mallplus.admin.ums.service.IUmsMemberMemberTagRelationService;
 import com.zscat.mallplus.mbg.ums.entity.UmsMemberMemberTagRelation;
 import com.zscat.mallplus.mbg.ums.mapper.UmsMemberMemberTagRelationMapper;
-import com.zscat.mallplus.ums.service.IUmsMemberMemberTagRelationService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**

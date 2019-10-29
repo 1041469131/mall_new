@@ -1,7 +1,7 @@
 package com.zscat.mallplus.admin.component;
 
 
-import com.zscat.mallplus.util.JsonUtil;
+import com.zscat.mallplus.admin.util.JsonUtil;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;

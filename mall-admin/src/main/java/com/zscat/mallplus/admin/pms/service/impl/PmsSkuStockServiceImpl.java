@@ -2,9 +2,9 @@ package com.zscat.mallplus.admin.pms.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zscat.mallplus.admin.pms.service.IPmsSkuStockService;
 import com.zscat.mallplus.mbg.pms.entity.PmsSkuStock;
 import com.zscat.mallplus.mbg.pms.mapper.PmsSkuStockMapper;
-import com.zscat.mallplus.pms.service.IPmsSkuStockService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 

@@ -2,12 +2,11 @@ package com.zscat.mallplus.admin.sys.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zscat.mallplus.admin.sys.service.ISysPermissionService;
 import com.zscat.mallplus.admin.ums.service.RedisService;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.sys.entity.SysPermission;
 import com.zscat.mallplus.mbg.sys.entity.SysPermissionNode;
-import com.zscat.mallplus.sys.service.ISysPermissionService;
-import com.zscat.mallplus.ums.service.RedisService;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.ValidatorUtils;
 import io.swagger.annotations.Api;

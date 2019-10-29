@@ -2,15 +2,15 @@ package com.zscat.mallplus.admin.sys.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zscat.mallplus.admin.sys.service.ISysRolePermissionService;
+import com.zscat.mallplus.admin.sys.service.ISysRoleService;
+import com.zscat.mallplus.admin.sys.service.ISysUserService;
 import com.zscat.mallplus.mbg.sys.entity.SysPermission;
 import com.zscat.mallplus.mbg.sys.entity.SysRole;
 import com.zscat.mallplus.mbg.sys.entity.SysRolePermission;
 import com.zscat.mallplus.mbg.sys.mapper.SysPermissionMapper;
 import com.zscat.mallplus.mbg.sys.mapper.SysRoleMapper;
 import com.zscat.mallplus.mbg.sys.mapper.SysRolePermissionMapper;
-import com.zscat.mallplus.sys.service.ISysRolePermissionService;
-import com.zscat.mallplus.sys.service.ISysRoleService;
-import com.zscat.mallplus.sys.service.ISysUserService;
 import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
