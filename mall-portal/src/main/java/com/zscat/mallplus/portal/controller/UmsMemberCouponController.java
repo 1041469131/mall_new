@@ -1,19 +1,19 @@
 package com.zscat.mallplus.portal.controller;
 
 
-import com.zscat.mallplus.portal.service.ICmsSubjectService;
+import com.zscat.mallplus.manage.service.cms.ICmsSubjectService;
+import com.zscat.mallplus.manage.service.marking.ISmsCouponService;
+import com.zscat.mallplus.manage.service.marking.ISmsHomeAdvertiseService;
+import com.zscat.mallplus.manage.service.oms.IOmsCartItemService;
+import com.zscat.mallplus.manage.service.oms.IOmsOrderService;
+import com.zscat.mallplus.manage.service.pms.IPmsProductAttributeCategoryService;
+import com.zscat.mallplus.manage.service.pms.IPmsProductService;
+import com.zscat.mallplus.manage.service.ums.IUmsMemberService;
+import com.zscat.mallplus.manage.service.ums.RedisService;
 import com.zscat.mallplus.mbg.marking.entity.SmsCoupon;
 import com.zscat.mallplus.mbg.marking.entity.SmsCouponHistory;
-import com.zscat.mallplus.portal.service.ISmsCouponService;
-import com.zscat.mallplus.portal.service.ISmsHomeAdvertiseService;
 import com.zscat.mallplus.mbg.marking.vo.SmsCouponHistoryDetail;
-import com.zscat.mallplus.portal.service.IOmsCartItemService;
-import com.zscat.mallplus.portal.service.IOmsOrderService;
 import com.zscat.mallplus.mbg.oms.vo.CartPromotionItem;
-import com.zscat.mallplus.portal.service.IPmsProductAttributeCategoryService;
-import com.zscat.mallplus.portal.service.IPmsProductService;
-import com.zscat.mallplus.portal.service.IUmsMemberService;
-import com.zscat.mallplus.portal.service.RedisService;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;

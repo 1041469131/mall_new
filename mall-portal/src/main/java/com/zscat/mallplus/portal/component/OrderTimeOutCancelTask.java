@@ -1,7 +1,7 @@
 package com.zscat.mallplus.portal.component;
 
 
-import com.zscat.mallplus.portal.service.IOmsOrderService;
+import com.zscat.mallplus.manage.service.oms.IOmsOrderService;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -2,8 +2,14 @@ package com.zscat.mallplus.manage.service.marking;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zscat.mallplus.mbg.marking.entity.SmsCoupon;
+import com.zscat.mallplus.mbg.marking.entity.SmsCouponHistory;
+import com.zscat.mallplus.mbg.marking.vo.SmsCouponHistoryDetail;
 import com.zscat.mallplus.mbg.marking.vo.SmsCouponParam;
+import com.zscat.mallplus.mbg.oms.vo.CartPromotionItem;
+import com.zscat.mallplus.mbg.utils.CommonResult;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * <p>
@@ -31,5 +37,29 @@ public interface ISmsCouponService extends IService<SmsCoupon> {
      */
     @Transactional
     int delete(Long id);
+
+    /**
+     * 会员添加优惠券
+     */
+    @Transactional
+    CommonResult add(Long couponId);
+
+    /**
+     * 获取优惠券列表
+     *
+     * @param useStatus 优惠券的使用状态
+     */
+    List<SmsCouponHistory> list(Integer useStatus);
+
+    /**
+     * 根据购物车信息获取可用优惠券
+     */
+    List<SmsCouponHistoryDetail> listCart(List<CartPromotionItem> cartItemList, Integer type);
+
+
+    List<SmsCoupon> selectNotRecive(Long memberId);
+    List<SmsCoupon> selectRecive(Long memberId);
+
+    List<SmsCoupon> selectNotRecive();
 
 }

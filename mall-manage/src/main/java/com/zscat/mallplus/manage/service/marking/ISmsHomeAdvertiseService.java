@@ -1,7 +1,11 @@
 package com.zscat.mallplus.manage.service.marking;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zscat.mallplus.mbg.cms.entity.CmsSubject;
 import com.zscat.mallplus.mbg.marking.entity.SmsHomeAdvertise;
+import com.zscat.mallplus.mbg.oms.vo.HomeContentResult;
+import com.zscat.mallplus.mbg.pms.entity.PmsBrand;
+import com.zscat.mallplus.mbg.pms.entity.PmsProduct;
 
 import java.util.List;
 
@@ -24,4 +28,13 @@ public interface ISmsHomeAdvertiseService extends IService<SmsHomeAdvertise> {
      * 修改推荐排序
      */
     int updateSort(Long id, Integer sort);
+
+    HomeContentResult singelContent();
+
+    List<PmsBrand> getRecommendBrandList(int pageNum, int pageSize) ;
+    List<PmsProduct> getNewProductList(int pageNum, int pageSize) ;
+    List<PmsProduct> getHotProductList(int pageNum, int pageSize) ;
+    List<CmsSubject> getRecommendSubjectList(int pageNum, int pageSize) ;
+
+    List<SmsHomeAdvertise> getHomeAdvertiseList() ;
 }

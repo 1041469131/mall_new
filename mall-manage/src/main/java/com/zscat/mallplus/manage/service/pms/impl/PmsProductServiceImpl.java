@@ -5,13 +5,20 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zscat.mallplus.manage.service.cms.ICmsPrefrenceAreaProductRelationService;
 import com.zscat.mallplus.manage.service.cms.ICmsSubjectProductRelationService;
 import com.zscat.mallplus.manage.service.pms.*;
+import com.zscat.mallplus.manage.utils.DateUtils;
 import com.zscat.mallplus.manage.utils.UserUtils;
+import com.zscat.mallplus.mbg.marking.entity.SmsGroup;
+import com.zscat.mallplus.mbg.marking.entity.SmsGroupMember;
+import com.zscat.mallplus.mbg.marking.mapper.SmsGroupMapper;
+import com.zscat.mallplus.mbg.marking.mapper.SmsGroupMemberMapper;
 import com.zscat.mallplus.mbg.pms.entity.*;
 import com.zscat.mallplus.mbg.pms.mapper.*;
+import com.zscat.mallplus.mbg.pms.vo.PmsProductAndGroup;
 import com.zscat.mallplus.mbg.pms.vo.PmsProductParam;
 import com.zscat.mallplus.mbg.pms.vo.PmsProductResult;
 import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -19,9 +26,7 @@ import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * <p>
@@ -65,12 +70,16 @@ public class PmsProductServiceImpl extends ServiceImpl<PmsProductMapper, PmsProd
     private ICmsPrefrenceAreaProductRelationService prefrenceAreaProductRelationDao;
     @Resource
     private CmsPrefrenceAreaProductRelationMapper prefrenceAreaProductRelationMapper;
-
     @Resource
     private PmsProductVertifyRecordMapper productVertifyRecordDao;
-
     @Resource
     private PmsProductVertifyRecordMapper productVertifyRecordMapper;
+    @Resource
+    private SmsGroupMapper groupMapper;
+    @Resource
+    private SmsGroupMemberMapper groupMemberMapper;
+    @Resource
+    private PmsSkuStockMapper pmsSkuStockMapper;
 
     @Override
     public int create(PmsProductParam productParam) {
@@ -270,6 +279,72 @@ public class PmsProductServiceImpl extends ServiceImpl<PmsProductMapper, PmsProd
         return errMsg.toString();
     }
 
+    @Override
+    public PmsProductAndGroup getProductAndGroup(Long id) {
+        PmsProduct goods = productMapper.selectById(id);
+        PmsProductAndGroup vo = new PmsProductAndGroup();
+        try {
+            BeanUtils.copyProperties(goods, vo);
+            SmsGroup queryG = new SmsGroup();
+            queryG.setGoodsId(id);
+            SmsGroup group = groupMapper.selectOne(new QueryWrapper<>(queryG));
+            SmsGroupMember newG = new SmsGroupMember();
+            newG.setGoodsId(id);
+            List<SmsGroupMember> list = groupMemberMapper.selectList(new QueryWrapper<>(newG));
+            if (group != null) {
+                Map<String, List<SmsGroupMember>> map = groupMemberByMainId(list, group);
+                vo.setMap(map);
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return vo;
+    }
+
+    /**
+     * 按照异常批次号对已开单数据进行分组
+     *
+     * @param billingList
+     * @return
+     * @throws Exception
+     */
+    private Map<String, List<SmsGroupMember>> groupMemberByMainId(List<SmsGroupMember> billingList, SmsGroup group) throws Exception {
+        Map<String, List<SmsGroupMember>> resultMap = new HashMap<String, List<SmsGroupMember>>();
+        Map<String, List<SmsGroupMember>> map = new HashMap<String, List<SmsGroupMember>>();
+        try {
+            List<Long> ids = new ArrayList<>();
+            for (SmsGroupMember tmExcpNew : billingList) {
+                if (tmExcpNew.getMemberId().equals(tmExcpNew.getMainId())) {
+                    Date cr = tmExcpNew.getCreateTime();
+                    Long nowT = System.currentTimeMillis();
+                    Date endTime = DateUtils.convertStringToDate(DateUtils.addHours(cr, group.getHours()));
+                    if (nowT <= endTime.getTime()) {
+                        ids.add(tmExcpNew.getMainId());
+                    }
+                }
+                if (resultMap.containsKey(tmExcpNew.getMainId()+"")) {//map中异常批次已存在，将该数据存放到同一个key（key存放的是异常批次）的map中
+                    resultMap.get(tmExcpNew.getMainId()+"").add(tmExcpNew);
+                } else {//map中不存在，新建key，用来存放数据
+                    List<SmsGroupMember> tmpList = new ArrayList<SmsGroupMember>();
+                    tmpList.add(tmExcpNew);
+                    resultMap.put(tmExcpNew.getMainId() + "", tmpList);
+                }
+            }
+            for (Long id : ids) {
+                if (resultMap.get(id + "") != null) {
+                    map.put(id + "", resultMap.get(id + ""));
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Exception("按照异常批次号对已开单数据进行分组时出现异常", e);
+        }
+
+        return map;
+    }
 }
 
 

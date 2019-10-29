@@ -1,13 +1,13 @@
 package com.zscat.mallplus.portal.component;
 
 
+import com.zscat.mallplus.manage.service.ums.IUmsMemberService;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.sys.entity.SysWebLog;
 import com.zscat.mallplus.mbg.sys.mapper.SysWebLogMapper;
 import com.zscat.mallplus.mbg.ums.entity.UmsMember;
-import com.zscat.mallplus.portal.service.IUmsMemberService;
-import com.zscat.mallplus.portal.util.IpAddressUtil;
 import com.zscat.mallplus.mbg.utils.ValidatorUtils;
+import com.zscat.mallplus.portal.util.IpAddressUtil;
 import org.apache.commons.lang.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;

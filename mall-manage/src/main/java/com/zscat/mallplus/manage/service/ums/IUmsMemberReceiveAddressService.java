@@ -13,4 +13,7 @@ import com.zscat.mallplus.mbg.ums.entity.UmsMemberReceiveAddress;
  */
 public interface IUmsMemberReceiveAddressService extends IService<UmsMemberReceiveAddress> {
 
+    UmsMemberReceiveAddress getDefaultItem();
+
+    int setDefault(Long id);
 }

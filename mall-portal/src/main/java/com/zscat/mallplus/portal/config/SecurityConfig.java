@@ -1,11 +1,11 @@
 package com.zscat.mallplus.portal.config;
 
 
+import com.zscat.mallplus.manage.service.ums.IUmsMemberService;
+import com.zscat.mallplus.mbg.ums.entity.UmsMember;
 import com.zscat.mallplus.portal.component.JwtAuthenticationTokenFilter;
 import com.zscat.mallplus.portal.component.RestAuthenticationEntryPoint;
 import com.zscat.mallplus.portal.component.RestfulAccessDeniedHandler;
-import com.zscat.mallplus.mbg.ums.entity.UmsMember;
-import com.zscat.mallplus.portal.service.IUmsMemberService;
 import com.zscat.mallplus.portal.vo.MemberDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;

@@ -2,16 +2,16 @@ package com.zscat.mallplus.portal.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.zscat.mallplus.manage.service.ums.IUmsMemberRegisterParamService;
+import com.zscat.mallplus.manage.service.ums.IUmsMemberService;
 import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
 import com.zscat.mallplus.mbg.marking.entity.UserFormId;
-import com.zscat.mallplus.portal.single.ApiBaseAction;
 import com.zscat.mallplus.mbg.ums.entity.UmsMember;
 import com.zscat.mallplus.mbg.ums.entity.UmsMemberRegisterParam;
-import com.zscat.mallplus.portal.service.IUmsMemberRegisterParamService;
-import com.zscat.mallplus.portal.service.IUmsMemberService;
-import com.zscat.mallplus.portal.util.UserUtils;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.ValidatorUtils;
+import com.zscat.mallplus.portal.single.ApiBaseAction;
+import com.zscat.mallplus.portal.util.UserUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -42,9 +42,6 @@ public class UmsMemberController extends ApiBaseAction {
     private String tokenHeader;
     @Value("${jwt.tokenHead}")
     private String tokenHead;
-
-    @Autowired
-    private IUmsMemberService iUmsMemberService;
 
     @Autowired
     private IUmsMemberRegisterParamService iUmsMemberRegisterParamService;
@@ -181,7 +178,7 @@ public class UmsMemberController extends ApiBaseAction {
     public CommonResult<UmsMember> register4MiniProgram(UmsMember umsMember) {
         umsMember.setId(UserUtils.getCurrentMember().getId());
         umsMember.setUpdateTime(new Date());
-        if(iUmsMemberService.updateById(umsMember)){
+        if(memberService.updateById(umsMember)){
             return new CommonResult<>().success("注册成功");
         }else{
             return new CommonResult<>().failed("更新用户数据失败，注册失败");
@@ -203,7 +200,7 @@ public class UmsMemberController extends ApiBaseAction {
     @ResponseBody
     public CommonResult<UmsMember> queryUmsMemberDetail(){
         Long userId = UserUtils.getCurrentMember().getId();//会员用户id
-        UmsMember umsMember = iUmsMemberService.getById(userId);
+        UmsMember umsMember = memberService.getById(userId);
         return new CommonResult<>().success("查询成功");
     }
 

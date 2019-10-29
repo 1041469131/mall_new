@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -228,6 +229,44 @@ public class DateUtils {
         }
 
         return cal.getTime();
+    }
+
+    /**
+     * 将字符串类型的转换成Date类型
+     *
+     * @param dateStr
+     *            字符串类型的日期 yyyy-MM-dd
+     * @return Date类型的日期
+     * @throws ParseException
+     */
+    public static Date convertStringToDate(String dateStr) {
+        // 返回的日期
+        Date resultDate = null;
+        try {
+            // 日期格式转换
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            resultDate = sdf.parse(dateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return resultDate;
+    }
+
+    /**
+     * 添加小时
+     * @param date
+     * @param hour
+     * @return
+     */
+    public static String addHours(Date date, int hour){
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.HOUR, hour);// 24小时制
+        date = cal.getTime();
+        cal = null;
+        return format.format(date);
+
     }
 
     public static void main(String[] args) throws Exception {

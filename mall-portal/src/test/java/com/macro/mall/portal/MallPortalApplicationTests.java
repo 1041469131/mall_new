@@ -1,7 +1,7 @@
 package com.macro.mall.portal;
 
+import com.zscat.mallplus.manage.service.ums.IUmsMemberService;
 import com.zscat.mallplus.mbg.ums.entity.UmsMember;
-import com.zscat.mallplus.portal.service.IUmsMemberService;
 import lombok.extern.log4j.Log4j2;
 import org.junit.Test;
 import org.junit.runner.RunWith;

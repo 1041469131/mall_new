@@ -2,12 +2,12 @@ package com.zscat.mallplus.portal.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.zscat.mallplus.manage.service.ums.IUmsMemberReceiveAddressService;
 import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
-import com.zscat.mallplus.portal.single.ApiBaseAction;
 import com.zscat.mallplus.mbg.ums.entity.UmsMemberReceiveAddress;
-import com.zscat.mallplus.portal.service.IUmsMemberReceiveAddressService;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
+import com.zscat.mallplus.portal.single.ApiBaseAction;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;

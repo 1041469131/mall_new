@@ -3,6 +3,7 @@ package com.zscat.mallplus.manage.service.pms;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zscat.mallplus.mbg.pms.entity.PmsProduct;
 import com.zscat.mallplus.mbg.pms.entity.PmsProductVertifyRecord;
+import com.zscat.mallplus.mbg.pms.vo.PmsProductAndGroup;
 import com.zscat.mallplus.mbg.pms.vo.PmsProductParam;
 import com.zscat.mallplus.mbg.pms.vo.PmsProductResult;
 import org.springframework.transaction.annotation.Isolation;
@@ -72,4 +73,6 @@ public interface IPmsProductService extends IService<PmsProduct> {
 
 
     String deleteProduct(Long productId);
+
+    PmsProductAndGroup getProductAndGroup(Long id);
 }
