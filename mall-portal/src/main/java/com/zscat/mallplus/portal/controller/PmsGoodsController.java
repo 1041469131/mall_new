@@ -10,6 +10,9 @@ import com.zscat.mallplus.manage.service.pms.*;
 import com.zscat.mallplus.manage.service.ums.IUmsCollectService;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberService;
 import com.zscat.mallplus.manage.service.ums.RedisService;
+import com.zscat.mallplus.manage.utils.DateUtils;
+import com.zscat.mallplus.manage.utils.JsonUtil;
+import com.zscat.mallplus.manage.utils.UserUtils;
 import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
 import com.zscat.mallplus.mbg.pms.entity.*;
 import com.zscat.mallplus.mbg.pms.vo.*;
@@ -18,9 +21,6 @@ import com.zscat.mallplus.mbg.ums.entity.UmsMember;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
 import com.zscat.mallplus.portal.constant.RedisKey;
-import com.zscat.mallplus.portal.util.DateUtils;
-import com.zscat.mallplus.portal.util.JsonUtil;
-import com.zscat.mallplus.portal.util.UserUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -213,7 +213,7 @@ public class PmsGoodsController {
     @RequestMapping(value = "/listRecommedProducts", method = RequestMethod.GET)
     @ResponseBody
     public CommonResult<List<PmsProductMatchLibraryVo>> listRecommedProducts(@ApiParam("时长格式 就是数字类型 比如15")String periodDay) {
-        Long userId = UserUtils.getCurrentMember().getId();
+        Long userId = UserUtils.getCurrentUmsMember().getId();
         List<PmsProductMatchLibraryVo> pmsProductMatchLibraryVos = null;
 
         List<PmsProductUserMatchLibrary> pmsProductUserMatchLibraries = null;
@@ -266,7 +266,7 @@ public class PmsGoodsController {
     @RequestMapping(value = "/queryUserMatchLibrary", method = RequestMethod.GET)
     @ResponseBody
     public CommonResult<PmsProductMatchLibraryVo> queryUserMatchLibrary(@ApiParam("搭配id") String userMatchId) {
-        Long userId = UserUtils.getCurrentMember().getId();
+        Long userId = UserUtils.getCurrentUmsMember().getId();
         PmsProductMatchLibraryVo pmsProductMatchLibraryVo = new PmsProductMatchLibraryVo();
 
         PmsProductUserMatchLibrary  pmsProductUserMatchLibrary = iPmsProductUserMatchLibraryService.getById(Long.valueOf(userMatchId));

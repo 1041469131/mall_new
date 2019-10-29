@@ -3,11 +3,11 @@ package com.zscat.mallplus.portal.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zscat.mallplus.manage.service.marking.ISmsRedPacketService;
 import com.zscat.mallplus.manage.service.marking.ISmsUserRedPacketService;
+import com.zscat.mallplus.manage.utils.UserUtils;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.marking.entity.SmsRedPacket;
 import com.zscat.mallplus.mbg.marking.entity.SmsUserRedPacket;
 import com.zscat.mallplus.mbg.utils.CommonResult;
-import com.zscat.mallplus.portal.util.UserUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
@@ -88,7 +88,7 @@ public class RedPacketController {
         List<SmsRedPacket> redPacketList = redPacketService.list(new QueryWrapper<>(redPacket));
 
         SmsUserRedPacket userRedPacket = new SmsUserRedPacket();
-        userRedPacket.setUserId(UserUtils.getCurrentMember().getId());
+        userRedPacket.setUserId(UserUtils.getCurrentUmsMember().getId());
         List<SmsUserRedPacket> list = userRedPacketService.list(new QueryWrapper<>(userRedPacket));
         for(SmsRedPacket vo : redPacketList){
             if (list!=null && list.size()>0){

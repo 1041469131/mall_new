@@ -5,6 +5,9 @@ import com.zscat.mallplus.manage.service.pms.IPmsProductService;
 import com.zscat.mallplus.manage.service.pms.IPmsProductUserMatchLibraryService;
 import com.zscat.mallplus.manage.service.pms.IPmsSkuStockService;
 import com.zscat.mallplus.manage.service.ums.IUmsCollectService;
+import com.zscat.mallplus.manage.single.ApiBaseAction;
+import com.zscat.mallplus.manage.utils.JsonUtil;
+import com.zscat.mallplus.manage.utils.UserUtils;
 import com.zscat.mallplus.mbg.pms.entity.PmsProduct;
 import com.zscat.mallplus.mbg.pms.entity.PmsProductUserMatchLibrary;
 import com.zscat.mallplus.mbg.pms.entity.PmsSkuStock;
@@ -13,9 +16,6 @@ import com.zscat.mallplus.mbg.ums.entity.UmsCollect;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.IdGeneratorUtil;
 import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
-import com.zscat.mallplus.portal.single.ApiBaseAction;
-import com.zscat.mallplus.portal.util.JsonUtil;
-import com.zscat.mallplus.portal.util.UserUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -62,11 +62,11 @@ public class UmsCollectController extends ApiBaseAction {
     public CommonResult<UmsCollect> saveOrUpdateCollect(@ApiParam("用户收藏对象") String umsCollectParam) {
         UmsCollect umsCollect = JsonUtil.jsonToPojo(umsCollectParam, UmsCollect.class);
         UmsCollect umsCollectOld = iUmsCollectService.getOne(new QueryWrapper<UmsCollect>().eq("assembly_id", umsCollect.getAssemblyId()).
-                eq("member_id", UserUtils.getCurrentMember().getId()));
+                eq("member_id", UserUtils.getCurrentUmsMember().getId()));
         if(umsCollectOld == null){
             umsCollect.setCreateTime(new Date());
             umsCollect.setId(IdGeneratorUtil.getIdGeneratorUtil().nextId());
-            umsCollect.setMemberId(UserUtils.getCurrentMember().getId());
+            umsCollect.setMemberId(UserUtils.getCurrentUmsMember().getId());
         }else{
             umsCollectOld.setFavorType(umsCollect.getFavorType());
             umsCollectOld.setUpdateTime(new Date());
@@ -112,7 +112,7 @@ public class UmsCollectController extends ApiBaseAction {
     public CommonResult listMyFavors(@ApiParam("1 商品 2 文章 3 搭配")String type) {
 
         List<UmsCollect> umsCollects = iUmsCollectService.list(new QueryWrapper<UmsCollect>().eq("type", type).
-                eq("member_id",UserUtils.getCurrentMember().getId()).eq("favor_type", MagicConstant.FAVOR_TYPE_LIKE));
+                eq("member_id",UserUtils.getCurrentUmsMember().getId()).eq("favor_type", MagicConstant.FAVOR_TYPE_LIKE));
         if(!CollectionUtils.isEmpty(umsCollects)){
             List<Long> assemblyIds = new ArrayList<>();
             for(UmsCollect umsCollect:umsCollects){

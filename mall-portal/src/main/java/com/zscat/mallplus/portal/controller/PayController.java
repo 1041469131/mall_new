@@ -3,11 +3,16 @@ package com.zscat.mallplus.portal.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.zscat.mallplus.manage.config.WxAppletProperties;
 import com.zscat.mallplus.manage.service.oms.IOmsOrderItemService;
 import com.zscat.mallplus.manage.service.oms.IOmsOrderReturnSaleService;
 import com.zscat.mallplus.manage.service.oms.IOmsOrderService;
 import com.zscat.mallplus.manage.service.oms.IOmsOrderTradeService;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberService;
+import com.zscat.mallplus.manage.single.ApiBaseAction;
+import com.zscat.mallplus.manage.utils.*;
+import com.zscat.mallplus.manage.utils.applet.WechatRefundApiResult;
+import com.zscat.mallplus.manage.utils.applet.WechatUtil;
 import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrder;
@@ -17,11 +22,6 @@ import com.zscat.mallplus.mbg.ums.entity.UmsMember;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.IdGeneratorUtil;
 import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
-import com.zscat.mallplus.portal.config.WxAppletProperties;
-import com.zscat.mallplus.portal.single.ApiBaseAction;
-import com.zscat.mallplus.portal.util.*;
-import com.zscat.mallplus.portal.util.applet.WechatRefundApiResult;
-import com.zscat.mallplus.portal.util.applet.WechatUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -87,7 +87,7 @@ public class PayController extends ApiBaseAction {
     @ApiOperation("获取支付的请求参数,当在购物车里面进行支付的时候，id传入supplyId（相当于一个父订单）")
     @GetMapping("prepay")
     public Object payPrepay(@RequestParam(value = "id", required = false, defaultValue = "0") Long id) {
-        UmsMember user = UserUtils.getCurrentMember();
+        UmsMember user = UserUtils.getCurrentUmsMember();
         OmsOrder orderInfo = null;
         List<OmsOrder> orderList = null;
         BigDecimal totalFee = BigDecimal.ZERO;
@@ -195,7 +195,7 @@ public class PayController extends ApiBaseAction {
     @ApiOperation( "查询订单状态")
     @GetMapping("query")
     public Object orderQuery( @RequestParam(value = "id", required = false, defaultValue = "0") Long id) {
-        UmsMember user = UserUtils.getCurrentMember();
+        UmsMember user = UserUtils.getCurrentUmsMember();
         //
         OmsOrder orderDetail = orderService.getById(id);
         if (id == null) {

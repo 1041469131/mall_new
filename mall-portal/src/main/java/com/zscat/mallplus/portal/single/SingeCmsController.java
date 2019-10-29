@@ -11,6 +11,7 @@ import com.zscat.mallplus.manage.service.pms.IPmsProductAttributeCategoryService
 import com.zscat.mallplus.manage.service.pms.IPmsProductCategoryService;
 import com.zscat.mallplus.manage.service.pms.IPmsProductService;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberLevelService;
+import com.zscat.mallplus.manage.single.ApiBaseAction;
 import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.cms.entity.CmsSubject;

@@ -6,6 +6,9 @@ import com.zscat.mallplus.manage.service.oms.IOmsOrderReturnReasonService;
 import com.zscat.mallplus.manage.service.oms.IOmsOrderReturnSaleService;
 import com.zscat.mallplus.manage.service.oms.IOmsOrderService;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberService;
+import com.zscat.mallplus.manage.single.ApiBaseAction;
+import com.zscat.mallplus.manage.utils.JsonUtil;
+import com.zscat.mallplus.manage.utils.UserUtils;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrder;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrderReturnApply;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrderReturnReason;
@@ -14,9 +17,6 @@ import com.zscat.mallplus.mbg.oms.vo.OmsReturnParam;
 import com.zscat.mallplus.mbg.ums.entity.UmsMember;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
-import com.zscat.mallplus.portal.single.ApiBaseAction;
-import com.zscat.mallplus.portal.util.JsonUtil;
-import com.zscat.mallplus.portal.util.UserUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -73,8 +73,8 @@ public class ReturnApplyController extends ApiBaseAction {
                 omsOrderReturnSale.setType(MagicConstant.RETURN_APPLY_TYPE_AFTER_SALE);
             }
             omsOrderReturnSale.setUpdateTime(new Date());
-            omsOrderReturnSale.setMemberId(UserUtils.getCurrentMember().getId());
-            omsOrderReturnSale.setMemberUsername(UserUtils.getCurrentMember().getUsername());
+            omsOrderReturnSale.setMemberId(UserUtils.getCurrentUmsMember().getId());
+            omsOrderReturnSale.setMemberUsername(UserUtils.getCurrentUmsMember().getUsername());
             if(omsOrderReturnSale.getId() == null){
                 omsOrderReturnSale.setCreateTime(new Date());
             }
@@ -141,7 +141,7 @@ public class ReturnApplyController extends ApiBaseAction {
     public Object queryReturnSaleDetail(@ApiParam("订单id") Long ordId) {
         try{
             OmsReturnParam omsReturnParam = new OmsReturnParam();
-            OmsOrderReturnSale omsOrderReturnSale = iOmsOrderReturnSaleService.getOne(new QueryWrapper<OmsOrderReturnSale>().eq("order_id", ordId).eq("member_id",UserUtils.getCurrentMember().getId() ));
+            OmsOrderReturnSale omsOrderReturnSale = iOmsOrderReturnSaleService.getOne(new QueryWrapper<OmsOrderReturnSale>().eq("order_id", ordId).eq("member_id",UserUtils.getCurrentUmsMember().getId() ));
             if(omsOrderReturnSale != null){
                 List<OmsOrderReturnApply> omsOrderReturnApplyList = iOmsOrderReturnApplyService.list(new QueryWrapper<OmsOrderReturnApply>().eq("sale_id", omsOrderReturnSale.getId()));
                 omsReturnParam.setOmsOrderReturnApplies(omsOrderReturnApplyList);

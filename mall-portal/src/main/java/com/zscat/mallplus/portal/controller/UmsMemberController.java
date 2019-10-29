@@ -4,14 +4,14 @@ package com.zscat.mallplus.portal.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberRegisterParamService;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberService;
+import com.zscat.mallplus.manage.single.ApiBaseAction;
+import com.zscat.mallplus.manage.utils.UserUtils;
 import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
 import com.zscat.mallplus.mbg.marking.entity.UserFormId;
 import com.zscat.mallplus.mbg.ums.entity.UmsMember;
 import com.zscat.mallplus.mbg.ums.entity.UmsMemberRegisterParam;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.ValidatorUtils;
-import com.zscat.mallplus.portal.single.ApiBaseAction;
-import com.zscat.mallplus.portal.util.UserUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -176,7 +176,7 @@ public class UmsMemberController extends ApiBaseAction {
     @RequestMapping(value = "/register4MiniProgram")
     @ResponseBody
     public CommonResult<UmsMember> register4MiniProgram(UmsMember umsMember) {
-        umsMember.setId(UserUtils.getCurrentMember().getId());
+        umsMember.setId(UserUtils.getCurrentUmsMember().getId());
         umsMember.setUpdateTime(new Date());
         if(memberService.updateById(umsMember)){
             return new CommonResult<>().success("注册成功");
@@ -199,7 +199,7 @@ public class UmsMemberController extends ApiBaseAction {
     @RequestMapping(value = "/queryUmsMemberDetail")
     @ResponseBody
     public CommonResult<UmsMember> queryUmsMemberDetail(){
-        Long userId = UserUtils.getCurrentMember().getId();//会员用户id
+        Long userId = UserUtils.getCurrentUmsMember().getId();//会员用户id
         UmsMember umsMember = memberService.getById(userId);
         return new CommonResult<>().success("查询成功");
     }

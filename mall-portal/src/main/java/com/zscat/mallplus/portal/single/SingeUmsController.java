@@ -6,6 +6,8 @@ import com.zscat.mallplus.manage.service.sys.ISysAreaService;
 import com.zscat.mallplus.manage.service.sys.ISysSchoolService;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberMemberTagRelationService;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberService;
+import com.zscat.mallplus.manage.single.ApiBaseAction;
+import com.zscat.mallplus.manage.utils.UserUtils;
 import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.sys.entity.SysArea;
@@ -14,7 +16,6 @@ import com.zscat.mallplus.mbg.ums.entity.UmsMember;
 import com.zscat.mallplus.mbg.ums.entity.UmsMemberMemberTagRelation;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.ValidatorUtils;
-import com.zscat.mallplus.portal.util.UserUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +32,7 @@ import java.util.List;
 @RestController
 @Api(tags = "UmsController", description = "会员关系管理")
 @RequestMapping("/api/single/user")
-public class SingeUmsController extends ApiBaseAction{
+public class SingeUmsController extends ApiBaseAction {
 
     @Resource
     private ISysSchoolService schoolService;
@@ -66,7 +67,7 @@ public class SingeUmsController extends ApiBaseAction{
     @SysLog(MODULE = "ums", REMARK = "会员绑定学校")
     public Object bindSchool(@RequestParam(value = "schoolId", required = true) Long schoolId) {
         try {
-            UmsMember member = UserUtils.getCurrentMember();
+            UmsMember member = UserUtils.getCurrentUmsMember();
             member.setSchoolId(schoolId);
             memberService.updateById(member);
             return new CommonResult().success("绑定学校成功");
@@ -84,7 +85,7 @@ public class SingeUmsController extends ApiBaseAction{
             if (ValidatorUtils.empty(areaIds)){
                 return new CommonResult().failed("请选择区域");
             }
-            UmsMember member = UserUtils.getCurrentMember();
+            UmsMember member = UserUtils.getCurrentUmsMember();
             String[] areIdList = areaIds.split(",");
             List<UmsMemberMemberTagRelation> list = new ArrayList<>();
             for (String id : areIdList){

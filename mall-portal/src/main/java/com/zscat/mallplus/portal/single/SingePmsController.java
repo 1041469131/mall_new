@@ -11,6 +11,8 @@ import com.zscat.mallplus.manage.service.pms.IPmsProductAttributeCategoryService
 import com.zscat.mallplus.manage.service.pms.IPmsProductCategoryService;
 import com.zscat.mallplus.manage.service.pms.IPmsProductService;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberLevelService;
+import com.zscat.mallplus.manage.single.ApiBaseAction;
+import com.zscat.mallplus.manage.utils.DateUtils;
 import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.marking.entity.SmsGroup;
@@ -20,7 +22,6 @@ import com.zscat.mallplus.mbg.pms.vo.PmsProductAndGroup;
 import com.zscat.mallplus.mbg.ums.entity.UmsMember;
 import com.zscat.mallplus.mbg.ums.entity.UmsMemberLevel;
 import com.zscat.mallplus.mbg.utils.CommonResult;
-import com.zscat.mallplus.portal.util.DateUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
@@ -71,7 +72,7 @@ public class SingePmsController extends ApiBaseAction {
         queryGoods.setGoodsId(id);
         SmsGroup group = groupService.getOne(new QueryWrapper<>(queryGoods));
         if (group!=null){
-            Date endTime = DateUtils.convertStringToDate(DateUtils.addHours(group.getEndTime(),group.getHours()),"yyyy-MM-dd HH:mm:ss");
+            Date endTime = DateUtils.convertStringToDate(DateUtils.addHours(group.getEndTime(),group.getHours()));
             Long nowT = System.currentTimeMillis();
             if (group!=null && nowT>group.getStartTime().getTime() && nowT<endTime.getTime()){
                 map.put("group",group);

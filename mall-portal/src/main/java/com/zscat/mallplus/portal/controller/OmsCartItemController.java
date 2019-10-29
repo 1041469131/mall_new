@@ -4,13 +4,13 @@ package com.zscat.mallplus.portal.controller;
 import com.zscat.mallplus.manage.service.oms.IOmsCartItemService;
 import com.zscat.mallplus.manage.service.pms.IPmsSkuStockService;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberService;
+import com.zscat.mallplus.manage.utils.UserUtils;
 import com.zscat.mallplus.mbg.oms.entity.OmsCartItem;
 import com.zscat.mallplus.mbg.oms.vo.CartProduct;
 import com.zscat.mallplus.mbg.oms.vo.CartPromotionItem;
 import com.zscat.mallplus.mbg.pms.entity.PmsSkuStock;
 import com.zscat.mallplus.mbg.ums.entity.UmsMember;
 import com.zscat.mallplus.mbg.utils.CommonResult;
-import com.zscat.mallplus.portal.util.UserUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +44,7 @@ public class OmsCartItemController {
     @ResponseBody
     public Object addCart(@RequestParam(value = "id", defaultValue = "0") Long id,
                           @RequestParam(value = "count", defaultValue = "1") Integer count) {
-        UmsMember umsMember = UserUtils.getCurrentMember();
+        UmsMember umsMember = UserUtils.getCurrentUmsMember();
         PmsSkuStock pmsSkuStock = pmsSkuStockService.getById(id);
         if (pmsSkuStock != null && (pmsSkuStock.getStock()-pmsSkuStock.getLockStock()) > 0) {
             OmsCartItem cartItem = new OmsCartItem();
@@ -58,7 +58,7 @@ public class OmsCartItemController {
             cartItem.setSp1(pmsSkuStock.getSp1());
             cartItem.setSp2(pmsSkuStock.getSp2());
             cartItem.setSp3(pmsSkuStock.getSp3());
-            cartItem.setMemberId(UserUtils.getCurrentMember().getId());
+            cartItem.setMemberId(UserUtils.getCurrentUmsMember().getId());
             OmsCartItem omsCartItem = cartItemService.addCart(cartItem);
             return new CommonResult().success(omsCartItem.getId());
 
@@ -70,7 +70,7 @@ public class OmsCartItemController {
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     @ResponseBody
     public CommonResult<Map<String,List<OmsCartItem>>> list() {
-        UmsMember umsMember = UserUtils.getCurrentMember();
+        UmsMember umsMember = UserUtils.getCurrentUmsMember();
         if (umsMember != null && umsMember.getId() != null) {
             Map<String,List<OmsCartItem>> cartMap = cartItemService.queryCartMap(umsMember.getId());
             return new CommonResult().success(cartMap);
@@ -82,7 +82,7 @@ public class OmsCartItemController {
     @RequestMapping(value = "/list/promotion", method = RequestMethod.GET)
     @ResponseBody
     public CommonResult<Map<String,List<CartPromotionItem>>> listPromotion() {
-        Map<String,List<CartPromotionItem>> cartPromotionItemMap = cartItemService.mapCartPromotionItem(UserUtils.getCurrentMember().getId());
+        Map<String,List<CartPromotionItem>> cartPromotionItemMap = cartItemService.mapCartPromotionItem(UserUtils.getCurrentUmsMember().getId());
         return new CommonResult().success(cartPromotionItemMap);
     }
 
@@ -91,7 +91,7 @@ public class OmsCartItemController {
     @ResponseBody
     public Object updateQuantity(@RequestParam Long id,
                                  @RequestParam Integer quantity) {
-        int count = cartItemService.updateQuantity(id, UserUtils.getCurrentMember().getId(), quantity);
+        int count = cartItemService.updateQuantity(id, UserUtils.getCurrentUmsMember().getId(), quantity);
         if (count > 0) {
             return new CommonResult().success("修改数量成功");
         }
@@ -128,7 +128,7 @@ public class OmsCartItemController {
         for (String s : cart_id_list.split(",")) {
             resultList.add(Long.valueOf(s));
         }
-        int count = cartItemService.delete(UserUtils.getCurrentMember().getId(), resultList);
+        int count = cartItemService.delete(UserUtils.getCurrentUmsMember().getId(), resultList);
         if (count > 0) {
             return new CommonResult().success(count);
         }
@@ -139,7 +139,7 @@ public class OmsCartItemController {
     @RequestMapping(value = "/clear", method = RequestMethod.POST)
     @ResponseBody
     public Object clear() {
-        int count = cartItemService.clear(UserUtils.getCurrentMember().getId());
+        int count = cartItemService.clear(UserUtils.getCurrentUmsMember().getId());
         if (count > 0) {
             return new CommonResult().success(count);
         }

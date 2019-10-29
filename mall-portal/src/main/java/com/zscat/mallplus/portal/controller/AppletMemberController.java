@@ -12,6 +12,9 @@ import com.zscat.mallplus.manage.service.pms.IPmsProductAttributeCategoryService
 import com.zscat.mallplus.manage.service.pms.IPmsProductService;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberService;
 import com.zscat.mallplus.manage.service.ums.RedisService;
+import com.zscat.mallplus.manage.single.ApiBaseAction;
+import com.zscat.mallplus.manage.utils.JsonUtil;
+import com.zscat.mallplus.manage.utils.UserUtils;
 import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.cms.entity.CmsSubject;
@@ -26,9 +29,6 @@ import com.zscat.mallplus.mbg.ums.entity.UmsMember;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.vo.OrderStatusCount;
 import com.zscat.mallplus.portal.constant.RedisKey;
-import com.zscat.mallplus.portal.single.ApiBaseAction;
-import com.zscat.mallplus.portal.util.JsonUtil;
-import com.zscat.mallplus.portal.util.UserUtils;
 import com.zscat.mallplus.portal.vo.IndexData;
 import com.zscat.mallplus.portal.vo.TArticleDO;
 import io.swagger.annotations.Api;
@@ -217,7 +217,7 @@ public class AppletMemberController extends ApiBaseAction {
     @SysLog(MODULE = "applet", REMARK = "小程序用户详情")
     @GetMapping("/user")
     public Object user() {
-        UmsMember umsMember = UserUtils.getCurrentMember();
+        UmsMember umsMember = UserUtils.getCurrentUmsMember();
         if (umsMember != null && umsMember.getId() != null) {
             OmsOrder param = new OmsOrder();
             param.setMemberId(umsMember.getId());
