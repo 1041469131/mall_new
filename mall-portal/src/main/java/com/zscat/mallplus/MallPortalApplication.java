@@ -17,7 +17,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
-@MapperScan({"com.zscat.mallplus.mapper", "com.zscat.mallplus.ums.mapper", "com.zscat.mallplus.marking.mapper", "com.zscat.mallplus.cms.mapper", "com.zscat.mallplus.sys.mapper", "com.zscat.mallplus.oms.mapper", "com.zscat.mallplus.pms.mapper"})
+@MapperScan({"com.zscat.mallplus.mbg.ums.mapper", "com.zscat.mallplus.mbg.marking.mapper", "com.zscat.mallplus.mbg.cms.mapper", "com.zscat.mallplus.mbg.sys.mapper", "com.zscat.mallplus.mbg.oms.mapper", "com.zscat.mallplus.mbg.pms.mapper"})
 @EnableTransactionManagement
 @EnableScheduling
 public class MallPortalApplication extends SpringBootServletInitializer {

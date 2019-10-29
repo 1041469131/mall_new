@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * https://github.com/shenzhuan/mallplus on 2018/4/26.
  */
 @SpringBootApplication
-@MapperScan({"com.zscat.mallplus.mapper", "com.zscat.mallplus.ums.mapper", "com.zscat.mallplus.marking.mapper", "com.zscat.mallplus.cms.mapper", "com.zscat.mallplus.sys.mapper", "com.zscat.mallplus.oms.mapper", "com.zscat.mallplus.pms.mapper"})
+@MapperScan({"com.zscat.mallplus.mbg.ums.mapper", "com.zscat.mallplus.mbg.marking.mapper", "com.zscat.mallplus.mbg.cms.mapper", "com.zscat.mallplus.mbg.sys.mapper", "com.zscat.mallplus.mbg.oms.mapper", "com.zscat.mallplus.mbg.pms.mapper"})
 @EnableTransactionManagement
 public class MallAdminApplication {
     public static void main(String[] args) {
