@@ -2,9 +2,9 @@ package com.zscat.mallplus.admin.cms.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zscat.mallplus.manage.service.cms.ICmsSubjectCommentService;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.cms.entity.CmsSubjectComment;
-import com.zscat.mallplus.admin.cms.service.ICmsSubjectCommentService;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.ValidatorUtils;
 import io.swagger.annotations.Api;

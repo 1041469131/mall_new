@@ -2,7 +2,7 @@ package com.zscat.mallplus.admin.oms.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.zscat.mallplus.admin.oms.service.IOmsCompanyAddressService;
+import com.zscat.mallplus.manage.service.oms.IOmsCompanyAddressService;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.oms.entity.OmsCompanyAddress;
 import com.zscat.mallplus.mbg.utils.CommonResult;

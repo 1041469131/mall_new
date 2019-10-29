@@ -2,7 +2,7 @@ package com.zscat.mallplus.admin.sys.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.zscat.mallplus.admin.sys.service.ISysMemberAreaService;
+import com.zscat.mallplus.manage.service.sys.ISysMemberAreaService;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.sys.entity.SysMemberArea;
 import com.zscat.mallplus.mbg.utils.CommonResult;

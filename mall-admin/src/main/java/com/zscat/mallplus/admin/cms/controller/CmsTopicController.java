@@ -2,7 +2,8 @@ package com.zscat.mallplus.admin.cms.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.zscat.mallplus.admin.cms.service.ICmsTopicMemberService;
+import com.zscat.mallplus.manage.service.cms.ICmsTopicMemberService;
+import com.zscat.mallplus.manage.service.cms.ICmsTopicService;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.cms.entity.CmsTopic;
 import com.zscat.mallplus.mbg.cms.entity.CmsTopicMember;
@@ -32,7 +33,7 @@ import java.util.List;
 @RequestMapping("/cms/CmsTopic")
 public class CmsTopicController {
     @Resource
-    private com.zscat.mallplus.admin.cms.service.ICmsTopicService ICmsTopicService;
+    private ICmsTopicService ICmsTopicService;
     @Resource
     private ICmsTopicMemberService topicMemberService;
 

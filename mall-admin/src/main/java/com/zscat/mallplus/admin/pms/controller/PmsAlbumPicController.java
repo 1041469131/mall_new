@@ -2,7 +2,7 @@ package com.zscat.mallplus.admin.pms.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.zscat.mallplus.admin.pms.service.IPmsAlbumPicService;
+import com.zscat.mallplus.manage.service.pms.IPmsAlbumPicService;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.pms.entity.PmsAlbumPic;
 import com.zscat.mallplus.mbg.utils.CommonResult;

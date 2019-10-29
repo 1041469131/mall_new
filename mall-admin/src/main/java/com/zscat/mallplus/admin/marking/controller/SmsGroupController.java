@@ -3,7 +3,7 @@ package com.zscat.mallplus.admin.marking.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.zscat.mallplus.admin.marking.service.ISmsGroupService;
+import com.zscat.mallplus.manage.service.marking.ISmsGroupService;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.marking.entity.SmsGroup;
 import com.zscat.mallplus.mbg.utils.CommonResult;

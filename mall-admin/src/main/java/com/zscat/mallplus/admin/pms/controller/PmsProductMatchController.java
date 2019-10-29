@@ -1,12 +1,12 @@
 package com.zscat.mallplus.admin.pms.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.zscat.mallplus.admin.pms.service.IPmsProductMatchLibraryService;
-import com.zscat.mallplus.admin.pms.service.IPmsProductService;
-import com.zscat.mallplus.admin.pms.service.IPmsProductUserMatchLibraryService;
-import com.zscat.mallplus.admin.pms.service.IPmsSkuStockService;
-import com.zscat.mallplus.admin.util.JsonUtil;
-import com.zscat.mallplus.admin.util.UserUtils;
+import com.zscat.mallplus.manage.service.pms.IPmsProductMatchLibraryService;
+import com.zscat.mallplus.manage.service.pms.IPmsProductService;
+import com.zscat.mallplus.manage.service.pms.IPmsProductUserMatchLibraryService;
+import com.zscat.mallplus.manage.service.pms.IPmsSkuStockService;
+import com.zscat.mallplus.manage.utils.JsonUtil;
+import com.zscat.mallplus.manage.utils.UserUtils;
 import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.pms.entity.PmsProduct;

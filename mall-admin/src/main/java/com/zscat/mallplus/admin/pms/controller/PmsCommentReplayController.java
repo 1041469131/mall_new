@@ -2,7 +2,7 @@ package com.zscat.mallplus.admin.pms.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.zscat.mallplus.admin.pms.service.IPmsCommentReplayService;
+import com.zscat.mallplus.manage.service.pms.IPmsCommentReplayService;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.pms.entity.PmsCommentReplay;
 import com.zscat.mallplus.mbg.utils.CommonResult;

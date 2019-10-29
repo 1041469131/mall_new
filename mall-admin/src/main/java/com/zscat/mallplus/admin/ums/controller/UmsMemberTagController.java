@@ -2,7 +2,7 @@ package com.zscat.mallplus.admin.ums.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.zscat.mallplus.admin.ums.service.IUmsMemberTagService;
+import com.zscat.mallplus.manage.service.ums.IUmsMemberTagService;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.ums.entity.UmsMemberTag;
 import com.zscat.mallplus.mbg.utils.CommonResult;

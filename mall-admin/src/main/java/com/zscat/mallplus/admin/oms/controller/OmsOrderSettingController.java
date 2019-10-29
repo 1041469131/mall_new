@@ -2,7 +2,7 @@ package com.zscat.mallplus.admin.oms.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.zscat.mallplus.admin.oms.service.IOmsOrderSettingService;
+import com.zscat.mallplus.manage.service.oms.IOmsOrderSettingService;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrderSetting;
 import com.zscat.mallplus.mbg.utils.CommonResult;

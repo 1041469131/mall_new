@@ -2,7 +2,7 @@ package com.zscat.mallplus.admin.sys.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.zscat.mallplus.admin.sys.service.ISysWebLogService;
+import com.zscat.mallplus.manage.service.sys.ISysWebLogService;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.sys.entity.SysWebLog;
 import com.zscat.mallplus.mbg.utils.CommonResult;

@@ -2,8 +2,9 @@ package com.zscat.mallplus.admin.oms.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.zscat.mallplus.admin.oms.service.IOmsOrderReturnSaleService;
-import com.zscat.mallplus.admin.oms.service.IOmsOrderService;
+import com.zscat.mallplus.manage.service.oms.IOmsOrderReturnApplyService;
+import com.zscat.mallplus.manage.service.oms.IOmsOrderReturnSaleService;
+import com.zscat.mallplus.manage.service.oms.IOmsOrderService;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrder;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrderReturnApply;
@@ -39,7 +40,7 @@ import java.util.List;
 @RequestMapping("/oms/OmsOrderReturnApply")
 public class OmsOrderReturnApplyController {
     @Resource
-    private com.zscat.mallplus.admin.oms.service.IOmsOrderReturnApplyService IOmsOrderReturnApplyService;
+    private IOmsOrderReturnApplyService IOmsOrderReturnApplyService;
 
     @Autowired
     private IOmsOrderReturnSaleService iOmsOrderReturnSaleService;

@@ -1,7 +1,7 @@
 package com.zscat.mallplus.admin.sys.controller;
 
 
-import com.zscat.mallplus.admin.sys.service.impl.OssServiceImpl;
+import com.zscat.mallplus.manage.service.sys.impl.OssServiceImpl;
 import com.zscat.mallplus.mbg.sys.vo.OssCallbackResult;
 import com.zscat.mallplus.mbg.sys.vo.OssPolicyResult;
 import com.zscat.mallplus.mbg.utils.CommonResult;

@@ -2,7 +2,7 @@ package com.zscat.mallplus.admin.marking.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.zscat.mallplus.admin.marking.service.ISmsFlashPromotionLogService;
+import com.zscat.mallplus.manage.service.marking.ISmsFlashPromotionLogService;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.marking.entity.SmsFlashPromotionLog;
 import com.zscat.mallplus.mbg.utils.CommonResult;

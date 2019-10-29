@@ -2,6 +2,7 @@ package com.zscat.mallplus.admin.cms.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zscat.mallplus.manage.service.cms.ICmsTopicCategoryService;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.cms.entity.CmsTopicCategory;
 import com.zscat.mallplus.mbg.utils.CommonResult;
@@ -30,7 +31,7 @@ import java.util.List;
 @RequestMapping("/cms/CmsTopicCategory")
 public class CmsTopicCategoryController {
     @Resource
-    private com.zscat.mallplus.admin.cms.service.ICmsTopicCategoryService ICmsTopicCategoryService;
+    private ICmsTopicCategoryService ICmsTopicCategoryService;
 
     @SysLog(MODULE = "cms", REMARK = "根据条件查询所有话题分类表列表")
     @ApiOperation("根据条件查询所有话题分类表列表")
