@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zscat.mallplus.manage.config.WxAppletProperties;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberService;
 import com.zscat.mallplus.manage.service.ums.RedisService;
-import com.zscat.mallplus.manage.single.ApiBaseAction;
 import com.zscat.mallplus.manage.utils.CharUtil;
 import com.zscat.mallplus.manage.utils.CommonUtil;
 import com.zscat.mallplus.manage.utils.JsonUtil;
@@ -224,7 +223,7 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
 
             Map<String, Object> me = JsonUtil.readJsonToMap(userInfos);
             if (null == me) {
-                return ApiBaseAction.toResponsFail("登录失败");
+                return new CommonResult<>().failed("登录失败");
             }
 
             Map<String, Object> resultObj = new HashMap<String, Object>();
@@ -235,12 +234,12 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
             JSONObject sessionData = CommonUtil.httpsRequest(requestUrl, "GET", null);
 
             if (null == sessionData || StringUtils.isEmpty(sessionData.getString("openid"))) {
-                return ApiBaseAction.toResponsFail("登录失败");
+                return new CommonResult<>().failed("登录失败");
             }
             //验证用户信息完整性
             String sha1 = CommonUtil.getSha1(userInfos + sessionData.getString("session_key"));
             if (!signature.equals(sha1)) {
-                return ApiBaseAction.toResponsFail("登录失败");
+                return new CommonResult<>().failed("登录失败");
             }
             UmsMember userVo = this.queryByOpenId(sessionData.getString("openid"));
             String token = null;
@@ -274,19 +273,19 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
 
 
             if (StringUtils.isEmpty(token)) {
-                return ApiBaseAction.toResponsFail("登录失败");
+                return new CommonResult<>().failed("登录失败");
             }
             resultObj.put("tokenHead", tokenHead);
             resultObj.put("token", token);
             resultObj.put("userInfo", me);
 
-            return ApiBaseAction.toResponsSuccess(resultObj);
+            return new CommonResult<>().success(resultObj);
         } catch (ApiMallPlusException e) {
             e.printStackTrace();
-            return ApiBaseAction.toResponsFail(e.getMessage());
+            return new CommonResult<>().failed(e.getMessage());
         }catch (Exception e) {
             e.printStackTrace();
-            return ApiBaseAction.toResponsFail(e.getMessage());
+            return new CommonResult<>().failed(e.getMessage());
         }
 
     }

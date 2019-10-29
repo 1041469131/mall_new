@@ -9,7 +9,7 @@
  * 项目官网: http://localhost:8085
  */
 
-package com.zscat.mallplus.manage.interceptor;
+package com.zscat.mallplus.portal.interceptor;
 
 
 import com.zscat.mallplus.manage.config.CommonConstant;

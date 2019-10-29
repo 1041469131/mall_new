@@ -1,4 +1,4 @@
-package com.zscat.mallplus.manage.single;
+package com.zscat.mallplus.portal.single;
 
 
 import com.zscat.mallplus.manage.vo.MemberDetails;

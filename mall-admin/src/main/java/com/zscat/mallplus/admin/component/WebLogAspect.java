@@ -1,4 +1,4 @@
-package com.zscat.mallplus.manage.component;
+package com.zscat.mallplus.admin.component;
 
 import com.zscat.mallplus.manage.bo.WebLog;
 import com.zscat.mallplus.manage.utils.JsonUtil;

@@ -1,8 +1,8 @@
-package com.zscat.mallplus.manage.config;
+package com.zscat.mallplus.admin.config;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.zscat.mallplus.admin.component.JwtAuthenticationTokenFilter;
 import com.zscat.mallplus.manage.bo.AdminUserDetails;
-import com.zscat.mallplus.manage.component.JwtAuthenticationTokenFilter;
 import com.zscat.mallplus.manage.component.RestAuthenticationEntryPoint;
 import com.zscat.mallplus.manage.component.RestfulAccessDeniedHandler;
 import com.zscat.mallplus.manage.service.sys.ISysUserService;
@@ -29,7 +29,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import javax.annotation.Resource;
-import javax.servlet.Filter;
 import java.util.List;
 
 
@@ -118,7 +117,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     @Bean
-    public Filter jwtAuthenticationTokenFilter() {
+    public JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter() {
         return new JwtAuthenticationTokenFilter();
     }
 

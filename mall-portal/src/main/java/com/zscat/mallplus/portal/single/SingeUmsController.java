@@ -6,7 +6,6 @@ import com.zscat.mallplus.manage.service.sys.ISysAreaService;
 import com.zscat.mallplus.manage.service.sys.ISysSchoolService;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberMemberTagRelationService;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberService;
-import com.zscat.mallplus.manage.single.ApiBaseAction;
 import com.zscat.mallplus.manage.utils.UserUtils;
 import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
 import com.zscat.mallplus.mbg.annotation.SysLog;

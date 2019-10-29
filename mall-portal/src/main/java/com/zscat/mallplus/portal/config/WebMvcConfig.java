@@ -9,10 +9,10 @@
  * 项目官网: http://paascloud.net
  */
 
-package com.zscat.mallplus.manage.config;
+package com.zscat.mallplus.portal.config;
 
 
-import com.zscat.mallplus.manage.interceptor.TokenInterceptor;
+import com.zscat.mallplus.portal.interceptor.TokenInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
