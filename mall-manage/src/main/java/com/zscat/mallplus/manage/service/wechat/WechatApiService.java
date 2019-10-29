@@ -2,7 +2,7 @@ package com.zscat.mallplus.manage.service.wechat;
 
 import com.zscat.mallplus.manage.config.WxAppletProperties;
 import com.zscat.mallplus.manage.utils.JedisLock;
-import com.zscat.mallplus.manage.utils.JsonUtils;
+import com.zscat.mallplus.manage.utils.JsonUtil;
 import com.zscat.mallplus.manage.utils.MyX509TrustManager;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
@@ -114,7 +114,7 @@ public class WechatApiService {
             HttpGet get = new HttpGet(WECHAT_API_TOKEN + "?grant_type=client_credential&appid=" + appid + "&secret=" + appSecret);
             HttpResponse response = httpclient.execute(get);
             String text = EntityUtils.toString(response.getEntity());
-            Map<String, Object> resultMap = JsonUtils.readJsonToMap(text);
+            Map<String, Object> resultMap = JsonUtil.readJsonToMap(text);
             String accessToken = (String) resultMap.get("access_token");
             int expiresIn = (int) resultMap.get("expires_in");
 
@@ -241,7 +241,7 @@ public class WechatApiService {
             HttpGet get = new HttpGet(WECHAT_API_TICKET + getAccessToken(appid, appSecret));
             HttpResponse response = httpclient.execute(get);
             String text = EntityUtils.toString(response.getEntity());
-            Map<String, Object> resultMap = JsonUtils.readJsonToMap(text);
+            Map<String, Object> resultMap = JsonUtil.readJsonToMap(text);
             String ticket = (String) resultMap.get("ticket");
             int expiresIn = (int) resultMap.get("expires_in");
 

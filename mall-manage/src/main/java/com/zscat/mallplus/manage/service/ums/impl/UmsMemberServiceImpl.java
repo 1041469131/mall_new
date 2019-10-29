@@ -8,7 +8,7 @@ import com.zscat.mallplus.manage.service.ums.RedisService;
 import com.zscat.mallplus.manage.single.ApiBaseAction;
 import com.zscat.mallplus.manage.utils.CharUtil;
 import com.zscat.mallplus.manage.utils.CommonUtil;
-import com.zscat.mallplus.manage.utils.JsonUtils;
+import com.zscat.mallplus.manage.utils.JsonUtil;
 import com.zscat.mallplus.manage.utils.JwtTokenUtil;
 import com.zscat.mallplus.manage.vo.MemberDetails;
 import com.zscat.mallplus.mbg.exception.ApiMallPlusException;
@@ -222,7 +222,7 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
 
             String signature = req.getParameter("signature");
 
-            Map<String, Object> me = JsonUtils.readJsonToMap(userInfos);
+            Map<String, Object> me = JsonUtil.readJsonToMap(userInfos);
             if (null == me) {
                 return ApiBaseAction.toResponsFail("登录失败");
             }
