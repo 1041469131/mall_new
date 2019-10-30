@@ -4,6 +4,7 @@ package com.zscat.mallplus.portal.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zscat.mallplus.manage.assemble.MatchLibraryAssemble;
 import com.zscat.mallplus.manage.service.cms.ICmsSubjectService;
 import com.zscat.mallplus.manage.service.marking.ISmsHomeAdvertiseService;
 import com.zscat.mallplus.manage.service.pms.*;
@@ -214,8 +215,6 @@ public class PmsGoodsController {
     @ResponseBody
     public CommonResult<List<PmsProductMatchLibraryVo>> listRecommedProducts(@ApiParam("时长格式 就是数字类型 比如15")String periodDay) {
         Long userId = UserUtils.getCurrentUmsMember().getId();
-        List<PmsProductMatchLibraryVo> pmsProductMatchLibraryVos = null;
-
         List<PmsProductUserMatchLibrary> pmsProductUserMatchLibraries = null;
         if(StringUtils.isEmpty(periodDay)){
             pmsProductUserMatchLibraries = iPmsProductUserMatchLibraryService.list(new QueryWrapper<PmsProductUserMatchLibrary>().
@@ -226,37 +225,7 @@ public class PmsGoodsController {
                     eq("user_id",userId).eq("recommend_type",MagicConstant.RECOMMEND_TYPE_YES).between("create_time", new Date(), periodDate).
                     orderByDesc("create_time"));
         }
-
-        if(!CollectionUtils.isEmpty(pmsProductUserMatchLibraries)){
-            pmsProductMatchLibraryVos = new ArrayList<>();
-            for(PmsProductUserMatchLibrary pmsProductUserMatchLibrary : pmsProductUserMatchLibraries){
-                PmsProductMatchLibraryVo pmsProductMatchLibraryVo = new PmsProductMatchLibraryVo();
-                String skuIds = pmsProductUserMatchLibrary.getSkuIds();
-                if(!StringUtils.isEmpty(skuIds)){
-                    String[] skuIdArrays = skuIds.split(",");
-                    List<Long> skuIdList = new ArrayList<>();;
-                    for (String skuId:skuIdArrays){
-                        skuIdList.add(Long.valueOf(skuId));
-                    }
-                    List<PmsSkuStock> pmsSkuStocks = (List<PmsSkuStock>)iPmsSkuStockService.listByIds(skuIdList);
-                    List<PmsSkuStockVo> pmsSkuStockVos = null;
-                    if(!CollectionUtils.isEmpty(pmsSkuStocks)){
-                        pmsSkuStockVos = new ArrayList<>();
-                        for(PmsSkuStock pmsSkuStock:pmsSkuStocks){
-                            PmsSkuStockVo pmsSkuStockVo = new PmsSkuStockVo();
-                            BeanUtils.copyProperties(pmsSkuStock, pmsSkuStockVo);
-                            Long productId = pmsSkuStock.getProductId();
-                            PmsProduct pmsProduct = iPmsProductService.getById(productId);
-                            pmsSkuStockVo.setPmsProduct(pmsProduct);
-                            pmsSkuStockVos.add(pmsSkuStockVo);
-                        }
-                    }
-                    pmsProductMatchLibraryVo.setPmsSkuStockVos(pmsSkuStockVos);
-                    pmsProductMatchLibraryVo.setPmsProductUserMatchLibrary(pmsProductUserMatchLibrary);
-                    pmsProductMatchLibraryVos.add(pmsProductMatchLibraryVo);
-                }
-            }
-        }
+        List<PmsProductMatchLibraryVo> pmsProductMatchLibraryVos = MatchLibraryAssemble.assembleUserMatchLibrary(pmsProductUserMatchLibraries);
         return new CommonResult().success(pmsProductMatchLibraryVos);
     }
 
@@ -267,32 +236,8 @@ public class PmsGoodsController {
     @ResponseBody
     public CommonResult<PmsProductMatchLibraryVo> queryUserMatchLibrary(@ApiParam("搭配id") String userMatchId) {
         Long userId = UserUtils.getCurrentUmsMember().getId();
-        PmsProductMatchLibraryVo pmsProductMatchLibraryVo = new PmsProductMatchLibraryVo();
-
         PmsProductUserMatchLibrary  pmsProductUserMatchLibrary = iPmsProductUserMatchLibraryService.getById(Long.valueOf(userMatchId));
-        String skuIds = pmsProductUserMatchLibrary.getSkuIds();
-            if(!StringUtils.isEmpty(skuIds)){
-                    String[] skuIdArrays = skuIds.split(",");
-                    List<Long> skuIdList = new ArrayList<>();;
-                    for (String skuId:skuIdArrays){
-                        skuIdList.add(Long.valueOf(skuId));
-                    }
-                    List<PmsSkuStock> pmsSkuStocks = (List<PmsSkuStock>)iPmsSkuStockService.listByIds(skuIdList);
-                    List<PmsSkuStockVo> pmsSkuStockVos = null;
-                    if(!CollectionUtils.isEmpty(pmsSkuStocks)){
-                        pmsSkuStockVos = new ArrayList<>();
-                        for(PmsSkuStock pmsSkuStock:pmsSkuStocks){
-                            PmsSkuStockVo pmsSkuStockVo = new PmsSkuStockVo();
-                            BeanUtils.copyProperties(pmsSkuStock, pmsSkuStockVo);
-                            Long productId = pmsSkuStock.getProductId();
-                            PmsProduct pmsProduct = iPmsProductService.getById(productId);
-                            pmsSkuStockVo.setPmsProduct(pmsProduct);
-                            pmsSkuStockVos.add(pmsSkuStockVo);
-                        }
-                    }
-                pmsProductMatchLibraryVo.setPmsSkuStockVos(pmsSkuStockVos);
-                pmsProductMatchLibraryVo.setPmsProductUserMatchLibrary(pmsProductUserMatchLibrary);
-            }
+        PmsProductMatchLibraryVo pmsProductMatchLibraryVo = MatchLibraryAssemble.assembleSingleUserMatchLibrary(pmsProductUserMatchLibrary);
         return new CommonResult().success(pmsProductMatchLibraryVo);
     }
 }
