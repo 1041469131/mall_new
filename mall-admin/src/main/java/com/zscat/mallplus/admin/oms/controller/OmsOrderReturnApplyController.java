@@ -190,10 +190,10 @@ public class OmsOrderReturnApplyController {
     @RequestMapping(value = "/update/status/{id}", method = RequestMethod.POST)
     @ResponseBody
     public Object updateStatus(@PathVariable Long id,@RequestBody OmsUpdateStatusParam statusParam) {
-//        int count = iOmsOrderReturnSaleService.updateStatus(statusParam.getId(), statusParam);
-//        if (count > 0) {
-//            return new CommonResult().success(count);
-//        }
+        int count = iOmsOrderReturnSaleService.updateStatus(statusParam.getId(), statusParam);
+        if (count > 0) {
+            return new CommonResult().success(count);
+        }
         return new CommonResult().failed();
     }
 }

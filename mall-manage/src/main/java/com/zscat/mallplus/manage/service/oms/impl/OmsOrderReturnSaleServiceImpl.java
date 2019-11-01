@@ -30,7 +30,7 @@ public class OmsOrderReturnSaleServiceImpl extends ServiceImpl<OmsOrderReturnSal
         Integer orderStatus = omsOrder.getStatus();//订单状态
         Integer saleType = oldOmsOrderReturnSale.getType();//售后的类型
         OmsOrderReturnSale omsOrderReturnSale = new OmsOrderReturnSale();
-        if (status.equals(MagicConstant.RETURN_STATUS_WAITSEND)) {//寄回退货
+      if (status.equals(MagicConstant.RETURN_STATUS_WAITSEND)) {//寄回退货
             omsOrderReturnSale.setId(id);
             omsOrderReturnSale.setStatus(MagicConstant.RETURN_STATUS_WAITSEND);
             omsOrderReturnSale.setCompanyAddressId(statusParam.getCompanyAddressId());
@@ -43,7 +43,8 @@ public class OmsOrderReturnSaleServiceImpl extends ServiceImpl<OmsOrderReturnSal
             omsOrderReturnSale.setReceiveTime(new Date());
             omsOrderReturnSale.setReceiveMan(statusParam.getReceiveMan());
             omsOrderReturnSale.setReceiveNote(statusParam.getReceiveNote());
-        } else if (status.equals(MagicConstant.RETURN_STATUS_REFUSE)) {//已拒绝
+        } else if (status.equals(MagicConstant.RETURN_STATUS_REFUSE)||(saleType == MagicConstant.RETURN_APPLY_TYPE_REFUND &&
+              orderStatus.equals(MagicConstant.ORDER_STATUS_YET_SEND))) {//当状态已拒绝或者类型是退款并且订单状态是已发货的状态
             omsOrderReturnSale.setId(id);
             omsOrderReturnSale.setStatus(MagicConstant.RETURN_STATUS_REFUSE);
             omsOrderReturnSale.setUpdateTime(new Date());
