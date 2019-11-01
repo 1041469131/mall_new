@@ -29,6 +29,7 @@ import java.util.List;
 @Api(tags = "PmsProductAttributeController", description = "商品属性参数表管理")
 @RequestMapping("/pms/PmsProductAttribute")
 public class PmsProductAttributeController {
+
     @Resource
     private IPmsProductAttributeService IPmsProductAttributeService;
 
