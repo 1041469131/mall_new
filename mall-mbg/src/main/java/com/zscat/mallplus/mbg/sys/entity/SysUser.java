@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -77,6 +78,15 @@ public class SysUser implements Serializable {
     //角色
     @TableField(exist = false)
     private String roleIds;
+
+    @ApiModelProperty(value = "微信名")
+    private String wechatName;
+
+    @ApiModelProperty(value = "微信二维码地址")
+    private String wechatQrcodeUrl;
+
+    @ApiModelProperty(value = "简介")
+    private String introduction;
 
 
 }

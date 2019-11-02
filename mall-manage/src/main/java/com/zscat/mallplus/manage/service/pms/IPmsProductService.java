@@ -21,6 +21,7 @@ import java.util.List;
  * @since 2019-04-19
  */
 public interface IPmsProductService extends IService<PmsProduct> {
+
     @Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED)
     int create(PmsProductParam productParam);
 

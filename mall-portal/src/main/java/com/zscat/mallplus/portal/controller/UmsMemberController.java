@@ -2,15 +2,18 @@ package com.zscat.mallplus.portal.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.zscat.mallplus.manage.service.sys.ISysUserService;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberRegisterParamService;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberService;
 import com.zscat.mallplus.manage.utils.UserUtils;
 import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
 import com.zscat.mallplus.mbg.marking.entity.UserFormId;
+import com.zscat.mallplus.mbg.sys.entity.SysUser;
 import com.zscat.mallplus.mbg.ums.entity.UmsMember;
 import com.zscat.mallplus.mbg.ums.entity.UmsMemberRegisterParam;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.ValidatorUtils;
+import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
 import com.zscat.mallplus.portal.single.ApiBaseAction;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -42,6 +45,9 @@ public class UmsMemberController extends ApiBaseAction {
     private String tokenHeader;
     @Value("${jwt.tokenHead}")
     private String tokenHead;
+
+    @Autowired
+    private ISysUserService iSysUserService;
 
     @Autowired
     private IUmsMemberRegisterParamService iUmsMemberRegisterParamService;
@@ -178,12 +184,14 @@ public class UmsMemberController extends ApiBaseAction {
     public CommonResult<UmsMember> register4MiniProgram(UmsMember umsMember) {
         umsMember.setId(UserUtils.getCurrentUmsMember().getId());
         umsMember.setUpdateTime(new Date());
+        if(MagicConstant.UMS_IS_COMPLETE_DONE.equals(umsMember.getIsComplete())){
+            umsMember.setMatchUserId(iSysUserService.getRandomSysUser().getId());
+        }
         if(memberService.updateById(umsMember)){
             return new CommonResult<>().success("注册成功");
         }else{
             return new CommonResult<>().failed("更新用户数据失败，注册失败");
         }
-
     }
 
 
@@ -192,7 +200,7 @@ public class UmsMemberController extends ApiBaseAction {
     @ResponseBody
     public CommonResult<List<UmsMemberRegisterParam>> queryRegisterParam(@ApiParam("类别,aspect-体貌特征;dressStyle-穿衣风格;dressColour-穿搭色系;neverDressStyle-永远都不会穿的款式;neverDressIcon-永远都不会穿的图案;rightLining-合适面料;enjoy_model-喜欢的版型;skuBudget-单品预算;neverDressStyle-永远都不会穿的款式;careClothes-您更在意衣服的;balanceBody-平衡身材问题") String category) {
         List<UmsMemberRegisterParam> umsMemberRegisterParams = iUmsMemberRegisterParamService.list(new QueryWrapper<UmsMemberRegisterParam>().eq("category",category ));
-        return new CommonResult<>().success("查询成功");
+        return new CommonResult<>().success(umsMemberRegisterParams);
     }
 
     @ApiOperation("查询用户详情")
@@ -201,7 +209,18 @@ public class UmsMemberController extends ApiBaseAction {
     public CommonResult<UmsMember> queryUmsMemberDetail(){
         Long userId = UserUtils.getCurrentUmsMember().getId();//会员用户id
         UmsMember umsMember = memberService.getById(userId);
-        return new CommonResult<>().success("查询成功");
+        return new CommonResult<>().success(umsMember);
+    }
+
+    @ApiOperation("查询搭配师详情")
+    @RequestMapping(value = "/queryUserMatchDetail")
+    @ResponseBody
+    public CommonResult<SysUser> queryUserMatchDetail(){
+        Long userId = UserUtils.getCurrentUmsMember().getId();//会员用户id
+        UmsMember umsMember = memberService.getById(userId);
+        Long userMatchId = umsMember.getMatchUserId();
+        SysUser sysUser = iSysUserService.getById(userMatchId);
+        return new CommonResult<>().success(sysUser);
     }
 
 

@@ -10,13 +10,13 @@ import com.zscat.mallplus.mbg.pms.entity.PmsSkuStock;
  */
 public class PmsSkuStockVo extends PmsSkuStock{
 
-    private PmsProduct pmsProduct;
+    private PmsProductResult pmsProductResult;
 
-    public PmsProduct getPmsProduct() {
-        return pmsProduct;
+    public PmsProductResult getPmsProductResult() {
+        return pmsProductResult;
     }
 
-    public void setPmsProduct(PmsProduct pmsProduct) {
-        this.pmsProduct = pmsProduct;
+    public void setPmsProductResult(PmsProductResult pmsProductResult) {
+        this.pmsProductResult = pmsProductResult;
     }
 }

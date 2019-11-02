@@ -14,6 +14,7 @@ import com.zscat.mallplus.mbg.pms.entity.PmsProduct;
 import com.zscat.mallplus.mbg.pms.entity.PmsProductMatchLibrary;
 import com.zscat.mallplus.mbg.pms.entity.PmsProductUserMatchLibrary;
 import com.zscat.mallplus.mbg.pms.vo.PmsProductMatchLibraryVo;
+import com.zscat.mallplus.mbg.pms.vo.PmsProductResult;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.IdGeneratorUtil;
 import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
@@ -82,10 +83,30 @@ public class PmsProductMatchController {
             pmsProductMatchLibrary.setMatchOwer(MagicConstant.MATCH_OWER_PERSON);
         }
         if(iPmsProductMatchLibraryService.saveOrUpdate(pmsProductMatchLibrary)){
-            if(memberId != null){
-                PmsProductUserMatchLibrary pmsProductUserMatchLibrary = MatchLibraryAssemble.assembleUserMatchLibrary(memberId,pmsProductMatchLibrary);
-                iPmsProductUserMatchLibraryService.save(pmsProductUserMatchLibrary);
-            }
+            return new CommonResult().success("操作成功");
+        }
+        return  new CommonResult<>().failed("操作失败");
+    }
+
+
+    @IgnoreAuth
+    @SysLog(MODULE = "pms", REMARK = "加入到用户库中")
+    @ApiOperation("加入到用户库中")
+    @RequestMapping(value = "/saveMatchLibrary4User", method = RequestMethod.POST)
+    @PreAuthorize("hasAuthority('pms:PmsBrand:read')")
+    public CommonResult<PmsProductUserMatchLibrary> saveMatchLibrary4User(@ApiParam("用户搭配库") String pmsProductUserMatchLibraryStr,
+                                                                                   @ApiParam("用户id") Long memberId) {
+        PmsProductUserMatchLibrary pmsProductUserMatchLibrary = JsonUtil.jsonToPojo(pmsProductUserMatchLibraryStr, PmsProductUserMatchLibrary.class);
+        String skuIds = pmsProductUserMatchLibrary.getSkuIds();
+        pmsProductUserMatchLibrary.setId(IdGeneratorUtil.getIdGeneratorUtil().nextId());
+        pmsProductUserMatchLibrary.setUserId(memberId);
+        pmsProductUserMatchLibrary.setMatchUserId(UserUtils.getCurrentMember().getId());
+        pmsProductUserMatchLibrary.setUpdateTime(new Date());
+        pmsProductUserMatchLibrary.setCreateTime(new Date());
+        if(StringUtils.isEmpty(pmsProductUserMatchLibrary.getMatchType())){
+            pmsProductUserMatchLibrary.setMatchType(MagicConstant.MATCH_TYPE_COMBIN);
+        }
+        if(iPmsProductUserMatchLibraryService.save(pmsProductUserMatchLibrary)){
             return new CommonResult().success("操作成功");
         }
         return  new CommonResult<>().failed("操作失败");
@@ -110,8 +131,13 @@ public class PmsProductMatchController {
                 String productIds = pmsProductMatchLibrary.getProductIds();
                 if(!StringUtils.isEmpty(productIds)){
                     String[] productArray = productIds.split(",");
+                    List<PmsProductResult> pmsProductResults = new ArrayList<>();
+                    for(String productId:productArray){
+                        PmsProductResult pmsProductResult = iPmsProductService.getUpdateInfo(Long.valueOf(productId));
+                        pmsProductResults.add(pmsProductResult);
+                    }
                     List<PmsProduct> pmsProducts= (List<PmsProduct>) iPmsProductService.listByIds(Arrays.asList(productArray));
-                    pmsProductMatchLibraryVo.setPmsProducts(pmsProducts);
+                    pmsProductMatchLibraryVo.setPmsProductResults(pmsProductResults);
                     pmsProductMatchLibraryVo.setPmsProductMatchLibrary(pmsProductMatchLibrary);
                     pmsProductMatchLibraryVos.add(pmsProductMatchLibraryVo);
                 }

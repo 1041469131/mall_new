@@ -254,4 +254,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             adminRoleRelationService.saveBatch(list);
         }
     }
+
+    @Override
+    public SysUser getRandomSysUser() {
+        return adminMapper.getRandomSysUser();
+    }
+
+
 }

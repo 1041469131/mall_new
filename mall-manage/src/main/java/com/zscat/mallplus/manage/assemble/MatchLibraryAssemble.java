@@ -8,6 +8,7 @@ import com.zscat.mallplus.mbg.pms.entity.PmsProductMatchLibrary;
 import com.zscat.mallplus.mbg.pms.entity.PmsProductUserMatchLibrary;
 import com.zscat.mallplus.mbg.pms.entity.PmsSkuStock;
 import com.zscat.mallplus.mbg.pms.vo.PmsProductMatchLibraryVo;
+import com.zscat.mallplus.mbg.pms.vo.PmsProductResult;
 import com.zscat.mallplus.mbg.pms.vo.PmsSkuStockVo;
 import com.zscat.mallplus.mbg.utils.IdGeneratorUtil;
 import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
@@ -74,8 +75,8 @@ public class MatchLibraryAssemble {
                     PmsSkuStockVo pmsSkuStockVo = new PmsSkuStockVo();
                     BeanUtils.copyProperties(pmsSkuStock, pmsSkuStockVo);
                     Long productId = pmsSkuStock.getProductId();
-                    PmsProduct pmsProduct = iPmsProductService.getById(productId);
-                    pmsSkuStockVo.setPmsProduct(pmsProduct);
+                    PmsProductResult pmsProductResult = iPmsProductService.getUpdateInfo(productId);
+                    pmsSkuStockVo.setPmsProductResult(pmsProductResult);
                     pmsSkuStockVos.add(pmsSkuStockVo);
                 }
             }

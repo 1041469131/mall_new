@@ -17,7 +17,7 @@ import java.util.List;
 public class PmsProductMatchLibraryVo {
 
     @ApiModelProperty("商品信息")
-    private List<PmsProduct> pmsProducts;
+    private List<PmsProductResult> pmsProductResults;
 
     @ApiModelProperty("搭配库信息")
     private PmsProductMatchLibrary pmsProductMatchLibrary;
@@ -27,15 +27,6 @@ public class PmsProductMatchLibraryVo {
 
     @ApiModelProperty("sku相关属性的查询")
     private List<PmsSkuStockVo> pmsSkuStockVos;
-
-
-    public List<PmsProduct> getPmsProducts() {
-        return pmsProducts;
-    }
-
-    public void setPmsProducts(List<PmsProduct> pmsProducts) {
-        this.pmsProducts = pmsProducts;
-    }
 
     public PmsProductMatchLibrary getPmsProductMatchLibrary() {
         return pmsProductMatchLibrary;
@@ -59,5 +50,13 @@ public class PmsProductMatchLibraryVo {
 
     public void setPmsSkuStockVos(List<PmsSkuStockVo> pmsSkuStockVos) {
         this.pmsSkuStockVos = pmsSkuStockVos;
+    }
+
+    public List<PmsProductResult> getPmsProductResults() {
+        return pmsProductResults;
+    }
+
+    public void setPmsProductResults(List<PmsProductResult> pmsProductResults) {
+        this.pmsProductResults = pmsProductResults;
     }
 }

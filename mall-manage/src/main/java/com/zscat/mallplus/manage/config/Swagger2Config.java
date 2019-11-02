@@ -29,8 +29,8 @@ public class Swagger2Config {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("mall后台系统")
-                .description("mall后台模块")
+                .title("mall系统")
+                .description("mall模块")
                 .contact("zscat")
                 .version("1.0")
                 .build();

@@ -35,4 +35,10 @@ public interface ISysUserService extends IService<SysUser> {
     List<SysPermission> listUserPerms(Long id);
 
     void removePermissRedis(Long id);
+
+    /**
+     * 随机获取系统用户
+     * @return
+     */
+    SysUser getRandomSysUser();
 }

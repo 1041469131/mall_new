@@ -66,4 +66,10 @@ public interface IUmsMemberService extends IService<UmsMember> {
     String refreshToken(String token);
 
     Object register(UmsMember umsMember);
+
+    /**
+     * 随机获取一条用户信息
+     * @return
+     */
+    UmsMember getRandomUmsMember();
 }

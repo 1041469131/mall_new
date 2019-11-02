@@ -13,4 +13,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface UmsMemberMapper extends BaseMapper<UmsMember> {
 
+    UmsMember getRandomUmsMember();
+
 }

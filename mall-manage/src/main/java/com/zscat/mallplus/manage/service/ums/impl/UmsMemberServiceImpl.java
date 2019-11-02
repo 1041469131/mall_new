@@ -227,7 +227,6 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
             }
 
             Map<String, Object> resultObj = new HashMap<String, Object>();
-            //
             //获取openid
             String requestUrl = this.getWebAccess(code);//通过自定义工具类组合出小程序需要的登录凭证 code
 
@@ -353,5 +352,11 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
     //替换字符串
     public String getUserMessage(String access_token, String openid) {
         return String.format(wxAppletProperties.getUserMessage(), access_token, openid);
+    }
+
+
+    @Override
+    public UmsMember getRandomUmsMember() {
+        return memberMapper.getRandomUmsMember();
     }
 }

@@ -191,6 +191,12 @@ public class UmsMember implements Serializable {
     @ApiModelProperty(value = "全身照")
     private String bodyUrl;
 
+    @ApiModelProperty(value = "是否已完成 0-未完成 1-已完成")
+    private String isComplete;
+
+    @ApiModelProperty(value = "搭配师id")
+    private Long matchUserId;
+
     private static final long serialVersionUID = 1L;
 
     public Long getId() {
@@ -559,5 +565,21 @@ public class UmsMember implements Serializable {
 
     public void setBodyUrl(String bodyUrl) {
         this.bodyUrl = bodyUrl;
+    }
+
+    public String getIsComplete() {
+        return isComplete;
+    }
+
+    public void setIsComplete(String isComplete) {
+        this.isComplete = isComplete;
+    }
+
+    public Long getMatchUserId() {
+        return matchUserId;
+    }
+
+    public void setMatchUserId(Long matchUserId) {
+        this.matchUserId = matchUserId;
     }
 }

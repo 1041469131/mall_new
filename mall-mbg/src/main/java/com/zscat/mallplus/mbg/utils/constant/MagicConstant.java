@@ -126,4 +126,13 @@ public class MagicConstant {
     public final static Integer OMS_TRADE_STATUS_FAILD = 0;
     public final static Integer OMS_TRADE_STATUS_SUCCESS = 1;
 
+    /*******用户来源 1 小程序 2 公众号 3 页面 ***/
+    public final static Integer MEMBER_SOURCE_TYPE_SMALLPROG = 1;
+    public final static Integer MEMBER_SOURCE_TYPE_PUBLICNO = 2;
+    public final static Integer MEMBER_SOURCE_TYPE_WEBPAGE = 3;
+
+    /****是否已完成 0-未完成 1-已完成*****/
+    public final static String UMS_IS_COMPLETE_NO = "0";
+    public final static String UMS_IS_COMPLETE_DONE = "1";
+
 }

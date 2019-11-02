@@ -10,6 +10,7 @@ import com.zscat.mallplus.manage.utils.UserUtils;
 import com.zscat.mallplus.mbg.pms.entity.PmsProduct;
 import com.zscat.mallplus.mbg.pms.entity.PmsProductUserMatchLibrary;
 import com.zscat.mallplus.mbg.pms.entity.PmsSkuStock;
+import com.zscat.mallplus.mbg.pms.vo.PmsProductResult;
 import com.zscat.mallplus.mbg.pms.vo.PmsSkuStockVo;
 import com.zscat.mallplus.mbg.ums.entity.UmsCollect;
 import com.zscat.mallplus.mbg.utils.CommonResult;
@@ -126,8 +127,8 @@ public class UmsCollectController extends ApiBaseAction {
                     for(PmsSkuStock pmsSkuStock:pmsSkuStocks ){
                         PmsSkuStockVo pmsSkuStockVo = new PmsSkuStockVo();
                         BeanUtils.copyProperties(pmsSkuStock, pmsSkuStockVo);
-                        PmsProduct pmsProduct = iPmsProductService.getById(pmsSkuStock.getProductId());
-                        pmsSkuStockVo.setPmsProduct(pmsProduct);
+                        PmsProductResult pmsProductResult = iPmsProductService.getUpdateInfo(pmsSkuStock.getProductId());
+                        pmsSkuStockVo.setPmsProductResult(pmsProductResult);
                         pmsSkuStockVos.add(pmsSkuStockVo);
                     }
                 }

@@ -100,7 +100,7 @@
     </resultMap>
 
     <select id="getUpdateInfo" resultMap="updateInfoMap">
-        SELECT *,
+        SELECT p.*,
         pc.parent_id cateParentId,
         l.id ladder_id,l.product_id ladder_product_id,l.discount ladder_discount,l.count ladder_count,l.price
         ladder_price,
