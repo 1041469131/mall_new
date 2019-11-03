@@ -131,8 +131,8 @@ public class OmsCartItemServiceImpl extends ServiceImpl<OmsCartItemMapper, OmsCa
         OmsCartItem cartItem = new OmsCartItem();
         cartItem.setQuantity(quantity);
         QueryWrapper example = new QueryWrapper();
-        example.eq("deleteStatus",0);
-        example.eq("memberId",memberId);
+        example.eq("delete_status",0);
+        example.eq("member_id",memberId);
         example.eq("id", id);
 
         return cartItemMapper.update(cartItem, example);
@@ -463,8 +463,9 @@ public class OmsCartItemServiceImpl extends ServiceImpl<OmsCartItemMapper, OmsCa
                     omsCartItemList = new ArrayList<>();
                     omsCartItemList.add(omsCartItem);
                     cartItemMap.put(brandName, omsCartItemList);
+                }else{
+                    omsCartItemList.add(omsCartItem);
                 }
-                omsCartItemList.add(omsCartItem);
             }
         }
         return cartItemMap;

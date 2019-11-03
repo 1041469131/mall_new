@@ -154,9 +154,11 @@ public class PmsProductMatchController {
     public CommonResult recommend2User(@ApiParam("搭配id和skuid组合，格式为[{\"1\":\"2\"},{\"3\":\"4\"}]") @Param("matchParam") String matchParam,
                                        @ApiParam("推荐的类别 0-未推荐 1-推荐") @Param("recommendType") String recommendType,
                                        @ApiParam("会员id") @Param("userId") String userId) {
+        matchParam = matchParam.replace("<<<","[");
+        matchParam = matchParam.replace(">>>","]");
         List<Object> matchParamList = JsonUtil.readJsonList(matchParam, Map.class);
-        if(CollectionUtils.isEmpty(matchParamList)){
-            List<PmsProductUserMatchLibrary> pmsProductUserMatchLibraries = null;
+        if(!CollectionUtils.isEmpty(matchParamList)){
+            List<PmsProductUserMatchLibrary> pmsProductUserMatchLibraries = new ArrayList<>();
             for(Object object:matchParamList){
                 Map<String,String> matchMap = (Map<String,String>)object;//搭配对应的商品和sku的组合的map
                 for(String matchId:matchMap.keySet()){

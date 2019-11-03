@@ -30,10 +30,9 @@ import java.util.Map;
 @Api(tags = "OmsCartItemController", description = "购物车管理")
 @RequestMapping("/api/cart")
 public class OmsCartItemController {
+
     @Autowired
     private IOmsCartItemService cartItemService;
-    @Autowired
-    private IUmsMemberService memberService;
 
     @Autowired
     private IPmsSkuStockService pmsSkuStockService;
@@ -91,9 +90,16 @@ public class OmsCartItemController {
     @ResponseBody
     public Object updateQuantity(@RequestParam Long id,
                                  @RequestParam Integer quantity) {
-        int count = cartItemService.updateQuantity(id, UserUtils.getCurrentUmsMember().getId(), quantity);
-        if (count > 0) {
-            return new CommonResult().success("修改数量成功");
+        OmsCartItem omsCartItem = cartItemService.getById(id);
+        if(omsCartItem != null){
+            PmsSkuStock pmsSkuStock = pmsSkuStockService.getById(omsCartItem.getProductSkuId());
+            if(pmsSkuStock.getStock() < quantity){
+                return new CommonResult<>().failed("库存数量不足");
+            }
+            int count = cartItemService.updateQuantity(id, UserUtils.getCurrentUmsMember().getId(), quantity);
+            if (count > 0) {
+                return new CommonResult().success("修改数量成功");
+            }
         }
         return new CommonResult().failed();
     }

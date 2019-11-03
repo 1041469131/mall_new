@@ -92,7 +92,7 @@ public class WebLogAspect {
      * 根据方法和传入的参数获取请求参数
      */
     private Object getParameter(Method method, Object[] args) {
-        List<Object> argList = new ArrayList<>();
+       List<Object> argList = new ArrayList<>();
         Parameter[] parameters = method.getParameters();
         for (int i = 0; i < parameters.length; i++) {
             RequestBody requestBody = parameters[i].getAnnotation(RequestBody.class);

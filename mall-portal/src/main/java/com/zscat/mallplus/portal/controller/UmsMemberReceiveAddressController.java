@@ -105,9 +105,9 @@ public class UmsMemberReceiveAddressController extends ApiBaseAction {
     }
     @IgnoreAuth
     @ApiOperation("显示所有收货地址")
-    @RequestMapping(value = "/getItemDefautl", method = RequestMethod.GET)
+    @RequestMapping(value = "/getItemDefaut", method = RequestMethod.GET)
     @ResponseBody
-    public Object getItemDefautl() {
+    public Object getItemDefaut() {
         UmsMemberReceiveAddress address = memberReceiveAddressService.getDefaultItem();
         return new CommonResult().success(address);
     }
