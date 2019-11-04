@@ -21,7 +21,7 @@ public class PmsProductUserMatchLibrary implements Serializable {
 
     /**搭配id*/
     @TableField("match_id")
-    @ApiModelProperty(value = "match_id")
+    @ApiModelProperty(value = "搭配师的搭配id，如果有的话就传，没有的话就不传")
     private Long matchId;
 
     /**sku编号组合，多个用逗号隔开*/
@@ -46,37 +46,37 @@ public class PmsProductUserMatchLibrary implements Serializable {
 
     /**搭配师id*/
     @TableField("match_user_id")
-    @ApiModelProperty(value = "搭配师id")
+    @ApiModelProperty(value = "搭配师id,不传")
     private Long matchUserId;
 
     /**用户id*/
     @TableField("user_id")
-    @ApiModelProperty(value = "用户id")
+    @ApiModelProperty(value = "用户id，会员id必传")
     private Long userId;
 
     /**搭配的系列 0-组合 1-系列*/
     @TableField("match_type")
-    @ApiModelProperty(value = "搭配的系列 0-组合 1-系列")
+    @ApiModelProperty(value = "搭配的系列 0-组合 1-系列，不用传")
     private String matchType;
 
     /**收藏的状态 0-为推荐 1-已推荐*/
     @TableField("recommend_type")
-    @ApiModelProperty(value = "收藏的状态 0-为推荐 1-已推荐")
+    @ApiModelProperty(value = "收藏的状态 0-为推荐 1-已推荐，不传后台默认为0")
     private String recommendType;
 
     /**收藏的状态 0-为推荐 1-已推荐*/
     @TableField("favor_type")
-    @ApiModelProperty(value = "是否喜欢 0-不喜欢 1-喜欢")
+    @ApiModelProperty(value = "是否喜欢 0-不喜欢 1-喜欢，不传后台默认为0")
     private String favorType;
 
     /**更新时间*/
     @TableField("update_time")
-    @ApiModelProperty(value = "更新时间")
+    @ApiModelProperty(value = "更新时间,不需要传")
     private Date updateTime;
 
     /**创建时间*/
     @TableField("create_time")
-    @ApiModelProperty(value = "创建时间")
+    @ApiModelProperty(value = "创建时间,不需要传")
     private Date createTime;
 
     private static final long serialVersionUID = 1L;
