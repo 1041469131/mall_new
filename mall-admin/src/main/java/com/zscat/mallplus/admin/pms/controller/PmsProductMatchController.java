@@ -27,10 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
@@ -62,9 +59,8 @@ public class PmsProductMatchController {
     @ApiOperation("保存或者更新搭配库信息")
     @RequestMapping(value = "/saveOrUpdate", method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('pms:PmsBrand:read')")
-    public CommonResult<PmsProductMatchLibrary> saveOrUpdatePmsProductMatchLibrary(@ApiParam("搭配库") @Param("pmsProductMatchLibraryStr") String pmsProductMatchLibraryStr) {
+    public CommonResult<PmsProductMatchLibrary> saveOrUpdatePmsProductMatchLibrary(@ApiParam("搭配库") @RequestBody PmsProductMatchLibrary pmsProductMatchLibrary) {
         Long userId = UserUtils.getCurrentMember().getId();
-        PmsProductMatchLibrary pmsProductMatchLibrary = JsonUtil.jsonToPojo(pmsProductMatchLibraryStr, PmsProductMatchLibrary.class);
         Long id = pmsProductMatchLibrary.getId();
         if(id == null){
             pmsProductMatchLibrary.setId(IdGeneratorUtil.getIdGeneratorUtil().nextId());
@@ -73,6 +69,9 @@ public class PmsProductMatchController {
             pmsProductMatchLibrary.setCreateTime(new Date());
         }else{
             pmsProductMatchLibrary.setUpdateTime(new Date());
+        }
+        if(StringUtils.isEmpty(pmsProductMatchLibrary.getCollectStatus())){
+            pmsProductMatchLibrary.setCollectStatus(MagicConstant.COLLECT_STATUS_YES);
         }
         if(StringUtils.isEmpty(pmsProductMatchLibrary.getMatchType())){
             pmsProductMatchLibrary.setMatchType(MagicConstant.MATCH_TYPE_COMBIN);
@@ -92,8 +91,7 @@ public class PmsProductMatchController {
     @ApiOperation("加入到用户库中")
     @RequestMapping(value = "/saveOrUpdate4User", method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('pms:PmsBrand:read')")
-    public CommonResult<PmsProductUserMatchLibrary> saveMatchLibrary4User(@ApiParam("用户搭配库") String pmsProductUserMatchLibraryStr) {
-        PmsProductUserMatchLibrary pmsProductUserMatchLibrary = JsonUtil.jsonToPojo(pmsProductUserMatchLibraryStr, PmsProductUserMatchLibrary.class);
+    public CommonResult<PmsProductUserMatchLibrary> saveMatchLibrary4User(@ApiParam("用户搭配库") @RequestBody PmsProductUserMatchLibrary pmsProductUserMatchLibrary) {
         if(pmsProductUserMatchLibrary.getId() == null){
             pmsProductUserMatchLibrary.setId(IdGeneratorUtil.getIdGeneratorUtil().nextId());
             pmsProductUserMatchLibrary.setCreateTime(new Date());
@@ -215,7 +213,9 @@ public class PmsProductMatchController {
         Long userId = UserUtils.getCurrentMember().getId();
         List<PmsProductUserMatchLibrary> pmsProductUserMatchLibraries = iPmsProductUserMatchLibraryService.list(new QueryWrapper<PmsProductUserMatchLibrary>().
                 eq("match_user_id", userId).eq("user_id", memberId).orderByAsc("update_time"));
-        List<PmsProductMatchLibraryVo> pmsProductMatchLibraryVos = MatchLibraryAssemble.assembleUserMatchLibrary(pmsProductUserMatchLibraries);
+        List<PmsProductMatchLibraryVo> pmsProductMatchLibraryVos = MatchLibraryAssemble.assembleUserMatchLibrary
+
+                (pmsProductUserMatchLibraries);
         return  new CommonResult<>().success(pmsProductMatchLibraryVos);
     }
 
