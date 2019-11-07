@@ -213,9 +213,7 @@ public class PmsProductMatchController {
         Long userId = UserUtils.getCurrentMember().getId();
         List<PmsProductUserMatchLibrary> pmsProductUserMatchLibraries = iPmsProductUserMatchLibraryService.list(new QueryWrapper<PmsProductUserMatchLibrary>().
                 eq("match_user_id", userId).eq("user_id", memberId).orderByAsc("update_time"));
-        List<PmsProductMatchLibraryVo> pmsProductMatchLibraryVos = MatchLibraryAssemble.assembleUserMatchLibrary
-
-                (pmsProductUserMatchLibraries);
+        List<PmsProductMatchLibraryVo> pmsProductMatchLibraryVos = MatchLibraryAssemble.assembleUserMatchLibrary(pmsProductUserMatchLibraries);
         return  new CommonResult<>().success(pmsProductMatchLibraryVos);
     }
 
