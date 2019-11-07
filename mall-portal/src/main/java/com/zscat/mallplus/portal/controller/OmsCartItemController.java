@@ -43,7 +43,6 @@ public class OmsCartItemController {
     @ResponseBody
     public Object addCart(@RequestParam(value = "id", defaultValue = "0") Long id,
                           @RequestParam(value = "count", defaultValue = "1") Integer count) {
-        UmsMember umsMember = UserUtils.getCurrentUmsMember();
         PmsSkuStock pmsSkuStock = pmsSkuStockService.getById(id);
         if (pmsSkuStock != null && (pmsSkuStock.getStock()-pmsSkuStock.getLockStock()) > 0) {
             OmsCartItem cartItem = new OmsCartItem();
@@ -126,12 +125,12 @@ public class OmsCartItemController {
     @ApiOperation("删除购物车中的某个商品")
     @RequestMapping(value = "/delete")
     @ResponseBody
-    public Object delete(String cart_id_list) {
-        if (StringUtils.isEmpty(cart_id_list)){
+    public Object delete(String cartIdList) {
+        if (StringUtils.isEmpty(cartIdList)){
             return new CommonResult().failed("参数为空");
         }
-        List<Long> resultList = new ArrayList<>(cart_id_list.split(",").length);
-        for (String s : cart_id_list.split(",")) {
+        List<Long> resultList = new ArrayList<>(cartIdList.split(",").length);
+        for (String s : cartIdList.split(",")) {
             resultList.add(Long.valueOf(s));
         }
         int count = cartItemService.delete(UserUtils.getCurrentUmsMember().getId(), resultList);
