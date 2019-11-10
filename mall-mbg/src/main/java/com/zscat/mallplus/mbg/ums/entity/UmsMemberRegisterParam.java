@@ -50,6 +50,10 @@ public class UmsMemberRegisterParam implements Serializable {
     @ApiModelProperty(value = "创建时间")
     private Date createTime;
 
+    /**父id*/
+    @ApiModelProperty(value = "父id")
+    private Long parentId;
+
     private static final long serialVersionUID = 1L;
 
     public Long getId() {
@@ -116,22 +120,11 @@ public class UmsMemberRegisterParam implements Serializable {
         this.createTime = createTime;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
-        sb.append(", name=").append(name);
-        sb.append(", url=").append(url);
-        sb.append(", type=").append(type);
-        sb.append(", typeDescr=").append(typeDescr);
-        sb.append(", typeInput=").append(typeInput);
-        sb.append(", updateTime=").append(updateTime);
-        sb.append(", createTime=").append(createTime);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
-        sb.append("]");
-        return sb.toString();
+    public Long getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Long parentId) {
+        this.parentId = parentId;
     }
 }

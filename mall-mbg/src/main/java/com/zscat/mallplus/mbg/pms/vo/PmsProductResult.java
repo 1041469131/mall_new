@@ -9,14 +9,14 @@ public class PmsProductResult extends PmsProductParam {
     //商品所选分类的父id
     private Long cateParentId;
 
-    private  int  is_favorite ;// 1 已收藏 2 未收藏
+    private  String  favoriteType ;// 1 已收藏 2 未收藏
 
-    public int getIs_favorite() {
-        return is_favorite;
+    public String getFavoriteType() {
+        return favoriteType;
     }
 
-    public void setIs_favorite(int is_favorite) {
-        this.is_favorite = is_favorite;
+    public void setFavoriteType(String favoriteType) {
+        this.favoriteType = favoriteType;
     }
 
     public Long getCateParentId() {

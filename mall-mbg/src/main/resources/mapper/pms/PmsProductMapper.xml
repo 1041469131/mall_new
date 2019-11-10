@@ -77,6 +77,7 @@
     <resultMap id="updateInfoMap" type="com.zscat.mallplus.mbg.pms.vo.PmsProductResult"
                extends="BaseResultMap">
         <result column="cateParentId" jdbcType="BIGINT" property="cateParentId"/>
+        <result column="favor_type" jdbcType="VARCHAR" property="favoriteType"/>
         <collection property="productLadderList" columnPrefix="ladder_"
                     resultMap="com.zscat.mallplus.mbg.pms.mapper.PmsProductLadderMapper.BaseResultMap">
         </collection>
@@ -100,7 +101,7 @@
     </resultMap>
 
     <select id="getUpdateInfo" resultMap="updateInfoMap">
-        SELECT p.*,
+        SELECT p.*,c.favor_type,
         pc.parent_id cateParentId,
         l.id ladder_id,l.product_id ladder_product_id,l.discount ladder_discount,l.count ladder_count,l.price
         ladder_price,
@@ -117,6 +118,7 @@
         LEFT JOIN pms_product_full_reduction pf ON pf.product_id=p.id
         LEFT JOIN pms_member_price m ON m.product_id = p.id
         LEFT JOIN pms_sku_stock s ON s.product_id = p.id
+        LEFT JOIN ums_collect c ON c.assembly_id=s.id
         LEFT JOIN pms_product_attribute_value a ON a.product_id=p.id
         WHERE p.id=#{id};
     </select>

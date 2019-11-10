@@ -195,14 +195,6 @@ public class UmsMemberController extends ApiBaseAction {
     }
 
 
-    @ApiOperation("查询注册参数接口")
-    @RequestMapping(value = "/queryRegisterParam")
-    @ResponseBody
-    public CommonResult<List<UmsMemberRegisterParam>> queryRegisterParam(@ApiParam("类别,aspect-体貌特征;dressStyle-穿衣风格;dressColour-穿搭色系;neverDressStyle-永远都不会穿的款式;neverDressIcon-永远都不会穿的图案;rightLining-合适面料;enjoy_model-喜欢的版型;skuBudget-单品预算;neverDressStyle-永远都不会穿的款式;careClothes-您更在意衣服的;balanceBody-平衡身材问题") String category) {
-        List<UmsMemberRegisterParam> umsMemberRegisterParams = iUmsMemberRegisterParamService.list(new QueryWrapper<UmsMemberRegisterParam>().eq("category",category ));
-        return new CommonResult<>().success(umsMemberRegisterParams);
-    }
-
     @ApiOperation("查询用户详情")
     @RequestMapping(value = "/queryUmsMemberDetail")
     @ResponseBody
@@ -221,6 +213,30 @@ public class UmsMemberController extends ApiBaseAction {
         Long userMatchId = umsMember.getMatchUserId();
         SysUser sysUser = iSysUserService.getById(userMatchId);
         return new CommonResult<>().success(sysUser);
+    }
+
+    @ApiOperation("查询注册参数接口")
+    @RequestMapping(value = "/queryRegisterParam")
+    @ResponseBody
+    public CommonResult<List<UmsMemberRegisterParam>> queryRegisterParam(@ApiParam("类别,aspect-体貌特征;dressStyle-穿衣风格;dressColour-穿搭色系;neverDressStyle-永远都不会穿的款式;neverDressIcon-永远都不会穿的图案;rightLining-合适面料;enjoy_model-喜欢的版型;skuBudget-单品预算;neverDressStyle-永远都不会穿的款式;careClothes-您更在意衣服的;balanceBody-平衡身材问题") String category) {
+        List<UmsMemberRegisterParam> umsMemberRegisterParams = iUmsMemberRegisterParamService.list(new QueryWrapper<UmsMemberRegisterParam>().eq("category",category ));
+        return new CommonResult<>().success(umsMemberRegisterParams);
+    }
+
+    @ApiOperation("查询行业列表")
+    @RequestMapping(value = "/listIndustry")
+    @ResponseBody
+    public CommonResult<List<UmsMemberRegisterParam>> listIndustry() {
+        List<UmsMemberRegisterParam> umsMemberRegisterParams = iUmsMemberRegisterParamService.list(new QueryWrapper<UmsMemberRegisterParam>().eq("category","industry" ));
+        return new CommonResult<>().success(umsMemberRegisterParams);
+    }
+
+    @ApiOperation("根据父id查询职业")
+    @RequestMapping(value = "/listProfession")
+    @ResponseBody
+    public CommonResult<List<UmsMemberRegisterParam>> listProfession(Long parentId) {
+        List<UmsMemberRegisterParam> umsMemberRegisterParams = iUmsMemberRegisterParamService.list(new QueryWrapper<UmsMemberRegisterParam>().eq("parent_id",parentId ));
+        return new CommonResult<>().success(umsMemberRegisterParams);
     }
 
 

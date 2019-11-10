@@ -60,51 +60,22 @@ public class UmsCollectController extends ApiBaseAction {
     @ApiOperation("保存用户收藏")
     @PostMapping(value = "/saveOrUpdate")
     @ResponseBody
-    public CommonResult<UmsCollect> saveOrUpdateCollect(@ApiParam("用户收藏对象") String umsCollectParam) {
-        UmsCollect umsCollect = JsonUtil.jsonToPojo(umsCollectParam, UmsCollect.class);
+    public CommonResult<UmsCollect> saveOrUpdateCollect(@ApiParam("用户收藏对象") UmsCollect umsCollect) {
         UmsCollect umsCollectOld = iUmsCollectService.getOne(new QueryWrapper<UmsCollect>().eq("assembly_id", umsCollect.getAssemblyId()).
                 eq("member_id", UserUtils.getCurrentUmsMember().getId()));
+        umsCollect.setUpdateTime(new Date());
         if(umsCollectOld == null){
             umsCollect.setCreateTime(new Date());
             umsCollect.setId(IdGeneratorUtil.getIdGeneratorUtil().nextId());
             umsCollect.setMemberId(UserUtils.getCurrentUmsMember().getId());
         }else{
-            umsCollectOld.setFavorType(umsCollect.getFavorType());
-            umsCollectOld.setUpdateTime(new Date());
+            umsCollect.setId(umsCollectOld.getId());
         }
 
-        if(iUmsCollectService.saveOrUpdate(umsCollectOld)){
-            if(umsCollect.getType() == MagicConstant.FAVOR_TYPE_MATCH_LIBRARY){
-                PmsProductUserMatchLibrary pmsProductUserMatchLibrary = new PmsProductUserMatchLibrary();
-                pmsProductUserMatchLibrary.setId(umsCollect.getAssemblyId());
-                pmsProductUserMatchLibrary.setFavorType(umsCollect.getFavorType());
-                iPmsProductUserMatchLibraryService.updateById(pmsProductUserMatchLibrary);
-            }
+        if(iUmsCollectService.saveOrUpdate(umsCollect)){
             return new CommonResult<>().success("操作成功");
         }
         return new CommonResult().failed("操作失败");
-    }
-
-
-    @ApiOperation("更改用户的收藏状态")
-    @PostMapping(value = "/updateCollectStatus")
-    @ResponseBody
-    public CommonResult<UmsCollect> updateCollectStatus(@ApiParam("用户的收藏id")@Param("collectId")String collectId,
-                                                        @ApiParam("喜欢的类型 0-不喜欢 1-喜欢")@Param("favorType")String favorType,
-                                                        @ApiParam("不喜欢的原因")@Param("disLikeReason")String disLikeReason) {
-        UmsCollect umsCollect = iUmsCollectService.getById(Long.valueOf(collectId));
-        umsCollect.setUpdateTime(new Date());
-        umsCollect.setFavorType(favorType);
-        if(iUmsCollectService.updateById(umsCollect)){
-            if(umsCollect.getType() == MagicConstant.FAVOR_TYPE_MATCH_LIBRARY){
-                PmsProductUserMatchLibrary pmsProductUserMatchLibrary = new PmsProductUserMatchLibrary();
-                pmsProductUserMatchLibrary.setId(umsCollect.getAssemblyId());
-                pmsProductUserMatchLibrary.setFavorType(umsCollect.getFavorType());
-                iPmsProductUserMatchLibraryService.updateById(pmsProductUserMatchLibrary);
-            }
-            return new CommonResult<>().success("修改收藏状态操作成功");
-        }
-        return new CommonResult().failed("修改收藏状态操作失败");
     }
 
     @ApiOperation("查询我喜欢的页面列表")
@@ -141,8 +112,4 @@ public class UmsCollectController extends ApiBaseAction {
         }
         return new CommonResult().success(umsCollects);
     }
-
-
-
-
 }

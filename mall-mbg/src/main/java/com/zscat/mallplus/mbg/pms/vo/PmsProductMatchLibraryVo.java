@@ -28,6 +28,9 @@ public class PmsProductMatchLibraryVo {
     @ApiModelProperty("sku相关属性的查询")
     private List<PmsSkuStockVo> pmsSkuStockVos;
 
+    @ApiModelProperty("喜欢的类型 0-不喜欢 1-喜欢")
+    private String userMatchLibaryFavorType;
+
     public PmsProductMatchLibrary getPmsProductMatchLibrary() {
         return pmsProductMatchLibrary;
     }
@@ -58,5 +61,13 @@ public class PmsProductMatchLibraryVo {
 
     public void setPmsProductResults(List<PmsProductResult> pmsProductResults) {
         this.pmsProductResults = pmsProductResults;
+    }
+
+    public String getUserMatchLibaryFavorType() {
+        return userMatchLibaryFavorType;
+    }
+
+    public void setUserMatchLibaryFavorType(String userMatchLibaryFavorType) {
+        this.userMatchLibaryFavorType = userMatchLibaryFavorType;
     }
 }

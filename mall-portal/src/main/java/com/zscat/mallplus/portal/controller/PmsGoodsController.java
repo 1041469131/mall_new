@@ -138,10 +138,23 @@ public class PmsGoodsController {
         if (productResult != null) {
             UmsCollect umsCollect = iUmsCollectService.getOne(new QueryWrapper<UmsCollect>().eq("member_id", umsMember.getId()).eq("assembly_id",productResult.getId() ));
             if(umsCollect != null){
-                productResult.setIs_favorite(Integer.valueOf(umsCollect.getFavorType()));
+                productResult.setFavoriteType(umsCollect.getFavorType());
             }
         }
         return new CommonResult().success(productResult);
+    }
+
+    @IgnoreAuth
+    @GetMapping(value = "/product/queryProductDetailBySkuId")
+    @ApiOperation("根据skuid查看商品详情")
+    public Object queryProductDetailBySkuId(Long skuId) {
+        PmsSkuStock pmsSkuStock = iPmsSkuStockService.getById(skuId);
+        if(pmsSkuStock != null){
+            PmsSkuStockVo pmsSkuStockVo = MatchLibraryAssemble.getPmsSkuStockVo(pmsSkuStock);
+            return new CommonResult().success(pmsSkuStockVo);
+        }
+        return new CommonResult().failed("查询失败");
+
     }
 
 

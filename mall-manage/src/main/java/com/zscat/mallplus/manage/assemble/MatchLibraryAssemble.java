@@ -1,7 +1,9 @@
 package com.zscat.mallplus.manage.assemble;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zscat.mallplus.manage.service.pms.IPmsProductService;
 import com.zscat.mallplus.manage.service.pms.IPmsSkuStockService;
+import com.zscat.mallplus.manage.service.ums.IUmsCollectService;
 import com.zscat.mallplus.manage.utils.SpringContextHolder;
 import com.zscat.mallplus.mbg.pms.entity.PmsProduct;
 import com.zscat.mallplus.mbg.pms.entity.PmsProductMatchLibrary;
@@ -10,6 +12,7 @@ import com.zscat.mallplus.mbg.pms.entity.PmsSkuStock;
 import com.zscat.mallplus.mbg.pms.vo.PmsProductMatchLibraryVo;
 import com.zscat.mallplus.mbg.pms.vo.PmsProductResult;
 import com.zscat.mallplus.mbg.pms.vo.PmsSkuStockVo;
+import com.zscat.mallplus.mbg.ums.entity.UmsCollect;
 import com.zscat.mallplus.mbg.utils.IdGeneratorUtil;
 import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
 import org.apache.commons.collections.CollectionUtils;
@@ -31,9 +34,12 @@ public class MatchLibraryAssemble {
 
     static IPmsProductService iPmsProductService;
 
+    static IUmsCollectService iUmsCollectService;
+
     static {
         iPmsSkuStockService = SpringContextHolder.getBean(IPmsSkuStockService.class);
         iPmsProductService = SpringContextHolder.getBean(IPmsProductService.class);
+        iUmsCollectService = SpringContextHolder.getBean(IUmsCollectService.class);
     }
 
     /**
@@ -60,6 +66,11 @@ public class MatchLibraryAssemble {
      */
     public static PmsProductMatchLibraryVo assembleSingleUserMatchLibrary(PmsProductUserMatchLibrary pmsProductUserMatchLibrary){
         PmsProductMatchLibraryVo pmsProductMatchLibraryVo = new PmsProductMatchLibraryVo();
+        Long userMatchLiraryId = pmsProductUserMatchLibrary.getId();
+        UmsCollect umsCollect = iUmsCollectService.getOne(new QueryWrapper<UmsCollect>().eq("assembly_id",userMatchLiraryId));
+        if(umsCollect != null){
+            pmsProductMatchLibraryVo.setUserMatchLibaryFavorType(umsCollect.getFavorType());
+        }
         String skuIds = pmsProductUserMatchLibrary.getSkuIds();
         if(!StringUtils.isEmpty(skuIds)){
             String[] skuIdArrays = skuIds.split(",");
@@ -72,11 +83,7 @@ public class MatchLibraryAssemble {
             if(!CollectionUtils.isEmpty(pmsSkuStocks)){
                 pmsSkuStockVos = new ArrayList<>();
                 for(PmsSkuStock pmsSkuStock:pmsSkuStocks){
-                    PmsSkuStockVo pmsSkuStockVo = new PmsSkuStockVo();
-                    BeanUtils.copyProperties(pmsSkuStock, pmsSkuStockVo);
-                    Long productId = pmsSkuStock.getProductId();
-                    PmsProductResult pmsProductResult = iPmsProductService.getUpdateInfo(productId);
-                    pmsSkuStockVo.setPmsProductResult(pmsProductResult);
+                    PmsSkuStockVo pmsSkuStockVo = getPmsSkuStockVo(pmsSkuStock);
                     pmsSkuStockVos.add(pmsSkuStockVo);
                 }
             }
@@ -142,5 +149,14 @@ public class MatchLibraryAssemble {
         pmsProductUserMatchLibrary.setTitlePicUrl(pmsProductMatchLibrary.getTitlePicUrl());
         pmsProductUserMatchLibrary.setUserId(memberId);
         return pmsProductUserMatchLibrary;
+    }
+
+    public static PmsSkuStockVo getPmsSkuStockVo(PmsSkuStock pmsSkuStock) {
+        PmsSkuStockVo pmsSkuStockVo = new PmsSkuStockVo();
+        BeanUtils.copyProperties(pmsSkuStock, pmsSkuStockVo);
+        Long productId = pmsSkuStock.getProductId();
+        PmsProductResult pmsProductResult = iPmsProductService.getUpdateInfo(productId);
+        pmsSkuStockVo.setPmsProductResult(pmsProductResult);
+        return pmsSkuStockVo;
     }
 }
