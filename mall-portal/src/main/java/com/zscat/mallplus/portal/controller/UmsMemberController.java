@@ -223,6 +223,7 @@ public class UmsMemberController extends ApiBaseAction {
         return new CommonResult<>().success(umsMemberRegisterParams);
     }
 
+    @IgnoreAuth
     @ApiOperation("查询行业列表")
     @RequestMapping(value = "/listIndustry")
     @ResponseBody
@@ -231,6 +232,7 @@ public class UmsMemberController extends ApiBaseAction {
         return new CommonResult<>().success(umsMemberRegisterParams);
     }
 
+    @IgnoreAuth
     @ApiOperation("根据父id查询职业")
     @RequestMapping(value = "/listProfession")
     @ResponseBody
