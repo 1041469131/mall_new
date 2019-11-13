@@ -37,6 +37,9 @@ public class UmsMemberVo extends UmsMember {
     @ApiModelProperty("体貌特征名称")
     private String aspectName;
 
+    @ApiModelProperty("更在意衣服的")
+    private String careClothes;
+
     public String getDressTypeName() {
         return dressTypeName;
     }
@@ -107,5 +110,15 @@ public class UmsMemberVo extends UmsMember {
 
     public void setAspectName(String aspectName) {
         this.aspectName = aspectName;
+    }
+
+    @Override
+    public String getCareClothes() {
+        return careClothes;
+    }
+
+    @Override
+    public void setCareClothes(String careClothes) {
+        this.careClothes = careClothes;
     }
 }

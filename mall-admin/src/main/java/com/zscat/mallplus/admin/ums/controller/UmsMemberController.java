@@ -185,6 +185,8 @@ public class UmsMemberController {
             umsMemberVo.setItemBudgetName(dealUserTag(itemBudget));
             String balanceBody = umsMember.getBalanceBody();//平衡身体
             umsMemberVo.setBalanceBodyName(dealUserTag(balanceBody));
+            String careClothes = umsMember.getCareClothes();//更在意衣服
+            umsMemberVo.setCareClothes(dealUserTag(careClothes));
             umsMemberVos.add(umsMemberVo);
         }
     }

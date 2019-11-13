@@ -197,6 +197,9 @@ public class UmsMember implements Serializable {
     @ApiModelProperty(value = "搭配师id")
     private Long matchUserId;
 
+    @ApiModelProperty(value = "更在意衣服的")
+    private String careClothes;
+
     private static final long serialVersionUID = 1L;
 
     public Long getId() {
@@ -581,5 +584,13 @@ public class UmsMember implements Serializable {
 
     public void setMatchUserId(Long matchUserId) {
         this.matchUserId = matchUserId;
+    }
+
+    public String getCareClothes() {
+        return careClothes;
+    }
+
+    public void setCareClothes(String careClothes) {
+        this.careClothes = careClothes;
     }
 }
