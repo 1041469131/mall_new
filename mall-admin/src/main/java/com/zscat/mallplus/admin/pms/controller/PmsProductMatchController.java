@@ -113,9 +113,6 @@ public class PmsProductMatchController {
             pmsProductUserMatchLibrary.setRecommendType(MagicConstant.RECOMMEND_TYPE_NO);
         }
 
-        if(StringUtils.isEmpty(pmsProductUserMatchLibrary.getFavorType())){
-            pmsProductUserMatchLibrary.setFavorType(MagicConstant.FAVOR_TYPE_DISLIKE);
-        }
         if(iPmsProductUserMatchLibraryService.saveOrUpdate(pmsProductUserMatchLibrary)){
             return new CommonResult().success("操作成功");
         }
