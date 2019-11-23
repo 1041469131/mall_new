@@ -120,7 +120,7 @@
         LEFT JOIN pms_sku_stock s ON s.product_id = p.id
         LEFT JOIN ums_collect c ON c.assembly_id=s.id
         LEFT JOIN pms_product_attribute_value a ON a.product_id=p.id
-        WHERE p.id=#{id};
+        WHERE p.id=#{id}
     </select>
     <select id="selectSubjectProductRelationByProductId"
             resultMap="com.zscat.mallplus.mbg.pms.mapper.CmsSubjectProductRelationMapper.BaseResultMap">

@@ -181,8 +181,8 @@ public class UmsMemberController {
             umsMemberVo.setSuiteLiningName(dealUserTag(suiteLining));
             String enjoyModel = umsMember.getEnjoyModel();//喜欢的版型
             umsMemberVo.setEnjoyModelName(dealUserTag(enjoyModel));
-            String itemBudget = umsMember.getItemBudget();//单品的预算
-            umsMemberVo.setItemBudgetName(dealUserTag(itemBudget));
+//            String itemBudget = umsMember.getItemBudget();//单品的预算
+//            umsMemberVo.setItemBudgetName(dealUserTag(itemBudget));
             String balanceBody = umsMember.getBalanceBody();//平衡身体
             umsMemberVo.setBalanceBodyName(dealUserTag(balanceBody));
             String careClothes = umsMember.getCareClothes();//更在意衣服

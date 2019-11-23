@@ -156,6 +156,10 @@ public class MatchLibraryAssemble {
         BeanUtils.copyProperties(pmsSkuStock, pmsSkuStockVo);
         Long productId = pmsSkuStock.getProductId();
         PmsProductResult pmsProductResult = iPmsProductService.getUpdateInfo(productId);
+        UmsCollect umsCollect = iUmsCollectService.getOne(new QueryWrapper<UmsCollect>().eq("assembly_id",pmsSkuStock.getId()));
+        if(umsCollect != null){
+            pmsProductResult.setFavoriteType(umsCollect.getFavorType());
+        }
         pmsSkuStockVo.setPmsProductResult(pmsProductResult);
         return pmsSkuStockVo;
     }
