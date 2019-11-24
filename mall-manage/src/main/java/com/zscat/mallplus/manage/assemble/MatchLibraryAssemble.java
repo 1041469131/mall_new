@@ -69,7 +69,7 @@ public class MatchLibraryAssemble {
         Long userMatchLiraryId = pmsProductUserMatchLibrary.getId();
         UmsCollect umsCollect = iUmsCollectService.getOne(new QueryWrapper<UmsCollect>().eq("assembly_id",userMatchLiraryId));
         if(umsCollect != null){
-            pmsProductMatchLibraryVo.setUserMatchLibaryFavorType(umsCollect.getFavorType());
+            pmsProductUserMatchLibrary.setFavorType(umsCollect.getFavorType());
         }
         String skuIds = pmsProductUserMatchLibrary.getSkuIds();
         if(!StringUtils.isEmpty(skuIds)){
