@@ -1,6 +1,7 @@
 package com.zscat.mallplus.portal.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.zscat.mallplus.manage.assemble.MatchLibraryAssemble;
 import com.zscat.mallplus.manage.service.pms.IPmsProductService;
 import com.zscat.mallplus.manage.service.pms.IPmsProductUserMatchLibraryService;
 import com.zscat.mallplus.manage.service.pms.IPmsSkuStockService;
@@ -10,6 +11,7 @@ import com.zscat.mallplus.manage.utils.UserUtils;
 import com.zscat.mallplus.mbg.pms.entity.PmsProduct;
 import com.zscat.mallplus.mbg.pms.entity.PmsProductUserMatchLibrary;
 import com.zscat.mallplus.mbg.pms.entity.PmsSkuStock;
+import com.zscat.mallplus.mbg.pms.vo.PmsProductMatchLibraryVo;
 import com.zscat.mallplus.mbg.pms.vo.PmsProductResult;
 import com.zscat.mallplus.mbg.pms.vo.PmsSkuStockVo;
 import com.zscat.mallplus.mbg.ums.entity.UmsCollect;
@@ -90,7 +92,7 @@ public class UmsCollectController extends ApiBaseAction {
             for(UmsCollect umsCollect:umsCollects){
                 assemblyIds.add(umsCollect.getAssemblyId());
             }
-            if(MagicConstant.FAVOR_TYPE_PRODUCT.equals(type)){//商品
+            if(String.valueOf(MagicConstant.FAVOR_TYPE_PRODUCT).equals(type)){//商品
                 List<PmsSkuStock> pmsSkuStocks = (List<PmsSkuStock>)iPmsSkuStockService.listByIds(assemblyIds);
                 List<PmsSkuStockVo> pmsSkuStockVos = null;
                 if(!CollectionUtils.isEmpty(pmsSkuStocks)){
@@ -105,9 +107,10 @@ public class UmsCollectController extends ApiBaseAction {
                 }
                 return new CommonResult().success(pmsSkuStockVos);
             }
-            if(MagicConstant.FAVOR_TYPE_MATCH_LIBRARY.equals(type)){//搭配
+            if(String.valueOf(MagicConstant.FAVOR_TYPE_MATCH_LIBRARY).equals(type)){//搭配
                 List<PmsProductUserMatchLibrary> pmsProductUserMatchLibraries = (List<PmsProductUserMatchLibrary>)iPmsProductUserMatchLibraryService.listByIds(assemblyIds);
-                return new CommonResult().success(pmsProductUserMatchLibraries);
+                List<PmsProductMatchLibraryVo> pmsProductMatchLibraryVos = MatchLibraryAssemble.assembleUserMatchLibrary(pmsProductUserMatchLibraries);
+                return new CommonResult().success(pmsProductMatchLibraryVos);
             }
         }
         return new CommonResult().success(umsCollects);

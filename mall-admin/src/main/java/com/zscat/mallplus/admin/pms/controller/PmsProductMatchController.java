@@ -168,15 +168,15 @@ public class PmsProductMatchController {
     @ApiOperation("删除用户搭配库")
     @PostMapping(value = "/deleteUserMatchLibraryById")
     @PreAuthorize("hasAuthority('pms:PmsBrand:read')")
-    public CommonResult deleteUserMatchLibraryById(@ApiParam("用户搭配库id") Long matchId) {
-        PmsProductUserMatchLibrary pmsProductUserMatchLibrary = iPmsProductUserMatchLibraryService.getById(matchId);
-        if(MagicConstant.RECOMMEND_TYPE_YES.equals(pmsProductUserMatchLibrary.getRecommendType())){
-            return new CommonResult().failed("该用户是已推荐的状态不能删除");
+    public CommonResult deleteUserMatchLibraryById(@ApiParam("用户搭配库id") String matchIds) {
+        String[] matchIdStrs = matchIds.split(",");
+        List<Long> matchIdList = new ArrayList<>();
+        for(String matchId:matchIdStrs){
+            matchIdList.add(Long.valueOf(matchId));
         }
-        iPmsProductUserMatchLibraryService.removeById(matchId);
+        iPmsProductUserMatchLibraryService.removeByIds(matchIdList);
         return new CommonResult().success("成功删除该搭配库");
     }
-
 
     @IgnoreAuth
     @SysLog(MODULE = "pms", REMARK = "修改用户搭配库推荐状态")
@@ -209,7 +209,7 @@ public class PmsProductMatchController {
     public CommonResult<List<PmsProductMatchLibraryVo>> listUserMatchLibaray(@ApiParam("用户id") Long memberId) {
         Long userId = UserUtils.getCurrentMember().getId();
         List<PmsProductUserMatchLibrary> pmsProductUserMatchLibraries = iPmsProductUserMatchLibraryService.list(new QueryWrapper<PmsProductUserMatchLibrary>().
-                eq("match_user_id", userId).eq("user_id", memberId).orderByAsc("update_time"));
+                eq("match_user_id", userId).eq("user_id", memberId).orderByDesc("update_time"));
         List<PmsProductMatchLibraryVo> pmsProductMatchLibraryVos = MatchLibraryAssemble.assembleUserMatchLibrary(pmsProductUserMatchLibraries);
         return  new CommonResult<>().success(pmsProductMatchLibraryVos);
     }
@@ -225,6 +225,9 @@ public class PmsProductMatchController {
         PmsProductMatchLibrary pmsProductMatchLibrary = MatchLibraryAssemble.assembleMatchLibrary(pmsProductUserMatchLibrary);
         iPmsProductMatchLibraryService.save(pmsProductMatchLibrary);
         return  new CommonResult<>().success();
+    }
+
+    private void removeUserMatchLibraryById(String matchId) {
     }
 
 }

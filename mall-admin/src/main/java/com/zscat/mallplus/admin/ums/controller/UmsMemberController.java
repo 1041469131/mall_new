@@ -203,11 +203,14 @@ public class UmsMemberController {
         StringBuffer stringBuffer = new StringBuffer();
         for(String userTagId:tagIds){
             UmsMemberRegisterParam umsMemberRegisterParam = iUmsMemberRegisterParamService.getById(Long.valueOf(userTagId));
-            stringBuffer.append(umsMemberRegisterParam.getName()+",");
+            if(umsMemberRegisterParam != null){
+                stringBuffer.append(umsMemberRegisterParam.getName()+",");
+            }
         }
-        stringBuffer.deleteCharAt(stringBuffer.length() - 1);
+        if(!StringUtils.isEmpty(stringBuffer.toString())){
+            stringBuffer.deleteCharAt(stringBuffer.length() - 1);
+        }
         return stringBuffer.toString();
     }
-
 
 }

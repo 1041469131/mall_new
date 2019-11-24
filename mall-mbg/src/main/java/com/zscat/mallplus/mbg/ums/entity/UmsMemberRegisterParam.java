@@ -50,6 +50,10 @@ public class UmsMemberRegisterParam implements Serializable {
     @ApiModelProperty(value = "创建时间")
     private Date createTime;
 
+    /**排序序号*/
+    @ApiModelProperty(value = "排序序号")
+    private Integer orderNum;
+
     /**父id*/
     @ApiModelProperty(value = "父id")
     private Long parentId;
@@ -126,5 +130,13 @@ public class UmsMemberRegisterParam implements Serializable {
 
     public void setParentId(Long parentId) {
         this.parentId = parentId;
+    }
+
+    public Integer getOrderNum() {
+        return orderNum;
+    }
+
+    public void setOrderNum(Integer orderNum) {
+        this.orderNum = orderNum;
     }
 }
