@@ -240,7 +240,7 @@ public class AppletMemberController extends ApiBaseAction {
                     status2++;
                 }
                 if (consult.getStatus() == 3) {
-                    status2++;
+                    status3++;
                 }
                 if (consult.getStatus() == 4) {
                     status4++;
