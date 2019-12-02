@@ -84,24 +84,31 @@ public class PayController extends ApiBaseAction {
      * 获取支付的请求参数
      */
     @SysLog(MODULE = "pay", REMARK = "获取支付的请求参数")
-    @ApiOperation("获取支付的请求参数,当在购物车里面进行支付的时候，id传入supplyId（相当于一个父订单）")
+    @ApiOperation("获取支付的请求参数,当在购物车里面进行支付的时候，id等于supplyId（相当于一个父订单），isParentOrder=0,当在我的订单中待付款的时候id等于id(订单的id)，isParentOrder=1")
     @GetMapping("prepay")
-    public Object payPrepay(@RequestParam(value = "id", required = false, defaultValue = "0") Long id) {
+    public Object payPrepay(@RequestParam(value = "id", required = false, defaultValue = "0") Long id, String isParentOrder) {
         UmsMember user = UserUtils.getCurrentUmsMember();
         OmsOrder orderInfo = null;
         List<OmsOrder> orderList = null;
         BigDecimal totalFee = BigDecimal.ZERO;
         String orderSn = "";
-        orderList = orderService.list(new QueryWrapper<OmsOrder>().eq("supply_id",id));
-        if(!CollectionUtils.isEmpty(orderList)){
-            for(OmsOrder omsOrder:orderList){
-                totalFee = totalFee.add(omsOrder.getPayAmount());
+        if(MagicConstant.IS_NOT_PARENT.equals(isParentOrder)){
+            orderInfo = orderService.getById(id);
+            totalFee = orderInfo.getPayAmount();
+            orderSn = orderInfo.getOrderSn();
+        }else {
+            orderList = orderService.list(new QueryWrapper<OmsOrder>().eq("supply_id",id));
+            if(!CollectionUtils.isEmpty(orderList)){
+                for(OmsOrder omsOrder:orderList){
+                    totalFee = totalFee.add(omsOrder.getPayAmount());
+                }
             }
+            orderSn = String.valueOf(id);
         }
-        orderSn = String.valueOf(id);
 
         String nonceStr = CharUtil.getRandomString(32);
 
+        //https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=7_7&index=3
         Map<Object, Object> resultObj = new TreeMap();
 
         try {
@@ -113,18 +120,18 @@ public class PayController extends ApiBaseAction {
             log.info("xml:" + xml);
             Map<String, Object> resultUn = XmlUtil.xmlStrToMap(WechatUtil.requestOnce(wxAppletProperties.getUniformorder(), xml));
             // 响应报文
-            String returnCode = MapUtils.getString("return_code", resultUn);
+            String return_code = MapUtils.getString("return_code", resultUn);
             String return_msg = MapUtils.getString("return_msg", resultUn);
             //
-            if (returnCode.equalsIgnoreCase("FAIL")) {
+            if (return_code.equalsIgnoreCase("FAIL")) {
                 return toResponsFail("支付失败," + return_msg);
-            } else if (returnCode.equalsIgnoreCase("SUCCESS")) {
+            } else if (return_code.equalsIgnoreCase("SUCCESS")) {
                 // 返回数据
-                String resultCode = MapUtils.getString("result_code", resultUn);
+                String result_code = MapUtils.getString("result_code", resultUn);
                 String err_code_des = MapUtils.getString("err_code_des", resultUn);
-                if (resultCode.equalsIgnoreCase("FAIL")) {
+                if (result_code.equalsIgnoreCase("FAIL")) {
                     return toResponsFail("支付失败," + err_code_des);
-                } else if (resultCode.equalsIgnoreCase("SUCCESS")) {
+                } else if (result_code.equalsIgnoreCase("SUCCESS")) {
                     String prepay_id = MapUtils.getString("prepay_id", resultUn);
                     // 先生成paySign 参考https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=7_7&index=5
                     resultObj.put("appId", wxAppletProperties.getAppId());
@@ -134,10 +141,14 @@ public class PayController extends ApiBaseAction {
                     resultObj.put("signType", "MD5");
                     String paySign = WechatUtil.arraySign(resultObj, wxAppletProperties.getPaySignKey());
                     resultObj.put("paySign", paySign);
-                    orderList = orderService.list(new QueryWrapper<OmsOrder>().eq("supply_id",id));
-                    if(!CollectionUtils.isEmpty(orderList)){
-                        for(OmsOrder omsOrder:orderList){
-                            updateOmsOrder(omsOrder,prepay_id);
+                    if(MagicConstant.IS_NOT_PARENT.equals(isParentOrder)){
+                        updateOmsOrder(orderInfo,prepay_id);
+                    }else {
+                        orderList = orderService.list(new QueryWrapper<OmsOrder>().eq("supply_id",id));
+                        if(!CollectionUtils.isEmpty(orderList)){
+                            for(OmsOrder omsOrder:orderList){
+                                updateOmsOrder(omsOrder,prepay_id);
+                            }
                         }
                     }
                     return toResponsObject(200, "微信统一订单下单成功", resultObj);
