@@ -2,15 +2,18 @@ package com.zscat.mallplus.admin.cms.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zscat.mallplus.manage.service.cms.ICmsHelpCategoryService;
 import com.zscat.mallplus.manage.service.cms.ICmsHelpService;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.cms.entity.CmsHelp;
+import com.zscat.mallplus.mbg.cms.entity.CmsHelpCategory;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.ValidatorUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,6 +35,9 @@ import java.util.List;
 public class CmsHelpController {
     @Resource
     private ICmsHelpService ICmsHelpService;
+
+    @Autowired
+    private ICmsHelpCategoryService iCmsHelpCategoryService;
 
     @SysLog(MODULE = "cms", REMARK = "根据条件查询所有帮助表列表")
     @ApiOperation("根据条件查询所有帮助表列表")
@@ -90,7 +96,15 @@ public class CmsHelpController {
             if (ValidatorUtils.empty(id)) {
                 return new CommonResult().paramFailed("帮助表id");
             }
+            CmsHelp cmsHelp = ICmsHelpService.getById(id);
             if (ICmsHelpService.removeById(id)) {
+                if(cmsHelp != null){
+                    CmsHelpCategory category = iCmsHelpCategoryService.getById(cmsHelp.getCategoryId());
+                    if(category.getHelpCount() - 1 > 0){
+                        category.setHelpCount(category.getHelpCount() - 1);
+                        iCmsHelpCategoryService.updateById(category);
+                    }
+                }
                 return new CommonResult().success();
             }
         } catch (Exception e) {

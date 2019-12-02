@@ -12,9 +12,30 @@
         <result column="sort" property="sort" />
     </resultMap>
 
+    <resultMap id="cmsHelpCategory" type="com.zscat.mallplus.mbg.cms.vo.CmsHelpCategoryVO" autoMapping="true">
+        <collection property="cmsHelps" columnPrefix="help_" resultMap="com.zscat.mallplus.mbg.cms.mapper.CmsHelpMapper.BaseResultMap">
+        </collection>
+    </resultMap>
+
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, name, icon, help_count, show_status, sort
     </sql>
+
+    <select id="getCartProduct" resultMap="cartProductMap">
+        SELECT
+        p.id id,
+        p.`name` name,
+        p.icon,
+        p.help_count,
+        p.show_status,
+        p.sort,
+        pa.id, pa.category_id, pa.icon, pa.title, pa.show_status, pa.create_time, pa.read_count, pa.content
+        FROM
+        cms_help_category p
+        LEFT JOIN cms_help pa ON p.id = pa.category_id
+        ORDER BY p.sort desc
+    </select>
+
 
 </mapper>

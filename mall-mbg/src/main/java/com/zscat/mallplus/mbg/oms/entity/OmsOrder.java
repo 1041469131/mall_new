@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -32,13 +34,16 @@ public class OmsOrder implements Serializable {
      * 订单id
      */
     @TableId(value = "id", type = IdType.AUTO)
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
     @TableField("member_id")
     @ApiModelProperty("会员id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long memberId;
 
     @TableField("coupon_id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long couponId;
 
     /**
@@ -314,15 +319,18 @@ public class OmsOrder implements Serializable {
 
     @TableField("supply_id")
     @ApiModelProperty("父订单号")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long supplyId;
 
     @TableField("goods_id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long goodsId;
 
     @TableField("goods_name")
     private String goodsName;
 
     @TableField("school_id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long schoolId;
 
     @TableField("transaction_id")

@@ -2,6 +2,8 @@ package com.zscat.mallplus.mbg.ums.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -22,6 +24,8 @@ import java.util.Date;
 @TableName("ums_member")
 @ApiModel("会员类")
 public class UmsMember implements Serializable {
+
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
     private Long memberLevelId;
