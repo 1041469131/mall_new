@@ -2,6 +2,9 @@ package com.zscat.mallplus.mbg.cms.mapper;
 
 import com.zscat.mallplus.mbg.cms.entity.CmsHelpCategory;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.zscat.mallplus.mbg.cms.vo.CmsHelpCategoryVO;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface CmsHelpCategoryMapper extends BaseMapper<CmsHelpCategory> {
 
+    List<CmsHelpCategoryVO> getCartProduct();
 }

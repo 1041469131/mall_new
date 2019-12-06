@@ -22,7 +22,7 @@
         id, name, icon, help_count, show_status, sort
     </sql>
 
-    <select id="getCartProduct" resultMap="cartProductMap">
+    <select id="getCartProduct" resultMap="cmsHelpCategory">
         SELECT
         p.id id,
         p.`name` name,
@@ -30,7 +30,8 @@
         p.help_count,
         p.show_status,
         p.sort,
-        pa.id, pa.category_id, pa.icon, pa.title, pa.show_status, pa.create_time, pa.read_count, pa.content
+        pa.id as help_id, pa.category_id as help_category_id, pa.icon as help_icon, pa.title as help_title, pa.show_status as help_show_status, pa.create_time as help_create_time, pa.read_count help_read_count,
+        pa.content as help_content
         FROM
         cms_help_category p
         LEFT JOIN cms_help pa ON p.id = pa.category_id
