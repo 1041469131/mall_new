@@ -24,6 +24,7 @@
         <result column="luckey_count" jdbcType="INTEGER" property="luckeyCount" />
         <result column="history_integration" jdbcType="INTEGER" property="historyIntegration" />
         <result column="avatar" jdbcType="VARCHAR" property="avatar" />
+        <result column="session_key" jdbcType="VARCHAR" property="sessionKey" />
         <result column="weixin_openid" jdbcType="VARCHAR" property="weixinOpenid" />
         <result column="invitecode" jdbcType="BIGINT" property="invitecode" />
         <result column="blance" jdbcType="VARCHAR" property="blance" />
@@ -57,7 +58,7 @@
     <sql id="Base_Column_List">
         id, member_level_id, username, password, nickname, phone, status, create_time, icon,
         gender, birthday, city, job, personalized_signature, source_type, integration, growth,
-        luckey_count, history_integration, avatar, weixin_openid, invitecode, blance, school_id,
+        luckey_count, history_integration, avatar, session_key, weixin_openid, invitecode, blance, school_id,
         weight, height, shirt_size, pants_size, aspect, dress_style, dress_color, never_dress_style,
         never_dress_style_descr, never_dress_icon, never_dress_icon_descr, suite_lining,
         suite_lining_descr, enjoy_model, industry, item_budget, body_url, balance_body, balance_body_descr,

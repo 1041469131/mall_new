@@ -100,6 +100,8 @@ public class UmsMember implements Serializable {
 
     private String weixinOpenid;
 
+    private String sessionKey;
+
     private Long invitecode;
 
     /**余额*/
@@ -596,5 +598,13 @@ public class UmsMember implements Serializable {
 
     public void setCareClothes(String careClothes) {
         this.careClothes = careClothes;
+    }
+
+    public String getSessionKey() {
+        return sessionKey;
+    }
+
+    public void setSessionKey(String sessionKey) {
+        this.sessionKey = sessionKey;
     }
 }

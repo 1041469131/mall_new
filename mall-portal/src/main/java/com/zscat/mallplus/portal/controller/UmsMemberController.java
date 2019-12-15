@@ -15,9 +15,11 @@ import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.ValidatorUtils;
 import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
 import com.zscat.mallplus.portal.single.ApiBaseAction;
+import com.zscat.mallplus.portal.util.WechatDecryptDataUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.AuthenticationException;
@@ -240,6 +242,38 @@ public class UmsMemberController extends ApiBaseAction {
         List<UmsMemberRegisterParam> umsMemberRegisterParams = iUmsMemberRegisterParamService.list(new QueryWrapper<UmsMemberRegisterParam>().eq("parent_id",parentId ));
         return new CommonResult<>().success(umsMemberRegisterParams);
     }
+
+    @ApiOperation("判断手机号是否存在")
+    @RequestMapping(value = "/isExist4Phone")
+    @ResponseBody
+    public CommonResult<Boolean> isExist4Phone(String phoneNo) {
+        if(StringUtils.isEmpty(phoneNo)){
+            return new CommonResult<>().failed("手机号不能为空");
+        }
+        int count = memberService.count(new QueryWrapper<UmsMember>().eq("phone", phoneNo));
+        if(count > 0){
+            return new CommonResult<>().success(true);
+        }else{
+            return new CommonResult<>().success(false);
+        }
+    }
+
+    @ApiOperation("更新手机号")
+    @RequestMapping(value = "/updatePhoneNo")
+    @ResponseBody
+    public CommonResult<Boolean> updatePhoneNo(String encryptedData,String iv,String phone) {
+        UmsMember umsMember = UserUtils.getCurrentUmsMember();
+        if(StringUtils.isEmpty(encryptedData) && !StringUtils.isEmpty(phone)){
+            umsMember.setPhone(phone);
+        }else{
+            String phoneNo = WechatDecryptDataUtil.getPhoneNo(encryptedData, umsMember.getSessionKey(), iv);
+            umsMember.setPhone(phoneNo);
+        }
+        memberService.updateById(umsMember);
+        return new CommonResult<>().success();
+    }
+
+
 
 
 }

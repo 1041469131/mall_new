@@ -261,6 +261,7 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
                 }
                 // umsMember.setGender(Integer.parseInt(me.get("gender")));
                 umsMember.setNickname(me.get("nickName").toString());
+                umsMember.setSessionKey(sessionData.getString("session_key"));
 
                 memberMapper.insert(umsMember);
                 token = jwtTokenUtil.generateToken(umsMember.getUsername());
@@ -268,6 +269,8 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
                 resultObj.put("is_complete", "0");
             }else {
                 token = jwtTokenUtil.generateToken(userVo.getUsername());
+                userVo.setSessionKey(sessionData.getString("session_key"));
+                memberMapper.updateById(userVo);
                 resultObj.put("userId", userVo.getId());
                 resultObj.put("is_complete", userVo.getIsComplete());
             }
