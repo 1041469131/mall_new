@@ -6,6 +6,9 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+
 import java.io.Serializable;
 
 /**
@@ -22,15 +25,19 @@ public class OmsCartItem implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.AUTO)
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
     @TableField("product_id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long productId;
 
     @TableField("product_sku_id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long productSkuId;
 
     @TableField("member_id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long memberId;
 
     /**
@@ -110,6 +117,7 @@ public class OmsCartItem implements Serializable {
      * 商品分类
      */
     @TableField("product_category_id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long productCategoryId;
 
     @TableField("product_brand")

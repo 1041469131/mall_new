@@ -1,4 +1,5 @@
 package com.zscat.mallplus.portal.util;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -15,48 +16,40 @@ import java.util.Map;
  * @Date: 2019/12/15
  * @Description
  */
-public class KdniaoTrackQueryAPI {
-
+public class KdApiOrderDistinguish {
+    //DEMO
     public static void main(String[] args) {
-        KdniaoTrackQueryAPI api = new KdniaoTrackQueryAPI();
+        KdApiOrderDistinguish api = new KdApiOrderDistinguish();
         try {
-            String result = api.getOrderTracesByJson("ZTO", "75316225501267");
+            String result = api.getOrderTracesByJson("3967950525457");
             System.out.print(result);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
     //电商ID
     private String EBusinessID="1609168";
     //电商加密私钥，快递鸟提供，注意保管，不要泄漏
     private String AppKey="2ec80630-6ff6-4484-90d3-41d7efbc14f4";
     //请求url
-    private String ReqURL="http://api.kdniao.com/Ebusiness/EbusinessOrderHandle.aspx";
-
+    private String ReqURL="http://api.kdniao.cc/Ebusiness/EbusinessOrderHandle.aspx";
     /**
-     * Json方式 查询订单物流轨迹
+     * Json方式 单号识别
      * @throws Exception
      */
-    public String getOrderTracesByJson(String expCode, String expNo) throws Exception{
-        String requestData= "{'OrderCode':'','ShipperCode':'" + expCode + "','LogisticCode':'" + expNo + "'}";
-
+    public String getOrderTracesByJson(String expNo) throws Exception{
+        String requestData= "{'LogisticCode':'" + expNo + "'}";
         Map<String, String> params = new HashMap<String, String>();
         params.put("RequestData", urlEncoder(requestData, "UTF-8"));
         params.put("EBusinessID", EBusinessID);
-        params.put("RequestType", "1002");
+        params.put("RequestType", "2002");
         String dataSign=encrypt(requestData, AppKey, "UTF-8");
         params.put("DataSign", urlEncoder(dataSign, "UTF-8"));
         params.put("DataType", "2");
-
         String result=sendPost(ReqURL, params);
-
         //根据公司业务处理返回的信息......
-
         return result;
     }
-
     /**
      * MD5加密
      * @param str 内容
@@ -78,7 +71,6 @@ public class KdniaoTrackQueryAPI {
         }
         return sb.toString().toLowerCase();
     }
-
     /**
      * base64编码
      * @param str 内容
@@ -89,13 +81,11 @@ public class KdniaoTrackQueryAPI {
         String encoded = base64Encode(str.getBytes(charset));
         return encoded;
     }
-
     @SuppressWarnings("unused")
     private String urlEncoder(String str, String charset) throws UnsupportedEncodingException{
         String result = URLEncoder.encode(str, charset);
         return result;
     }
-
     /**
      * 电商Sign签名生成
      * @param content 内容
@@ -113,7 +103,6 @@ public class KdniaoTrackQueryAPI {
         }
         return base64(MD5(content, charset), charset);
     }
-
     /**
      * 向指定 URL 发送POST方法的请求
      * @param url 发送请求的 URL
@@ -185,8 +174,6 @@ public class KdniaoTrackQueryAPI {
         }
         return result.toString();
     }
-
-
     private static char[] base64EncodeChars = new char[] {
             'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
             'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
@@ -196,7 +183,6 @@ public class KdniaoTrackQueryAPI {
             'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
             'w', 'x', 'y', 'z', '0', '1', '2', '3',
             '4', '5', '6', '7', '8', '9', '+', '/' };
-
     public static String base64Encode(byte[] data) {
         StringBuffer sb = new StringBuffer();
         int len = data.length;
@@ -228,4 +214,5 @@ public class KdniaoTrackQueryAPI {
         }
         return sb.toString();
     }
+
 }
