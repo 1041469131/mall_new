@@ -72,6 +72,7 @@ public class MatchLibraryAssemble {
             pmsProductUserMatchLibrary.setFavorType(umsCollect.getFavorType());
         }
         String skuIds = pmsProductUserMatchLibrary.getSkuIds();
+        Long startTime1 = System.currentTimeMillis();
         if(!StringUtils.isEmpty(skuIds)){
             String[] skuIdArrays = skuIds.split(",");
             List<Long> skuIdList = new ArrayList<>();;
@@ -81,15 +82,18 @@ public class MatchLibraryAssemble {
             List<PmsSkuStock> pmsSkuStocks = (List<PmsSkuStock>)iPmsSkuStockService.listByIds(skuIdList);
             List<PmsSkuStockVo> pmsSkuStockVos = null;
             if(!CollectionUtils.isEmpty(pmsSkuStocks)){
+                Long time2 = System.currentTimeMillis();
                 pmsSkuStockVos = new ArrayList<>();
                 for(PmsSkuStock pmsSkuStock:pmsSkuStocks){
                     PmsSkuStockVo pmsSkuStockVo = getPmsSkuStockVo(pmsSkuStock);
                     pmsSkuStockVos.add(pmsSkuStockVo);
                 }
+                System.out.println("time2用时："+(System.currentTimeMillis()-time2));
             }
             pmsProductMatchLibraryVo.setPmsSkuStockVos(pmsSkuStockVos);
             pmsProductMatchLibraryVo.setPmsProductUserMatchLibrary(pmsProductUserMatchLibrary);
         }
+        System.out.println("time1用时："+(System.currentTimeMillis()-startTime1));
         return pmsProductMatchLibraryVo;
     }
 

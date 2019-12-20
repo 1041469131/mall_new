@@ -229,6 +229,7 @@ public class PmsGoodsController {
     public CommonResult<List<PmsProductMatchLibraryVo>> listRecommedProducts(@ApiParam("时长格式 就是数字类型 比如15")String periodDay) {
         Long userId = UserUtils.getCurrentUmsMember().getId();
         List<PmsProductUserMatchLibrary> pmsProductUserMatchLibraries = null;
+        Long startTime = System.currentTimeMillis();
         if(StringUtils.isEmpty(periodDay)){
             pmsProductUserMatchLibraries = iPmsProductUserMatchLibraryService.list(new QueryWrapper<PmsProductUserMatchLibrary>().
                     eq("user_id",userId).eq("recommend_type",MagicConstant.RECOMMEND_TYPE_YES).orderByDesc("create_time"));
@@ -238,7 +239,10 @@ public class PmsGoodsController {
                     eq("user_id",userId).eq("recommend_type",MagicConstant.RECOMMEND_TYPE_YES).between("create_time", new Date(), periodDate).
                     orderByDesc("create_time"));
         }
+        System.out.println("执行数据库的查询用时："+(System.currentTimeMillis()-startTime));
+        Long startTimeOther = System.currentTimeMillis();
         List<PmsProductMatchLibraryVo> pmsProductMatchLibraryVos = MatchLibraryAssemble.assembleUserMatchLibrary(pmsProductUserMatchLibraries);
+        System.out.println("执行完一些业务逻辑需要用时："+(System.currentTimeMillis()-startTimeOther));
         return new CommonResult().success(pmsProductMatchLibraryVos);
     }
 
