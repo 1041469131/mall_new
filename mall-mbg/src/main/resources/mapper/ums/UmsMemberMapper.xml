@@ -52,6 +52,7 @@
         <result column="is_complete" jdbcType="VARCHAR" property="isComplete" />
         <result column="match_user_id" jdbcType="BIGINT" property="matchUserId" />
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="is_register" jdbcType="VARCHAR" property="isRegister" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -62,7 +63,7 @@
         weight, height, shirt_size, pants_size, aspect, dress_style, dress_color, never_dress_style,
         never_dress_style_descr, never_dress_icon, never_dress_icon_descr, suite_lining,
         suite_lining_descr, enjoy_model, industry, item_budget, body_url, balance_body, balance_body_descr,
-        descr, is_complete, match_user_id, update_time
+        descr, is_complete, match_user_id, update_time,is_register
     </sql>
     
     <select id="getRandomUmsMember" resultMap="BaseResultMap">

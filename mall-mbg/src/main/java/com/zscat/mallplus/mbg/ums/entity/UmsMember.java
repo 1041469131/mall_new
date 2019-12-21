@@ -206,6 +206,9 @@ public class UmsMember implements Serializable {
     @ApiModelProperty(value = "更在意衣服的")
     private String careClothes;
 
+    @ApiModelProperty(value = "0-没有注册成功 1-注册成功")
+    private String isRegister;
+
     private static final long serialVersionUID = 1L;
 
     public Long getId() {
@@ -606,5 +609,13 @@ public class UmsMember implements Serializable {
 
     public void setSessionKey(String sessionKey) {
         this.sessionKey = sessionKey;
+    }
+
+    public String getIsRegister() {
+        return isRegister;
+    }
+
+    public void setIsRegister(String isRegister) {
+        this.isRegister = isRegister;
     }
 }
