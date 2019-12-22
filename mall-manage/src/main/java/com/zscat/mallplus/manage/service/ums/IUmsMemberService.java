@@ -39,7 +39,7 @@ public interface IUmsMemberService extends IService<UmsMember> {
     /**
      * 生成验证码
      */
-    CommonResult generateAuthCode(String telephone);
+    CommonResult generateAuthCode(String s, String accessKeyId, String telephone);
 
     /**
      * 修改密码
@@ -72,4 +72,6 @@ public interface IUmsMemberService extends IService<UmsMember> {
      * @return
      */
     UmsMember getRandomUmsMember();
+
+    Object loginByAuthCode(String telephone, String authCode);
 }

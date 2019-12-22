@@ -118,7 +118,7 @@ public class SingelHomeController {
     @RequestMapping(value = "/getAuthCode", method = RequestMethod.GET)
     @ResponseBody
     public Object getAuthCode(@RequestParam String telephone) {
-        return memberService.generateAuthCode(telephone);
+        return memberService.generateAuthCode(telephone, accessKeyId, telephone);
     }
 
     @ApiOperation("修改密码")

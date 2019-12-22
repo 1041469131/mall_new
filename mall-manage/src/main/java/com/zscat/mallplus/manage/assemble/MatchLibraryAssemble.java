@@ -52,7 +52,9 @@ public class MatchLibraryAssemble {
         if(!CollectionUtils.isEmpty(pmsProductUserMatchLibraries)){
             pmsProductMatchLibraryVos = new ArrayList<>();
             for(PmsProductUserMatchLibrary pmsProductUserMatchLibrary : pmsProductUserMatchLibraries){
-                    PmsProductMatchLibraryVo pmsProductMatchLibraryVo = assembleSingleUserMatchLibrary(pmsProductUserMatchLibrary);
+//                    PmsProductMatchLibraryVo pmsProductMatchLibraryVo = assembleSingleUserMatchLibrary(pmsProductUserMatchLibrary);
+                PmsProductMatchLibraryVo pmsProductMatchLibraryVo = new PmsProductMatchLibraryVo();
+                pmsProductMatchLibraryVo.setPmsProductUserMatchLibrary(pmsProductUserMatchLibrary);
                     pmsProductMatchLibraryVos.add(pmsProductMatchLibraryVo);
                 }
         }

@@ -143,7 +143,7 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
     }
 
     @Override
-    public CommonResult generateAuthCode(String telephone) {
+    public CommonResult generateAuthCode(String s, String accessKeyId, String telephone) {
         StringBuilder sb = new StringBuilder();
         Random random = new Random();
         for (int i = 0; i < 6; i++) {
@@ -363,5 +363,34 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
     @Override
     public UmsMember getRandomUmsMember() {
         return memberMapper.getRandomUmsMember();
+    }
+
+    @Override
+    public Object loginByAuthCode(String telephone, String authCode) {
+        Map<String, Object> resultObj = new HashMap<String, Object>();
+        //验证码绑定手机号并存储到redis
+        String oldAuthCode = redisService.get(REDIS_KEY_PREFIX_AUTH_CODE + telephone);
+        if(!authCode.equals(oldAuthCode)){
+            return new CommonResult().success("验证码填写不正确");
+        }
+
+        UmsMember userVo = this.getOne(new QueryWrapper<UmsMember>().eq("phone",telephone));
+        if(userVo == null){
+            return new CommonResult().success("改手机号还没有在系统注册");
+        }
+        String token = jwtTokenUtil.generateToken(userVo.getUsername());
+        resultObj.put("userId", userVo.getId());
+        resultObj.put("is_complete", userVo.getIsComplete());
+        if (StringUtils.isEmpty(token)) {
+            return new CommonResult<>().failed("登录失败");
+        }
+        resultObj.put("tokenHead", tokenHead);
+        resultObj.put("token", token);
+        Map<String, Object> me = new HashMap<>();
+        me.put("avatarUrl",userVo.getIcon());
+        me.put("gender",userVo.getGender());
+        me.put("nickName",userVo.getNickname());
+        resultObj.put("userInfo", me);
+        return new CommonResult<>().success(resultObj);
     }
 }

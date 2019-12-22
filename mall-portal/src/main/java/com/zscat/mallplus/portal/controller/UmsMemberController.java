@@ -48,6 +48,12 @@ public class UmsMemberController extends ApiBaseAction {
     @Value("${jwt.tokenHead}")
     private String tokenHead;
 
+    @Value("${send.sms.accessKeyId}")
+    private String accessKeyId;
+
+    @Value("${send.sms.accessSecret}")
+    private String accessSecret;
+
     @Autowired
     private ISysUserService iSysUserService;
 
@@ -90,8 +96,18 @@ public class UmsMemberController extends ApiBaseAction {
     @RequestMapping(value = "/getAuthCode", method = RequestMethod.GET)
     @ResponseBody
     public Object getAuthCode(@RequestParam String telephone) {
-        return memberService.generateAuthCode(telephone);
+        return memberService.generateAuthCode(telephone,accessKeyId, accessSecret);
     }
+
+    @ApiOperation("根据手机号和验证码进行登录")
+    @RequestMapping(value = "/loginByAuthCode", method = RequestMethod.GET)
+    @ResponseBody
+    public Object loginByAuthCode(@RequestParam String telephone,@RequestParam String authCode) {
+        return memberService.loginByAuthCode(telephone,authCode);
+    }
+
+
+
 
     @ApiOperation("修改密码")
     @RequestMapping(value = "/updatePassword", method = RequestMethod.POST)

@@ -252,7 +252,6 @@ public class PmsGoodsController {
     @RequestMapping(value = "/queryUserMatchLibrary", method = RequestMethod.GET)
     @ResponseBody
     public CommonResult<PmsProductMatchLibraryVo> queryUserMatchLibrary(@ApiParam("搭配id") String userMatchId) {
-        Long userId = UserUtils.getCurrentUmsMember().getId();
         PmsProductUserMatchLibrary  pmsProductUserMatchLibrary = iPmsProductUserMatchLibraryService.getById(Long.valueOf(userMatchId));
         PmsProductMatchLibraryVo pmsProductMatchLibraryVo = MatchLibraryAssemble.assembleSingleUserMatchLibrary(pmsProductUserMatchLibrary);
         return new CommonResult().success(pmsProductMatchLibraryVo);
