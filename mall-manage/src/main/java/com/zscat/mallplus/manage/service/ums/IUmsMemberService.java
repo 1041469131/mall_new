@@ -74,4 +74,6 @@ public interface IUmsMemberService extends IService<UmsMember> {
     UmsMember getRandomUmsMember();
 
     Object loginByAuthCode(String telephone, String authCode);
+
+    Object modifyPhoneByAuthCode(UmsMember umsMember, String phone, String authCode);
 }

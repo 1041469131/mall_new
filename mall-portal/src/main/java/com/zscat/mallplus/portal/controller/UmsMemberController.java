@@ -292,6 +292,16 @@ public class UmsMemberController extends ApiBaseAction {
         return new CommonResult<>().success();
     }
 
+    @ApiOperation("修改手机号")
+    @RequestMapping(value = "/modifyPhone")
+    @ResponseBody
+    public Object modifyPhoneByAuthCode(String phone,String authCode) {
+        UmsMember umsMember = UserUtils.getCurrentUmsMember();
+        return memberService.modifyPhoneByAuthCode(umsMember,phone,authCode);
+    }
+
+
+
 
 
 

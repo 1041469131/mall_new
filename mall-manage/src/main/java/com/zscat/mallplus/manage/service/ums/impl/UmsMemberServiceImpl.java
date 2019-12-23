@@ -141,6 +141,10 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
 
     @Override
     public CommonResult generateAuthCode(String telephone, String accessKeyId, String accessSecret, String templateCode) {
+        int count = this.count(new QueryWrapper<UmsMember>().eq("phone", telephone));
+        if(count > 0){
+            new CommonResult().failed("手机号存在");
+        }
         StringBuilder sb = new StringBuilder();
         Random random = new Random();
         String envir = SpringContextHolder.getActiveProfile();
@@ -396,5 +400,16 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
         me.put("nickName",userVo.getNickname());
         resultObj.put("userInfo", me);
         return new CommonResult<>().success(resultObj);
+    }
+
+    @Override
+    public Object modifyPhoneByAuthCode(UmsMember umsMember, String phone, String authCode) {
+        String oldAuthCode = redisService.get(REDIS_KEY_PREFIX_AUTH_CODE + phone);
+        if(!authCode.equals(oldAuthCode)){
+            return new CommonResult().failed("验证码填写不正确");
+        }
+        umsMember.setPhone(phone);
+        this.updateById(umsMember);
+        return new CommonResult().success();
     }
 }

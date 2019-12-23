@@ -22,7 +22,7 @@ public class SendSmsUtil {
         CommonRequest request = new CommonRequest();
         request.setMethod(MethodType.POST);
         request.setDomain("dysmsapi.aliyuncs.com");
-        request.setVersion(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+        request.setVersion("2017-05-25");
         request.setAction("SendSms");
         request.putQueryParameter("RegionId", "cn-hangzhou");
         request.putQueryParameter("PhoneNumbers", phoneNumber);
