@@ -5,10 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zscat.mallplus.manage.config.WxAppletProperties;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberService;
 import com.zscat.mallplus.manage.service.ums.RedisService;
-import com.zscat.mallplus.manage.utils.CharUtil;
-import com.zscat.mallplus.manage.utils.CommonUtil;
-import com.zscat.mallplus.manage.utils.JsonUtil;
-import com.zscat.mallplus.manage.utils.JwtTokenUtil;
+import com.zscat.mallplus.manage.utils.*;
 import com.zscat.mallplus.manage.vo.MemberDetails;
 import com.zscat.mallplus.mbg.exception.ApiMallPlusException;
 import com.zscat.mallplus.mbg.sys.mapper.SysAreaMapper;
@@ -143,11 +140,18 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
     }
 
     @Override
-    public CommonResult generateAuthCode(String s, String accessKeyId, String telephone) {
+    public CommonResult generateAuthCode(String telephone, String accessKeyId, String accessSecret, String templateCode) {
         StringBuilder sb = new StringBuilder();
         Random random = new Random();
-        for (int i = 0; i < 6; i++) {
-            sb.append(random.nextInt(10));
+        String envir = SpringContextHolder.getActiveProfile();
+        if("dev".equals(envir)){
+            sb.append("123456");
+        }else{
+            for (int i = 0; i < 6; i++) {
+                sb.append(random.nextInt(10));
+            }
+            String tempParam = " { \"code\":"+sb.toString()+" }";
+            SendSmsUtil.sendMessage(telephone, tempParam,accessKeyId, accessSecret, templateCode);
         }
         //验证码绑定手机号并存储到redis
         redisService.set(REDIS_KEY_PREFIX_AUTH_CODE + telephone, sb.toString());

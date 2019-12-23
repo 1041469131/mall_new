@@ -1,4 +1,4 @@
-package com.zscat.mallplus.portal.util;
+package com.zscat.mallplus.manage.utils;
 
 
 import com.aliyuncs.CommonRequest;
@@ -15,7 +15,7 @@ import java.util.Date;
 
 public class SendSmsUtil {
 
-    public static void sendMessage(String phoneNumber, String code,String accessKeyId,String accessSecret) {        //手机号、验证码
+    public static void sendMessage(String phoneNumber, String templateParam,String accessKeyId,String accessSecret,String templateCode) {        //手机号、验证码
         DefaultProfile profile = DefaultProfile.getProfile("cn-hangzhou", accessKeyId, accessSecret);
         IAcsClient client = new DefaultAcsClient(profile);
 
@@ -27,8 +27,8 @@ public class SendSmsUtil {
         request.putQueryParameter("RegionId", "cn-hangzhou");
         request.putQueryParameter("PhoneNumbers", phoneNumber);
         request.putQueryParameter("SignName", "士盒");                    //输入你的短信签名名称
-        request.putQueryParameter("TemplateCode", "SMS_180355407");            //输入你的短信模板ID
-        request.putQueryParameter("TemplateParam", " { \"code\":"+code+" }");
+        request.putQueryParameter("TemplateCode", templateCode);            //输入你的短信模板ID
+        request.putQueryParameter("TemplateParam", templateParam);
         try {
             CommonResponse response = client.getCommonResponse(request);
             System.out.println(response.getData());

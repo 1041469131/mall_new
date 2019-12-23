@@ -54,6 +54,9 @@ public class UmsMemberController extends ApiBaseAction {
     @Value("${send.sms.accessSecret}")
     private String accessSecret;
 
+    @Value("${send.sms.authCode.templateCode}")
+    private String authTempCode;
+
     @Autowired
     private ISysUserService iSysUserService;
 
@@ -96,7 +99,7 @@ public class UmsMemberController extends ApiBaseAction {
     @RequestMapping(value = "/getAuthCode", method = RequestMethod.GET)
     @ResponseBody
     public Object getAuthCode(@RequestParam String telephone) {
-        return memberService.generateAuthCode(telephone,accessKeyId, accessSecret);
+        return memberService.generateAuthCode(telephone,accessKeyId, accessSecret,authTempCode);
     }
 
     @ApiOperation("根据手机号和验证码进行登录")

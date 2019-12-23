@@ -53,9 +53,16 @@ public class SpringContextHolder implements ApplicationContextAware {
         }
     }
 
+    public static String getActiveProfile(){
+        checkApplicationContext();
+        return applicationContext.getEnvironment().getActiveProfiles()[0];
+    }
+
     private static void checkApplicationContext() {
         if (applicationContext == null) {
             throw new IllegalStateException("applicaitonContext未注入，请在applicationContext.xml中定义SpringContextHolder");
         }
     }
+
+
 }
