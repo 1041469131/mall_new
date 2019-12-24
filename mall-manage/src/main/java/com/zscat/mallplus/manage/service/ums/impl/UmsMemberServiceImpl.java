@@ -158,8 +158,10 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
             }
             String tempParam = " { \"code\":"+sb.toString()+" }";
             logger.info("发送验证码开始");
+            System.out.println("发送验证码开始");
             SendSmsUtil.sendMessage(telephone, tempParam,accessKeyId, accessSecret, templateCode);
             logger.info("发送验证码结束");
+            System.out.println("发送验证码结束");
         }
         //验证码绑定手机号并存储到redis
         redisService.set(REDIS_KEY_PREFIX_AUTH_CODE + telephone, sb.toString());

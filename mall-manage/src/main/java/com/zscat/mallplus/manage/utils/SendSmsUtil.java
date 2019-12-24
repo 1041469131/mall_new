@@ -37,6 +37,7 @@ public class SendSmsUtil {
         try {
             CommonResponse response = client.getCommonResponse(request);
             logger.info("短信返回的消息："+ JSON.toJSONString(response));
+            System.out.println("短信返回的消息："+ JSON.toJSONString(response));
             System.out.println(response.getData());
         } catch (ServerException e) {
             e.printStackTrace();

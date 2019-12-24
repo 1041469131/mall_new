@@ -52,6 +52,7 @@ public class MatchLibraryAssemble {
         if(!CollectionUtils.isEmpty(pmsProductUserMatchLibraries)){
             pmsProductMatchLibraryVos = new ArrayList<>();
             for(PmsProductUserMatchLibrary pmsProductUserMatchLibrary : pmsProductUserMatchLibraries){
+                updateUserMatchFavorType(pmsProductUserMatchLibrary);
 //                    PmsProductMatchLibraryVo pmsProductMatchLibraryVo = assembleSingleUserMatchLibrary(pmsProductUserMatchLibrary);
                 PmsProductMatchLibraryVo pmsProductMatchLibraryVo = new PmsProductMatchLibraryVo();
                 pmsProductMatchLibraryVo.setPmsProductUserMatchLibrary(pmsProductUserMatchLibrary);
@@ -61,6 +62,14 @@ public class MatchLibraryAssemble {
         return pmsProductMatchLibraryVos;
     }
 
+    private static void updateUserMatchFavorType(PmsProductUserMatchLibrary pmsProductUserMatchLibrary) {
+        Long userMatchLiraryId = pmsProductUserMatchLibrary.getId();
+        UmsCollect umsCollect = iUmsCollectService.getOne(new QueryWrapper<UmsCollect>().eq("assembly_id",userMatchLiraryId));
+        if(umsCollect != null){
+            pmsProductUserMatchLibrary.setFavorType(umsCollect.getFavorType());
+        }
+    }
+
     /**
      * 组装单个用户匹配
      * @param pmsProductUserMatchLibraries
@@ -68,11 +77,7 @@ public class MatchLibraryAssemble {
      */
     public static PmsProductMatchLibraryVo assembleSingleUserMatchLibrary(PmsProductUserMatchLibrary pmsProductUserMatchLibrary){
         PmsProductMatchLibraryVo pmsProductMatchLibraryVo = new PmsProductMatchLibraryVo();
-        Long userMatchLiraryId = pmsProductUserMatchLibrary.getId();
-        UmsCollect umsCollect = iUmsCollectService.getOne(new QueryWrapper<UmsCollect>().eq("assembly_id",userMatchLiraryId));
-        if(umsCollect != null){
-            pmsProductUserMatchLibrary.setFavorType(umsCollect.getFavorType());
-        }
+        updateUserMatchFavorType(pmsProductUserMatchLibrary);
         String skuIds = pmsProductUserMatchLibrary.getSkuIds();
         Long startTime1 = System.currentTimeMillis();
         if(!StringUtils.isEmpty(skuIds)){

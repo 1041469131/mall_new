@@ -72,17 +72,11 @@ public class OmsPortalOrderController extends ApiBaseAction {
     public Object detail(@RequestParam(value = "id", required = false, defaultValue = "0") Long id) {
         OmsOrder orderDetailResult = null;
         String bannerJson = redisService.get(RedisKey.PmsProductResult+id);
-        if(bannerJson!=null){
-            orderDetailResult = JsonUtil.jsonToPojo(bannerJson,OmsOrderDetail.class);
-        }else {
-            orderDetailResult = orderService.getById(id);
-            OmsOrderItem query = new OmsOrderItem();
-            query.setOrderId(id);
-            List<OmsOrderItem> orderItemList = orderItemService.list(new QueryWrapper<>(query));
-            orderDetailResult.setOrderItemList(orderItemList);
-            redisService.set(RedisKey.PmsProductResult+id,JsonUtil.objectToJson(orderDetailResult));
-            redisService.expire(RedisKey.PmsProductResult+id,10*60);
-        }
+        orderDetailResult = orderService.getById(id);
+        OmsOrderItem query = new OmsOrderItem();
+        query.setOrderId(id);
+        List<OmsOrderItem> orderItemList = orderItemService.list(new QueryWrapper<>(query));
+        orderDetailResult.setOrderItemList(orderItemList);
 
         return new CommonResult().success(orderDetailResult);
     }
