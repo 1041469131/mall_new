@@ -7,6 +7,7 @@ import com.zscat.mallplus.manage.service.oms.IOmsOrderService;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberService;
 import com.zscat.mallplus.manage.service.ums.RedisService;
 import com.zscat.mallplus.manage.utils.JsonUtil;
+import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
 import com.zscat.mallplus.mbg.exception.ApiMallPlusException;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrder;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrderItem;
@@ -66,12 +67,12 @@ public class OmsPortalOrderController extends ApiBaseAction {
         return new CommonResult().success(orderList);
     }
 
+    @IgnoreAuth
     @ApiOperation("获取订单详情:订单信息、商品信息、操作记录")
     @RequestMapping(value = "/detail", method = RequestMethod.GET)
     @ResponseBody
     public Object detail(@RequestParam(value = "id", required = false, defaultValue = "0") Long id) {
         OmsOrder orderDetailResult = null;
-        String bannerJson = redisService.get(RedisKey.PmsProductResult+id);
         orderDetailResult = orderService.getById(id);
         OmsOrderItem query = new OmsOrderItem();
         query.setOrderId(id);

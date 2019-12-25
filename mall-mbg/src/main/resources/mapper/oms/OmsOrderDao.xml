@@ -53,7 +53,7 @@
         <result column="goods_id" property="goodsId" />
         <result column="goods_name" property="goodsName" />
         <result column="school_id" property="schoolId" />
-        <result column="transaction_id" property="transaction_id" />
+        <result column="transaction_id" property="transactionId" />
     </resultMap>
     <resultMap id="orderDetailMap" type="com.zscat.mallplus.mbg.oms.vo.OmsOrderDetail"
                extends="com.zscat.mallplus.mbg.oms.mapper.OmsOrderMapper.BaseResultMap">

@@ -335,7 +335,7 @@ public class OmsOrder implements Serializable {
 
     @TableField("transaction_id")
     @ApiModelProperty("微信支付订单编号")
-    private String transaction_id;
+    private String transactionId;
 
 
 

@@ -205,7 +205,7 @@ public class UmsMemberController extends ApiBaseAction {
     public CommonResult<UmsMember> register4MiniProgram(UmsMember umsMember) {
         umsMember.setId(UserUtils.getCurrentUmsMember().getId());
         umsMember.setUpdateTime(new Date());
-        if(MagicConstant.UMS_IS_COMPLETE_DONE.equals(umsMember.getIsComplete())){
+        if(MagicConstant.UMS_IS_COMPLETE_DONE.equals(umsMember.getIsRegister())){
             umsMember.setMatchUserId(iSysUserService.getRandomSysUser().getId());
         }
         if(memberService.updateById(umsMember)){

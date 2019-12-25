@@ -324,7 +324,7 @@ public class PayController extends ApiBaseAction {
                     for(OmsOrder orderInfo:list){
                         orderInfo.setStatus(MagicConstant.ORDER_STATUS_WAIT_SEND);
                         orderInfo.setPaymentTime(new Date());
-                        orderInfo.setTransaction_id(result.getTransaction_id());
+                        orderInfo.setTransactionId(result.getTransaction_id());
                         omsOrderTrades.add(assemblyOmsTrade(orderInfo,MagicConstant.DIRECT_IN));
                     }
                 }
