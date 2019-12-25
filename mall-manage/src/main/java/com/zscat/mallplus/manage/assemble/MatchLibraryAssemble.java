@@ -77,7 +77,7 @@ public class MatchLibraryAssemble {
      */
     public static PmsProductMatchLibraryVo assembleSingleUserMatchLibrary(PmsProductUserMatchLibrary pmsProductUserMatchLibrary){
         PmsProductMatchLibraryVo pmsProductMatchLibraryVo = new PmsProductMatchLibraryVo();
-        updateUserMatchFavorType(pmsProductUserMatchLibrary);
+//        updateUserMatchFavorType(pmsProductUserMatchLibrary);
         String skuIds = pmsProductUserMatchLibrary.getSkuIds();
         Long startTime1 = System.currentTimeMillis();
         if(!StringUtils.isEmpty(skuIds)){
@@ -95,12 +95,12 @@ public class MatchLibraryAssemble {
                     PmsSkuStockVo pmsSkuStockVo = getPmsSkuStockVo(pmsSkuStock);
                     pmsSkuStockVos.add(pmsSkuStockVo);
                 }
-                System.out.println("time2用时："+(System.currentTimeMillis()-time2));
+                System.out.println("拼装skuStocks用的时间："+(System.currentTimeMillis()-time2));
             }
             pmsProductMatchLibraryVo.setPmsSkuStockVos(pmsSkuStockVos);
             pmsProductMatchLibraryVo.setPmsProductUserMatchLibrary(pmsProductUserMatchLibrary);
         }
-        System.out.println("time1用时："+(System.currentTimeMillis()-startTime1));
+        System.out.println("总共用时："+(System.currentTimeMillis()-startTime1));
         return pmsProductMatchLibraryVo;
     }
 

@@ -16,6 +16,7 @@ import com.zscat.mallplus.manage.utils.JsonUtil;
 import com.zscat.mallplus.manage.utils.UserUtils;
 import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
 import com.zscat.mallplus.mbg.pms.entity.*;
+import com.zscat.mallplus.mbg.pms.mapper.PmsSkuStockMapper;
 import com.zscat.mallplus.mbg.pms.vo.*;
 import com.zscat.mallplus.mbg.ums.entity.UmsCollect;
 import com.zscat.mallplus.mbg.ums.entity.UmsMember;
@@ -83,6 +84,9 @@ public class PmsGoodsController {
 
     @Autowired
     private IPmsProductService iPmsProductService;
+
+    @Autowired
+    private PmsSkuStockMapper pmsSkuStockMapper;
 
     @IgnoreAuth
     @ApiOperation("查询商品列表1")
@@ -255,5 +259,14 @@ public class PmsGoodsController {
         PmsProductUserMatchLibrary  pmsProductUserMatchLibrary = iPmsProductUserMatchLibraryService.getById(Long.valueOf(userMatchId));
         PmsProductMatchLibraryVo pmsProductMatchLibraryVo = MatchLibraryAssemble.assembleSingleUserMatchLibrary(pmsProductUserMatchLibrary);
         return new CommonResult().success(pmsProductMatchLibraryVo);
+    }
+
+    @IgnoreAuth
+    @ApiOperation("测试")
+    @RequestMapping(value = "/testSkuId", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResult<List<PmsSkuStockVo>> testSkuId(@ApiParam("skuId") Long skuId) {
+        List<PmsSkuStockVo> pmsSkuStockVos = pmsSkuStockMapper.querySkuStockVos(skuId);
+        return new CommonResult().success(pmsSkuStockVos);
     }
 }
