@@ -1,6 +1,5 @@
 package com.zscat.mallplus.mbg.pms.vo;
 
-import com.zscat.mallplus.mbg.pms.entity.PmsProduct;
 import com.zscat.mallplus.mbg.pms.entity.PmsSkuStock;
 
 /**

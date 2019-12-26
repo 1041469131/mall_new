@@ -3,7 +3,7 @@
 <mapper namespace="com.zscat.mallplus.mbg.pms.mapper.PmsSkuStockMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.zscat.mallplus.mbg.pms.entity.PmsSkuStock">
+    <resultMap id="BaseResultMap" type="com.zscat.mallplus.mbg.pms.vo.PmsSkuStockVo">
         <id column="id" property="id" />
         <result column="product_id" property="productId" />
         <result column="sku_code" property="skuCode" />
@@ -17,13 +17,63 @@
         <result column="sale" property="sale" />
         <result column="promotion_price" property="promotionPrice" />
         <result column="lock_stock" property="lockStock" />
+        <result column="cateParentId" property="cateParentId"/>
+        <association  property="pmsProductResult" javaType="com.zscat.mallplus.mbg.pms.vo.PmsProductResult">
+            <result column="brand_id" property="brandId" />
+            <result column="product_category_id" property="productCategoryId" />
+            <result column="feight_template_id" property="feightTemplateId" />
+            <result column="product_attribute_category_id" property="productAttributeCategoryId" />
+            <result column="name" property="name" />
+            <result column="pms_pic" property="pic" />
+            <result column="product_sn" property="productSn" />
+            <result column="delete_status" property="deleteStatus" />
+            <result column="publish_status" property="publishStatus" />
+            <result column="new_status" property="newStatus" />
+            <result column="recommand_status" property="recommandStatus" />
+            <result column="verify_status" property="verifyStatus" />
+            <result column="sort" property="sort" />
+            <result column="pms_sale" property="sale" />
+            <result column="pms_price" property="price" />
+            <result column="pms_promotion_price" property="promotionPrice" />
+            <result column="gift_growth" property="giftGrowth" />
+            <result column="gift_point" property="giftPoint" />
+            <result column="use_point_limit" property="usePointLimit" />
+            <result column="sub_title" property="subTitle" />
+            <result column="description" property="description" />
+            <result column="original_price" property="originalPrice" />
+            <result column="pms_stock" property="stock" />
+            <result column="pms_low_stock" property="lowStock" />
+            <result column="unit" property="unit" />
+            <result column="weight" property="weight" />
+            <result column="preview_status" property="previewStatus" />
+            <result column="service_ids" property="serviceIds" />
+            <result column="keywords" property="keywords" />
+            <result column="note" property="note" />
+            <result column="album_pics" property="albumPics" />
+            <result column="detail_title" property="detailTitle" />
+            <result column="detail_desc" property="detailDesc" />
+            <result column="detail_html" property="detailHtml" />
+            <result column="detail_mobile_html" property="detailMobileHtml" />
+            <result column="promotion_start_time" property="promotionStartTime" />
+            <result column="promotion_end_time" property="promotionEndTime" />
+            <result column="promotion_per_limit" property="promotionPerLimit" />
+            <result column="promotion_type" property="promotionType" />
+            <result column="brand_name" property="brandName" />
+            <result column="product_category_name" property="productCategoryName" />
+            <result column="favor_type" property="favoriteType"/>
+        </association >
     </resultMap>
 
-    <resultMap id="pmsSkuStockVoMap" type="com.zscat.mallplus.mbg.pms.vo.PmsSkuStockVo" extends="BaseResultMap">
-        <collection property="pmsProductResult" columnPrefix="pms_"
-                    resultMap="com.zscat.mallplus.mbg.pms.mapper.PmsProductMapper.updateInfoMap">
-        </collection>
-    </resultMap>
+
+    <sql id="sku_stock_column_list">
+        s.product_id,s.sku_code,s.price,s.stock,s.low_stock,s.sp1,s.sp2,s.sp3,s.pic,s.sale,s.promotion_price,s.lock_stock,
+        pp.brand_id,pp.product_category_id,pp.feight_template_id,pp.product_attribute_category_id,pp.name,pp.pic as pms_pic,pp.product_sn,pp.delete_status,
+        pp.publish_status,pp.new_status,pp.recommand_status,pp.verify_status,pp.sort,pp.sale as pms_sale,pp.price as pms_price,pp.promotion_price as pms_promotion_price,pp.gift_growth,
+        pp.gift_point,pp.use_point_limit,pp.sub_title,pp.description,pp.original_price,pp.stock as pms_stock,pp.low_stock as pms_low_stock,pp.unit,pp.weight,pp.preview_status,
+        pp.service_ids,pp.keywords,pp.note,pp.album_pics,pp.detail_title,pp.detail_desc,pp.detail_html,pp.detail_mobile_html,pp.promotion_start_time,pp.promotion_end_time,
+        pp.promotion_per_limit,pp.promotion_type,pp.brand_name,pp.product_category_name,
+        c.favor_type
+    </sql>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
@@ -47,26 +97,11 @@
         </foreach>
     </insert>
 
-    <select id="querySkuStockVos" resultMap="pmsSkuStockVoMap">
-        SELECT s.id sku_id,s.product_id sku_product_id,s.price sku_price,s.low_stock sku_low_stock,s.pic sku_pic,s.sale
-        sku_sale,s.sku_code sku_sku_code,s.sp1 sku_sp1,s.sp2 sku_sp2,s.sp3 sku_sp3,s.stock sku_stock,s.lock_stock sku_lock_stock,
-        c.favor_type,p.*,
-        pc.parent_id cateParentId,
-        l.id ladder_id,l.product_id ladder_product_id,l.discount ladder_discount,l.count ladder_count,l.price
-        ladder_price,
-        pf.id full_id,pf.product_id full_product_id,pf.full_price full_full_price,pf.reduce_price full_reduce_price,
-        m.id member_id,m.product_id member_product_id,m.member_level_id member_member_level_id,m.member_price
-        member_member_price,m.member_level_name member_member_level_name,
-        a.id attribute_id,a.product_id attribute_product_id,a.product_attribute_id
-        attribute_product_attribute_id,a.value attribute_value
+    <select id="querySkuStockVos" resultMap="BaseResultMap">
+        SELECT <include refid="sku_stock_column_list" />
         FROM pms_sku_stock s
-        LEFT JOIN pms_product p on s.product_id = p.id
-        LEFT JOIN pms_product_category pc on pc.id = p.product_category_id
-        LEFT JOIN pms_product_ladder l ON p.id = l.product_id
-        LEFT JOIN pms_product_full_reduction pf ON pf.product_id=p.id
-        LEFT JOIN pms_member_price m ON m.product_id = p.id
+        LEFT JOIN pms_product pp on s.product_id = pp.id
         LEFT JOIN ums_collect c ON c.assembly_id=s.id
-        LEFT JOIN pms_product_attribute_value a ON a.product_id=p.id
         WHERE s.id = #{skuId}
     </select>
 </mapper>
