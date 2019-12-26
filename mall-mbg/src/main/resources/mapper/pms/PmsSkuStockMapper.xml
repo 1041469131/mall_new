@@ -101,7 +101,10 @@
         SELECT <include refid="sku_stock_column_list" />
         FROM pms_sku_stock s
         LEFT JOIN pms_product pp on s.product_id = pp.id
-        LEFT JOIN ums_collect c ON c.assembly_id=s.id
-        WHERE s.id = #{skuId}
+        LEFT JOIN ums_collect c ON c.assembly_id=s.id AND c.member_id = #{userId}
+        WHERE s.id in
+        <foreach collection="skuIds" item="skuId" open="(" close=")" separator=",">
+            #{skuId}
+        </foreach>
     </select>
 </mapper>

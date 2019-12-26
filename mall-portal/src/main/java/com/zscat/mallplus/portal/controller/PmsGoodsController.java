@@ -26,9 +26,7 @@ import com.zscat.mallplus.portal.constant.RedisKey;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -261,12 +259,4 @@ public class PmsGoodsController {
         return new CommonResult().success(pmsProductMatchLibraryVo);
     }
 
-    @IgnoreAuth
-    @ApiOperation("测试")
-    @RequestMapping(value = "/testSkuId", method = RequestMethod.GET)
-    @ResponseBody
-    public CommonResult<List<PmsSkuStockVo>> testSkuId(@ApiParam("skuId") Long skuId) {
-        List<PmsSkuStockVo> pmsSkuStockVos = pmsSkuStockMapper.querySkuStockVos(skuId);
-        return new CommonResult().success(pmsSkuStockVos);
-    }
 }

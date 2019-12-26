@@ -77,26 +77,11 @@ public class MatchLibraryAssemble {
      */
     public static PmsProductMatchLibraryVo assembleSingleUserMatchLibrary(PmsProductUserMatchLibrary pmsProductUserMatchLibrary){
         PmsProductMatchLibraryVo pmsProductMatchLibraryVo = new PmsProductMatchLibraryVo();
-//        updateUserMatchFavorType(pmsProductUserMatchLibrary);
         String skuIds = pmsProductUserMatchLibrary.getSkuIds();
         Long startTime1 = System.currentTimeMillis();
         if(!StringUtils.isEmpty(skuIds)){
             String[] skuIdArrays = skuIds.split(",");
-            List<Long> skuIdList = new ArrayList<>();;
-            for (String skuId:skuIdArrays){
-                skuIdList.add(Long.valueOf(skuId));
-            }
-            List<PmsSkuStock> pmsSkuStocks = (List<PmsSkuStock>)iPmsSkuStockService.listByIds(skuIdList);
-            List<PmsSkuStockVo> pmsSkuStockVos = null;
-            if(!CollectionUtils.isEmpty(pmsSkuStocks)){
-                Long time2 = System.currentTimeMillis();
-                pmsSkuStockVos = new ArrayList<>();
-                for(PmsSkuStock pmsSkuStock:pmsSkuStocks){
-                    PmsSkuStockVo pmsSkuStockVo = getPmsSkuStockVo(pmsSkuStock);
-                    pmsSkuStockVos.add(pmsSkuStockVo);
-                }
-                System.out.println("拼装skuStocks用的时间："+(System.currentTimeMillis()-time2));
-            }
+            List<PmsSkuStockVo> pmsSkuStockVos = iPmsSkuStockService.querySkuStockVos(skuIdArrays,pmsProductUserMatchLibrary.getUserId());
             pmsProductMatchLibraryVo.setPmsSkuStockVos(pmsSkuStockVos);
             pmsProductMatchLibraryVo.setPmsProductUserMatchLibrary(pmsProductUserMatchLibrary);
         }

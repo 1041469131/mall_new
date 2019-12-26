@@ -21,5 +21,5 @@ public interface PmsSkuStockMapper extends BaseMapper<PmsSkuStock> {
      */
     int replaceList(@Param("list") List<PmsSkuStock> skuStockList);
 
-    List<PmsSkuStockVo> querySkuStockVos(@Param("skuId")Long skuId);
+    List<PmsSkuStockVo> querySkuStockVos(@Param("skuIds") String[] skuIds, @Param("userId")Long userId);
 }

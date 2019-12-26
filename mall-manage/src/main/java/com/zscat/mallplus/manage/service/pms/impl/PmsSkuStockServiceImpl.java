@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zscat.mallplus.manage.service.pms.IPmsSkuStockService;
 import com.zscat.mallplus.mbg.pms.entity.PmsSkuStock;
 import com.zscat.mallplus.mbg.pms.mapper.PmsSkuStockMapper;
+import com.zscat.mallplus.mbg.pms.vo.PmsSkuStockVo;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -39,6 +40,11 @@ public class PmsSkuStockServiceImpl extends ServiceImpl<PmsSkuStockMapper, PmsSk
     @Override
     public int update(Long pid, List<PmsSkuStock> skuStockList) {
         return skuStockMapper.replaceList(skuStockList);
+    }
+
+    @Override
+    public List<PmsSkuStockVo> querySkuStockVos(String[] skuIds, Long userId) {
+        return skuStockMapper.querySkuStockVos(skuIds,userId);
     }
 
 }
