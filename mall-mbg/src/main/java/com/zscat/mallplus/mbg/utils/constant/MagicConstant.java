@@ -135,4 +135,12 @@ public class MagicConstant {
     public final static String UMS_IS_COMPLETE_NO = "0";
     public final static String UMS_IS_COMPLETE_DONE = "1";
 
+    /****0->PC首页轮播；1->app首页轮播*****/
+    public final static String AD_TYPE_PC = "0";
+    public final static String AD_TYPE_APP = "1";
+
+    /****上下线状态：0->下线；1->上线*****/
+    public final static String AD_STATUS_OFFLINE = "0";
+    public final static String AD_STATUS_ONLINE = "1";
+
 }

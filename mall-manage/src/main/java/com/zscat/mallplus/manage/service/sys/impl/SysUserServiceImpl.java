@@ -195,12 +195,15 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Override
     @Transactional
-    public boolean updates(Long id, SysUser admin) {
-        admin.setUsername(null);
-        admin.setId(id);
+    public boolean updates(SysUser admin) {
+//        admin.setUsername(null);
+//        admin.setId(id);
+        if(StringUtils.isEmpty(admin.getPassword())){
+            admin.setPassword("123456");
+        }
         String md5Password = passwordEncoder.encode(admin.getPassword());
         admin.setPassword(md5Password);
-        updateRole(id,admin.getRoleIds());
+        updateRole(admin.getId(),admin.getRoleIds());
          adminMapper.updateById(admin);
         return true;
     }

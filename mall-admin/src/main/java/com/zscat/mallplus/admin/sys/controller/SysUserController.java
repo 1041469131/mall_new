@@ -98,7 +98,7 @@ public class SysUserController extends ApiController {
     @PostMapping(value = "/update/{id}")
     public Object updateUser(@RequestBody SysUser entity) {
         try {
-            if (sysUserService.updates(entity.getId(),entity)) {
+            if (sysUserService.updates(entity)) {
                 return new CommonResult().success();
             }
         } catch (Exception e) {

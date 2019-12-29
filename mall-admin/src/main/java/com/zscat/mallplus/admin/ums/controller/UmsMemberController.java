@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberRegisterParamService;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberService;
+import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.ums.entity.UmsMember;
 import com.zscat.mallplus.mbg.ums.entity.UmsMemberRegisterParam;
@@ -93,9 +94,10 @@ public class UmsMemberController {
         return new CommonResult().failed();
     }
 
+//    @IgnoreAuth
     @SysLog(MODULE = "ums", REMARK = "删除会员表")
     @ApiOperation("删除会员表")
-    @DeleteMapping(value = "/delete/{id}")
+    @RequestMapping(value = "/delete/{id}",method = RequestMethod.GET)
     @PreAuthorize("hasAuthority('ums:UmsMember:delete')")
     public Object deleteUmsMember(@ApiParam("会员表id") @PathVariable Long id) {
         try {

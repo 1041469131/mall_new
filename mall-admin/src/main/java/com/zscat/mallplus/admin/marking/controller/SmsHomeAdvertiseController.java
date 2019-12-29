@@ -85,7 +85,7 @@ public class SmsHomeAdvertiseController {
 
     @SysLog(MODULE = "marking", REMARK = "删除首页轮播广告表")
     @ApiOperation("删除首页轮播广告表")
-    @DeleteMapping(value = "/delete/{id}")
+    @RequestMapping(value = "/delete",method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('marking:SmsHomeAdvertise:delete')")
     public Object deleteSmsHomeAdvertise(@ApiParam("首页轮播广告表id") @PathVariable Long id) {
         try {

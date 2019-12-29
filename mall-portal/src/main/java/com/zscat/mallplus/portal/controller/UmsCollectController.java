@@ -2,12 +2,14 @@ package com.zscat.mallplus.portal.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zscat.mallplus.manage.assemble.MatchLibraryAssemble;
+import com.zscat.mallplus.manage.service.oms.IOmsOrderReturnReasonService;
 import com.zscat.mallplus.manage.service.pms.IPmsProductService;
 import com.zscat.mallplus.manage.service.pms.IPmsProductUserMatchLibraryService;
 import com.zscat.mallplus.manage.service.pms.IPmsSkuStockService;
 import com.zscat.mallplus.manage.service.ums.IUmsCollectService;
 import com.zscat.mallplus.manage.utils.JsonUtil;
 import com.zscat.mallplus.manage.utils.UserUtils;
+import com.zscat.mallplus.mbg.oms.entity.OmsOrderReturnReason;
 import com.zscat.mallplus.mbg.pms.entity.PmsProduct;
 import com.zscat.mallplus.mbg.pms.entity.PmsProductUserMatchLibrary;
 import com.zscat.mallplus.mbg.pms.entity.PmsSkuStock;
@@ -30,8 +32,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -58,6 +62,9 @@ public class UmsCollectController extends ApiBaseAction {
 
     @Autowired
     private IPmsProductService iPmsProductService;
+
+    @Autowired
+    private IOmsOrderReturnReasonService iOmsOrderReturnReasonService;
 
     @ApiOperation("保存用户收藏")
     @PostMapping(value = "/saveOrUpdate")
@@ -115,4 +122,13 @@ public class UmsCollectController extends ApiBaseAction {
         }
         return new CommonResult().success(umsCollects);
     }
+
+    @ApiOperation("查询收藏不喜欢的原因")
+    @RequestMapping(value = "/getReasons4Collect",method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResult getReasons4Collect(){
+        List<OmsOrderReturnReason> reasons = iOmsOrderReturnReasonService.list(new QueryWrapper<OmsOrderReturnReason>().eq("type","1"));
+        return new CommonResult().success(reasons);
+    }
+
 }

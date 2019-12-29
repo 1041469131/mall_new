@@ -66,7 +66,7 @@
 
 
     <sql id="sku_stock_column_list">
-        s.product_id,s.sku_code,s.price,s.stock,s.low_stock,s.sp1,s.sp2,s.sp3,s.pic,s.sale,s.promotion_price,s.lock_stock,
+        s.id,s.product_id,s.sku_code,s.price,s.stock,s.low_stock,s.sp1,s.sp2,s.sp3,s.pic,s.sale,s.promotion_price,s.lock_stock,
         pp.brand_id,pp.product_category_id,pp.feight_template_id,pp.product_attribute_category_id,pp.name,pp.pic as pms_pic,pp.product_sn,pp.delete_status,
         pp.publish_status,pp.new_status,pp.recommand_status,pp.verify_status,pp.sort,pp.sale as pms_sale,pp.price as pms_price,pp.promotion_price as pms_promotion_price,pp.gift_growth,
         pp.gift_point,pp.use_point_limit,pp.sub_title,pp.description,pp.original_price,pp.stock as pms_stock,pp.low_stock as pms_low_stock,pp.unit,pp.weight,pp.preview_status,

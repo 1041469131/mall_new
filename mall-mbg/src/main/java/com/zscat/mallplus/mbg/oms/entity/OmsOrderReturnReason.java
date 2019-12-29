@@ -36,6 +36,11 @@ public class OmsOrderReturnReason implements Serializable {
     private Integer status;
 
     /**
+     * 0-订单 1-收藏
+     */
+    private String type;
+
+    /**
      * 添加时间
      */
     @TableField("create_time")
@@ -82,14 +87,11 @@ public class OmsOrderReturnReason implements Serializable {
         this.createTime = createTime;
     }
 
-    @Override
-    public String toString() {
-        return "OmsOrderReturnReason{" +
-        ", id=" + id +
-        ", name=" + name +
-        ", sort=" + sort +
-        ", status=" + status +
-        ", createTime=" + createTime +
-        "}";
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

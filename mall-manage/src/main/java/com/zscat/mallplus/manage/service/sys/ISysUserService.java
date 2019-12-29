@@ -30,7 +30,7 @@ public interface ISysUserService extends IService<SysUser> {
     List<SysPermission> getPermissionListByUserId(Long adminId);
 
     boolean saves(SysUser entity);
-    boolean updates(Long id, SysUser admin);
+    boolean updates(SysUser admin);
 
     List<SysPermission> listUserPerms(Long id);
 

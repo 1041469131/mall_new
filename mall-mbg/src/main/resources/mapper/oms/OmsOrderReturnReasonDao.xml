@@ -8,12 +8,13 @@
         <result column="name" property="name" />
         <result column="sort" property="sort" />
         <result column="status" property="status" />
+        <result column="type" property="type" />
         <result column="create_time" property="createTime" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, sort, status, create_time
+        id, name, sort, status, create_time,type
     </sql>
 
 </mapper>
