@@ -76,7 +76,7 @@ public class SingelHomeController {
             redisService.set(RedisKey.appletBannerKey+type,JsonUtil.objectToJson(bannerList));
             redisService.expire(RedisKey.appletBannerKey+type,24*60*60);
         }
-      //  List<SmsHomeAdvertise> bannerList = advertiseService.list(null, type, null, 5, 1);
+      //  List<SmsHomeAdvertise> bannerList = advertiseService.getCouponByUserStatus(null, type, null, 5, 1);
         return new CommonResult().success(bannerList);
     }
 

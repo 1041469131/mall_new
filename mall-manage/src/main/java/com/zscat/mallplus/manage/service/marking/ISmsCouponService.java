@@ -42,24 +42,27 @@ public interface ISmsCouponService extends IService<SmsCoupon> {
      * 会员添加优惠券
      */
     @Transactional
-    CommonResult add(Long couponId);
+    CommonResult getCouponById(Long couponId);
 
     /**
      * 获取优惠券列表
      *
      * @param useStatus 优惠券的使用状态
      */
-    List<SmsCouponHistory> list(Integer useStatus);
+    List<SmsCouponHistory> getCouponByUserStatus(Integer useStatus);
 
     /**
      * 根据购物车信息获取可用优惠券
+     * @param cartItemList
+     * @param type(是否可用 1-表示可用)
+     * @return
      */
-    List<SmsCouponHistoryDetail> listCart(List<CartPromotionItem> cartItemList, Integer type);
+    List<SmsCouponHistoryDetail> getCouponHistoryDetailByCart(List<CartPromotionItem> cartItemList, Integer type);
 
 
-    List<SmsCoupon> selectNotRecive(Long memberId);
+    List<SmsCoupon> selectAllCoupon(Long memberId);
     List<SmsCoupon> selectRecive(Long memberId);
 
-    List<SmsCoupon> selectNotRecive();
+    List<SmsCoupon> selectAllCoupon();
 
 }

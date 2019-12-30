@@ -31,12 +31,12 @@ public class GenUtils {
         List<String> templates = new ArrayList<String>();
         templates.add("templates/common/generator/domain.java.vm");
         templates.add("templates/common/generator/Dao.java.vm");
-        //templates.add("templates/common/generator/Mapper.java.vm");
+        //templates.getCouponById("templates/common/generator/Mapper.java.vm");
         templates.add("templates/common/generator/Mapper.xml.vm");
         templates.add("templates/common/generator/Service.java.vm");
         templates.add("templates/common/generator/ServiceImpl.java.vm");
         templates.add("templates/common/generator/Controller.java.vm");
-        templates.add("templates/common/generator/add.vue.vm");
+        templates.add("templates/common/generator/getCouponById.vue.vm");
         templates.add("templates/common/generator/index.vue.vm");
         templates.add("templates/common/generator/api.js.vm");
         templates.add("templates/common/generator/update.vue.vm");
@@ -195,7 +195,7 @@ public class GenUtils {
 //		if(template.contains("Mapper.java.vm")){
 //			return packagePath + "dao" + File.separator + className + "Mapper.java";
 //		}
-        // templates.add("templates/common/generator/menu.sql.vm");
+        // templates.getCouponById("templates/common/generator/menu.sql.vm");
         if (template.contains("menu.sql.vm")) {
             return className + "menu.sql";
         }
@@ -217,8 +217,8 @@ public class GenUtils {
         if (template.contains("api.js.vm")) {
             return classname + ".js";
         }
-        if (template.contains("add.vue.vm")) {
-            return classname + File.separator + "add.vue";
+        if (template.contains("getCouponById.vue.vm")) {
+            return classname + File.separator + "getCouponById.vue";
         }
 
         if (template.contains("index.vue.vm")) {

@@ -29,11 +29,11 @@ public class GeneratorController {
 
 	@GetMapping()
 	String generator() {
-		return prefix + "/list";
+		return prefix + "/getCouponByUserStatus";
 	}
 
 	@ResponseBody
-	@GetMapping("/list")
+	@GetMapping("/getCouponByUserStatus")
 	Object list() {
 		List<Map<String, Object>> list = generatorService.list();
 		return new CommonResult().success(list);

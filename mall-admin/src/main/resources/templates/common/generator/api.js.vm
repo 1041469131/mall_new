@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 export function fetchList(params) {
     return request({
-        url:'/${module}/${classname}/list',
+        url:'/${module}/${classname}/getCouponByUserStatus',
         method:'get',
         params:params
     })

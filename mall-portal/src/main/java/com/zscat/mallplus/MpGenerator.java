@@ -74,7 +74,7 @@ public class MpGenerator {
         };
         List<FileOutConfig> focList = new ArrayList<>();
         // 调整 xml 生成目录演示
-       /* focList.add(new FileOutConfig("/templates/mapper.xml.vm") {
+       /* focList.getCouponById(new FileOutConfig("/templates/mapper.xml.vm") {
             @Override
             public String outputFile(TableInfo tableInfo) {
                 return "/Users/shenzhuan/gen/" + tableInfo.getEntityName() + "Mapper.xml";

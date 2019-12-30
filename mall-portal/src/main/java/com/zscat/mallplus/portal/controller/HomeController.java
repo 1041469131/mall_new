@@ -164,7 +164,7 @@ public class HomeController {
     @ApiOperation("分页获取推荐商品")
     @RequestMapping(value = "/getHomeCouponList", method = RequestMethod.GET)
     public Object getHomeCouponList() {
-        List<SmsCoupon> couponList = couponService.selectNotRecive();
+        List<SmsCoupon> couponList = couponService.selectAllCoupon();
         return new CommonResult().success(couponList);
     }
 

@@ -75,7 +75,7 @@ public class ${table.controllerName} {
     }
     @SysLog(MODULE = "${package.ModuleName}", REMARK = "根据$!{table.comment}分页获取$!{table.comment}列表")
     @ApiOperation(value = "根据$!{table.comment}名称分页获取$!{table.comment}列表")
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/getCouponByUserStatus", method = RequestMethod.GET)
     @ResponseBody
     @PreAuthorize("hasAuthority('${package.ModuleName}:${classname}:read')")
     public Object getList(${Module}${entity} ${classname},

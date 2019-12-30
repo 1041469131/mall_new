@@ -143,4 +143,15 @@ public class MagicConstant {
     public final static String AD_STATUS_OFFLINE = "0";
     public final static String AD_STATUS_ONLINE = "1";
 
+    /*******用户来源 使用类型：0->全场通用；1->指定分类；2->指定商品 ***/
+    public final static Integer COUPON_USE_TYPE_ALL = 0;
+    public final static Integer COUPON_USE_TYPE_PRODUCT_CATEGORY = 1;
+    public final static Integer COUPON_USE_TYPE_PRODUCT = 2;
+
+    /*******优惠卷类型；0->全场赠券；1->会员赠券；2->购物赠券；3->注册赠券***/
+    public final static Integer COUPON_TYPE_ALL = 0;
+    public final static Integer COUPON_TYPE_4_MEMBER = 1;
+    public final static Integer COUPON_TYPE_4_SHOPPING = 2;
+    public final static Integer COUPON_TYPE_4_REGISTER = 3;
+
 }

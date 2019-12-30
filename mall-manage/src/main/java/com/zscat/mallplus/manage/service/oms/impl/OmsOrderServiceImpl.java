@@ -322,7 +322,7 @@ public class OmsOrderServiceImpl extends ServiceImpl<OmsOrderMapper, OmsOrder> i
         result.setMemberReceiveAddressList(memberReceiveAddressList);
         UmsMemberReceiveAddress address = addressService.getDefaultItem();
         //获取用户可用优惠券列表
-        List<SmsCouponHistoryDetail> couponHistoryDetailList = couponService.listCart(cartPromotionItemList, 1);
+        List<SmsCouponHistoryDetail> couponHistoryDetailList = couponService.getCouponHistoryDetailByCart(cartPromotionItemList, 1);
         result.setCouponHistoryDetailList(couponHistoryDetailList);
         //获取用户积分
         result.setMemberIntegration(currentMember.getIntegration());
@@ -349,7 +349,7 @@ public class OmsOrderServiceImpl extends ServiceImpl<OmsOrderMapper, OmsOrder> i
         List<UmsMemberReceiveAddress> memberReceiveAddressList = addressService.list(new QueryWrapper<>(queryU));
         result.setMemberReceiveAddressList(memberReceiveAddressList);
         //获取用户可用优惠券列表
-        List<SmsCouponHistoryDetail> couponHistoryDetailList = couponService.listCart(cartPromotionItemList, 1);
+        List<SmsCouponHistoryDetail> couponHistoryDetailList = couponService.getCouponHistoryDetailByCart(cartPromotionItemList, 1);
         result.setCouponHistoryDetailList(couponHistoryDetailList);
         //获取用户积分
         result.setMemberIntegration(currentMember.getIntegration());
@@ -980,7 +980,7 @@ public class OmsOrderServiceImpl extends ServiceImpl<OmsOrderMapper, OmsOrder> i
      * @param couponId              使用优惠券id
      */
     private SmsCouponHistoryDetail getUseCoupon(List<CartPromotionItem> cartPromotionItemList, Long couponId) {
-        List<SmsCouponHistoryDetail> couponHistoryDetailList = couponService.listCart(cartPromotionItemList, 1);
+        List<SmsCouponHistoryDetail> couponHistoryDetailList = couponService.getCouponHistoryDetailByCart(cartPromotionItemList, 1);
         for (SmsCouponHistoryDetail couponHistoryDetail : couponHistoryDetailList) {
             if (couponHistoryDetail.getCoupon().getId().equals(couponId)) {
                 return couponHistoryDetail;

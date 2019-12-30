@@ -29,7 +29,7 @@ private ${table.serviceName} ${table.serviceName};
 
 @SysLog(MODULE = "${package.ModuleName}", REMARK = "根据条件查询所有$!{table.comment}列表")
 @ApiOperation("根据条件查询所有$!{table.comment}列表")
-@GetMapping(value = "/list")
+@GetMapping(value = "/getCouponByUserStatus")
 @PreAuthorize("hasAuthority('${package.ModuleName}:${entity}:read')")
 public Object get${entity}ByPage(${entity} entity,
 @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,

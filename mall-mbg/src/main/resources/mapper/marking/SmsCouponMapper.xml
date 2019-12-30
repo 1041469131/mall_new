@@ -33,6 +33,7 @@
                     resultMap="com.zscat.mallplus.mbg.marking.mapper.SmsCouponProductCategoryRelationMapper.BaseResultMap">
         </collection>
     </resultMap>
+
     <select id="getItem" resultMap="couponItemParam">
         SELECT
         c.*,

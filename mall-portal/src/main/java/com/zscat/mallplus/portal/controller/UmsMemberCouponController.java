@@ -1,15 +1,9 @@
 package com.zscat.mallplus.portal.controller;
 
 
-import com.zscat.mallplus.manage.service.cms.ICmsSubjectService;
 import com.zscat.mallplus.manage.service.marking.ISmsCouponService;
-import com.zscat.mallplus.manage.service.marking.ISmsHomeAdvertiseService;
 import com.zscat.mallplus.manage.service.oms.IOmsCartItemService;
-import com.zscat.mallplus.manage.service.oms.IOmsOrderService;
-import com.zscat.mallplus.manage.service.pms.IPmsProductAttributeCategoryService;
-import com.zscat.mallplus.manage.service.pms.IPmsProductService;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberService;
-import com.zscat.mallplus.manage.service.ums.RedisService;
 import com.zscat.mallplus.mbg.marking.entity.SmsCoupon;
 import com.zscat.mallplus.mbg.marking.entity.SmsCouponHistory;
 import com.zscat.mallplus.mbg.marking.vo.SmsCouponHistoryDetail;
@@ -33,25 +27,12 @@ import java.util.List;
 @Api(tags = "UmsMemberCouponController", description = "用户优惠券管理")
 @RequestMapping("/api/member/coupon")
 public class UmsMemberCouponController {
+
     @Autowired
     private IUmsMemberService memberService;
-    @Autowired
-    private ISmsHomeAdvertiseService advertiseService;
+
     @Autowired
     private ISmsCouponService couponService;
-    @Autowired
-    private IPmsProductAttributeCategoryService productAttributeCategoryService;
-
-    @Autowired
-    private IPmsProductService pmsProductService;
-
-    @Autowired
-    private ICmsSubjectService subjectService;
-    @Autowired
-    private IOmsOrderService orderService;
-
-    @Autowired
-    private RedisService redisService;
 
     @Autowired
     private IOmsCartItemService cartItemService;
@@ -60,7 +41,7 @@ public class UmsMemberCouponController {
     @RequestMapping(value = "/add")
     @ResponseBody
     public Object add( Long couponId) {
-        return couponService.add(couponId);
+        return couponService.getCouponById(couponId);
     }
 
     @ApiOperation("获取用户优惠券列表")
@@ -69,7 +50,7 @@ public class UmsMemberCouponController {
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     @ResponseBody
     public Object list(@RequestParam(value = "useStatus", required = false) Integer useStatus) {
-        List<SmsCouponHistory> couponHistoryList = couponService.list(useStatus);
+        List<SmsCouponHistory> couponHistoryList = couponService.getCouponByUserStatus(useStatus);
         return new CommonResult().success(couponHistoryList);
     }
 
@@ -81,8 +62,7 @@ public class UmsMemberCouponController {
     @RequestMapping(value = "/alllist", method = RequestMethod.GET)
     @ResponseBody
     public Object alllist() {
-        List<SmsCoupon> couponList = new ArrayList<>();
-        couponList = couponService.selectNotRecive();
+        List<SmsCoupon> couponList = couponList = couponService.selectAllCoupon();
         return new CommonResult().success(couponList);
     }
 
@@ -94,7 +74,7 @@ public class UmsMemberCouponController {
     @ResponseBody
     public Object listCart(@PathVariable Integer type) {
         List<CartPromotionItem> cartPromotionItemList = cartItemService.listPromotion(memberService.getCurrentMember().getId(),null);
-        List<SmsCouponHistoryDetail> couponHistoryList = couponService.listCart(cartPromotionItemList, type);
+        List<SmsCouponHistoryDetail> couponHistoryList = couponService.getCouponHistoryDetailByCart(cartPromotionItemList, type);
         return new CommonResult().success(couponHistoryList);
     }
 

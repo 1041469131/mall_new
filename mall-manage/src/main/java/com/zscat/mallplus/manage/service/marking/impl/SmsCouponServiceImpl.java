@@ -20,6 +20,7 @@ import com.zscat.mallplus.mbg.marking.vo.SmsCouponParam;
 import com.zscat.mallplus.mbg.oms.vo.CartPromotionItem;
 import com.zscat.mallplus.mbg.ums.entity.UmsMember;
 import com.zscat.mallplus.mbg.utils.CommonResult;
+import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -61,16 +62,16 @@ public class SmsCouponServiceImpl extends ServiceImpl<SmsCouponMapper, SmsCoupon
         couponParam.setUseCount(0);
         couponParam.setReceiveCount(0);
         //插入优惠券表
-        int count = couponMapper.insert(couponParam);
+        couponMapper.insert(couponParam);
         //插入优惠券和商品关系表
-        if (couponParam.getUseType().equals(2)) {
+        if (couponParam.getUseType().equals(MagicConstant.COUPON_USE_TYPE_PRODUCT)) {
             for (SmsCouponProductRelation productRelation : couponParam.getProductRelationList()) {
                 productRelation.setCouponId(couponParam.getId());
             }
             productRelationDao.saveBatch(couponParam.getProductRelationList());
         }
         //插入优惠券和商品分类关系表
-        if (couponParam.getUseType().equals(1)) {
+        if (couponParam.getUseType().equals(MagicConstant.COUPON_USE_TYPE_PRODUCT_CATEGORY)) {
             for (SmsCouponProductCategoryRelation couponProductCategoryRelation : couponParam.getProductCategoryRelationList()) {
                 couponProductCategoryRelation.setCouponId(couponParam.getId());
             }
@@ -84,7 +85,7 @@ public class SmsCouponServiceImpl extends ServiceImpl<SmsCouponMapper, SmsCoupon
         couponParam.setId(couponParam.getId());
         int count = couponMapper.updateById(couponParam);
         //删除后插入优惠券和商品关系表
-        if (couponParam.getUseType().equals(2)) {
+        if (couponParam.getUseType().equals(MagicConstant.COUPON_USE_TYPE_PRODUCT)) {
             for (SmsCouponProductRelation productRelation : couponParam.getProductRelationList()) {
                 productRelation.setCouponId(couponParam.getId());
             }
@@ -92,7 +93,7 @@ public class SmsCouponServiceImpl extends ServiceImpl<SmsCouponMapper, SmsCoupon
             productRelationDao.saveBatch(couponParam.getProductRelationList());
         }
         //删除后插入优惠券和商品分类关系表
-        if (couponParam.getUseType().equals(1)) {
+        if (couponParam.getUseType().equals(MagicConstant.COUPON_USE_TYPE_PRODUCT_CATEGORY)) {
             for (SmsCouponProductCategoryRelation couponProductCategoryRelation : couponParam.getProductCategoryRelationList()) {
                 couponProductCategoryRelation.setCouponId(couponParam.getId());
             }
@@ -101,6 +102,7 @@ public class SmsCouponServiceImpl extends ServiceImpl<SmsCouponMapper, SmsCoupon
         }
         return true;
     }
+
     private void deleteProductCategoryRelation(Long id) {
         productCategoryRelationMapper.delete(new QueryWrapper<>(new SmsCouponProductCategoryRelation()).eq("coupon_id",id));
     }
@@ -126,21 +128,24 @@ public class SmsCouponServiceImpl extends ServiceImpl<SmsCouponMapper, SmsCoupon
     }
 
     @Override
-    public List<SmsCoupon> selectNotRecive(Long memberId){
+    public List<SmsCoupon> selectAllCoupon(Long memberId){
         return couponMapper.selectNotRecive(memberId);
     }
+
     @Override
     public List<SmsCoupon> selectRecive(Long memberId){
         return  couponMapper.selectRecive(memberId);
     }
+
     @Override
-    public List<SmsCoupon> selectNotRecive(){
+    public List<SmsCoupon> selectAllCoupon(){
         SmsCoupon coupon = new SmsCoupon();
-        coupon.setType(0);
+        coupon.setType(MagicConstant.COUPON_TYPE_ALL);
         return couponMapper.selectList(new QueryWrapper<>(coupon).gt("end_time",new Date()));
     }
+
     @Override
-    public CommonResult add(Long couponId) {
+    public CommonResult getCouponById(Long couponId) {
         UmsMember currentMember = UserUtils.getCurrentUmsMember();
         //获取优惠券信息，判断数量
         SmsCoupon coupon = couponMapper.selectById(couponId);
@@ -205,8 +210,9 @@ public class SmsCouponServiceImpl extends ServiceImpl<SmsCouponMapper, SmsCoupon
         return sb.toString();
     }
 
+
     @Override
-    public List<SmsCouponHistory> list(Integer useStatus) {
+    public List<SmsCouponHistory> getCouponByUserStatus(Integer useStatus) {
         UmsMember currentMember = UserUtils.getCurrentUmsMember();
         SmsCouponHistory couponHistory = new SmsCouponHistory();
         couponHistory.setMemberId(currentMember.getId());
@@ -218,7 +224,7 @@ public class SmsCouponServiceImpl extends ServiceImpl<SmsCouponMapper, SmsCoupon
     }
 
     @Override
-    public List<SmsCouponHistoryDetail> listCart(List<CartPromotionItem> cartItemList, Integer type) {
+    public List<SmsCouponHistoryDetail> getCouponHistoryDetailByCart(List<CartPromotionItem> cartItemList, Integer type) {
         UmsMember currentMember = memberService.getCurrentMember();
         Date now = new Date();
         //获取该用户所有优惠券
@@ -230,7 +236,7 @@ public class SmsCouponServiceImpl extends ServiceImpl<SmsCouponMapper, SmsCoupon
             Integer useType = couponHistoryDetail.getCoupon().getUseType();//使用类型：0->全场通用；1->指定分类；2->指定商品
             BigDecimal minPoint = couponHistoryDetail.getCoupon().getMinPoint();//使用门槛；0表示无门槛
             Date endTime = couponHistoryDetail.getCoupon().getEndTime();
-            if (useType.equals(0)) {
+            if (useType.equals(MagicConstant.COUPON_USE_TYPE_ALL)) {
                 //0->全场通用
                 //判断是否满足优惠起点
                 //计算购物车商品的总价
@@ -240,7 +246,7 @@ public class SmsCouponServiceImpl extends ServiceImpl<SmsCouponMapper, SmsCoupon
                 } else {
                     disableList.add(couponHistoryDetail);
                 }
-            } else if (useType.equals(1)) {
+            } else if (useType.equals(MagicConstant.COUPON_USE_TYPE_PRODUCT_CATEGORY)) {
                 //1->指定分类
                 //计算指定分类商品的总价
                 List<Long> productCategoryIds = new ArrayList<>();
@@ -253,7 +259,7 @@ public class SmsCouponServiceImpl extends ServiceImpl<SmsCouponMapper, SmsCoupon
                 } else {
                     disableList.add(couponHistoryDetail);
                 }
-            } else if (useType.equals(2)) {
+            } else if (useType.equals(MagicConstant.COUPON_USE_TYPE_PRODUCT)) {
                 //2->指定商品
                 //计算指定商品的总价
                 List<Long> productIds = new ArrayList<>();
