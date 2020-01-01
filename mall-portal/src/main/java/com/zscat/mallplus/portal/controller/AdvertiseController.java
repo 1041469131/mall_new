@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -31,7 +32,7 @@ public class AdvertiseController {
     @ResponseBody
     public CommonResult advertises() {
         List<SmsHomeAdvertise> advertises = iSmsHomeAdvertiseService.list(new QueryWrapper<SmsHomeAdvertise>().
-                eq("type", MagicConstant.AD_TYPE_APP).eq("status",MagicConstant.AD_STATUS_ONLINE));
+                eq("type", MagicConstant.AD_TYPE_APP).eq("status",MagicConstant.AD_STATUS_ONLINE).le("start_time",new Date()).gt("end_time",new Date()));
         return new CommonResult().success(advertises);
     }
 }
