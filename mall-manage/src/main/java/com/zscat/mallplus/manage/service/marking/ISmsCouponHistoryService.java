@@ -2,6 +2,9 @@ package com.zscat.mallplus.manage.service.marking;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zscat.mallplus.mbg.marking.entity.SmsCouponHistory;
+import com.zscat.mallplus.mbg.marking.vo.SmsCouponHistoryDetail;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,12 @@ import com.zscat.mallplus.mbg.marking.entity.SmsCouponHistory;
  */
 public interface ISmsCouponHistoryService extends IService<SmsCouponHistory> {
 
+    /**
+     * 根据用户的优惠券状态进行优惠券的过滤
+     * @param useStatus
+     * @return
+     */
+    List<SmsCouponHistoryDetail> listByStatus(Integer useStatus);
+
+    void updateCouponStatus();
 }

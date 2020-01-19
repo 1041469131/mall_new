@@ -154,4 +154,13 @@ public class MagicConstant {
     public final static Integer COUPON_TYPE_4_SHOPPING = 2;
     public final static Integer COUPON_TYPE_4_REGISTER = 3;
 
+    /*******使用状态：0->未使用；1->已使用；2->已过期***/
+    public final static Integer COUPON_USE_STATUS_4_NO = 0;
+    public final static Integer COUPON_USE_STATUS_4_YES = 1;
+    public final static Integer COUPON_USE_STATUS_4_EXPIR = 2;
+
+    /*******获取类型：0->后台赠送；1->主动获取**/
+    public final static Integer COUPON_GET_TYPE_4_BACK = 0;
+    public final static Integer COUPON_GET_TYPE_4_ACTIVE = 1;
+
 }

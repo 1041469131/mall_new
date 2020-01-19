@@ -3,8 +3,10 @@ package com.zscat.mallplus.mbg.marking.mapper;
 import com.zscat.mallplus.mbg.marking.entity.SmsCouponHistory;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zscat.mallplus.mbg.marking.vo.SmsCouponHistoryDetail;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -16,5 +18,5 @@ import java.util.List;
  */
 public interface SmsCouponHistoryMapper extends BaseMapper<SmsCouponHistory> {
 
-    List<SmsCouponHistoryDetail> getDetailList(Long memberId);
+    List<SmsCouponHistoryDetail> getDetailList(Map<String,Object> paramMap);
 }

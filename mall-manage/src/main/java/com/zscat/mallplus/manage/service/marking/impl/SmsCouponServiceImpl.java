@@ -6,6 +6,7 @@ import com.zscat.mallplus.manage.service.marking.ISmsCouponProductCategoryRelati
 import com.zscat.mallplus.manage.service.marking.ISmsCouponProductRelationService;
 import com.zscat.mallplus.manage.service.marking.ISmsCouponService;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberService;
+import com.zscat.mallplus.manage.utils.DateUtils;
 import com.zscat.mallplus.manage.utils.UserUtils;
 import com.zscat.mallplus.mbg.marking.entity.SmsCoupon;
 import com.zscat.mallplus.mbg.marking.entity.SmsCouponHistory;
@@ -22,13 +23,12 @@ import com.zscat.mallplus.mbg.ums.entity.UmsMember;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * <p>
@@ -57,10 +57,14 @@ public class SmsCouponServiceImpl extends ServiceImpl<SmsCouponMapper, SmsCoupon
     private SmsCouponHistoryMapper couponHistoryMapper;
 
     @Override
-    public boolean saves(SmsCouponParam couponParam) {
+    public boolean saves(SmsCouponParam couponParam) throws Exception {
         couponParam.setCount(couponParam.getPublishCount());
-        couponParam.setUseCount(0);
+        couponParam.setUseCount(MagicConstant.COUPON_USE_STATUS_4_NO);
         couponParam.setReceiveCount(0);
+        if(couponParam.getUseType() == MagicConstant.COUPON_USE_TYPE_ALL){
+            couponParam.setStartTime(DateUtils.toDate("1900-01-01"));
+            couponParam.setEndTime(DateUtils.toDate("2999-01-01"));
+        }
         //插入优惠券表
         couponMapper.insert(couponParam);
         //插入优惠券和商品关系表
@@ -145,40 +149,54 @@ public class SmsCouponServiceImpl extends ServiceImpl<SmsCouponMapper, SmsCoupon
     }
 
     @Override
+    public String allocateCoupon(String couponType) {
+        UmsMember currentMember = UserUtils.getCurrentUmsMember();
+        List<SmsCoupon> coupons = couponMapper.selectList(new QueryWrapper<SmsCoupon>().eq("type", couponType).eq("use_type", 0));
+        if(!CollectionUtils.isEmpty(coupons)){
+            for(SmsCoupon smsCoupon : coupons){
+                String msg = checkCoupon(smsCoupon, currentMember);
+                if(StringUtils.isEmpty(msg)){
+                    generateCoupon(smsCoupon,currentMember );
+                }else{
+                    return msg;
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
     public CommonResult getCouponById(Long couponId) {
         UmsMember currentMember = UserUtils.getCurrentUmsMember();
         //获取优惠券信息，判断数量
         SmsCoupon coupon = couponMapper.selectById(couponId);
-        if (coupon == null) {
-            return new CommonResult().failed("优惠券不存在");
+        String msg = checkCoupon(coupon,currentMember);
+        if(!StringUtils.isEmpty(msg)){
+            return new CommonResult().failed(msg);
         }
-        if (coupon.getCount() <= 0) {
-            return new CommonResult().failed("优惠券已经领完了");
-        }
-        Date now = new Date();
-        if (now.after(coupon.getEndTime())) {
-            return new CommonResult().failed("优惠券已过期");
-        }
-        //判断用户领取的优惠券数量是否超过限制
-        SmsCouponHistory queryH = new SmsCouponHistory();
-        queryH.setMemberId(currentMember.getId());
-        queryH.setCouponId(couponId);
+        generateCoupon(coupon,currentMember);
+        return new CommonResult().success("领取成功", null);
+    }
 
-        int count = couponHistoryMapper.selectCount(new QueryWrapper<>(queryH));
-        if (count >= coupon.getPerLimit()) {
-            return new CommonResult().failed("您已经领取过该优惠券");
-        }
-        //生成领取优惠券历史
+    /**
+     * 创建用户优惠券
+     */
+    private void generateCoupon(SmsCoupon coupon,UmsMember currentMember) {
         SmsCouponHistory couponHistory = new SmsCouponHistory();
-        couponHistory.setCouponId(couponId);
+        couponHistory.setCouponId(coupon.getId());
         couponHistory.setCouponCode(generateCouponCode(currentMember.getId()));
-        couponHistory.setCreateTime(now);
+        couponHistory.setCreateTime(new Date());
         couponHistory.setMemberId(currentMember.getId());
         couponHistory.setMemberNickname(currentMember.getNickname());
         //主动领取
-        couponHistory.setGetType(1);
+        if(coupon.getType() == MagicConstant.COUPON_TYPE_4_REGISTER){
+            couponHistory.setGetType(MagicConstant.COUPON_GET_TYPE_4_BACK);
+        }else{
+            couponHistory.setGetType(MagicConstant.COUPON_GET_TYPE_4_ACTIVE);
+        }
+
         //未使用
-        couponHistory.setUseStatus(0);
+        couponHistory.setUseStatus(MagicConstant.COUPON_USE_STATUS_4_NO);
         couponHistory.setStartTime(coupon.getStartTime());
         couponHistory.setEndTime(coupon.getEndTime());
         couponHistory.setNote(coupon.getName()+":满"+coupon.getMinPoint()+"减"+ coupon.getAmount());
@@ -187,7 +205,34 @@ public class SmsCouponServiceImpl extends ServiceImpl<SmsCouponMapper, SmsCoupon
         coupon.setCount(coupon.getCount() - 1);
         coupon.setReceiveCount(coupon.getReceiveCount() == null ? 1 : coupon.getReceiveCount() + 1);
         couponMapper.updateById(coupon);
-        return new CommonResult().success("领取成功", null);
+    }
+
+    /**
+     * 校验优惠券的信息
+     * @param coupon
+     * @return
+     */
+    private String checkCoupon(SmsCoupon coupon,UmsMember currentMember) {
+        if (coupon == null) {
+            return "优惠券不存在";
+        }
+        if (coupon.getCount() <= 0) {
+            return "优惠券已经领完了";
+        }
+        Date now = new Date();
+        if (now.after(coupon.getEndTime())) {
+            return "优惠券已过期";
+        }
+        //判断用户领取的优惠券数量是否超过限制
+        SmsCouponHistory queryH = new SmsCouponHistory();
+        queryH.setMemberId(currentMember.getId());
+        queryH.setCouponId(coupon.getId());
+
+        int count = couponHistoryMapper.selectCount(new QueryWrapper<>(queryH));
+        if (count >= coupon.getPerLimit()) {
+            return "您已经领取过该优惠券";
+        }
+        return null;
     }
 
     /**
@@ -228,7 +273,11 @@ public class SmsCouponServiceImpl extends ServiceImpl<SmsCouponMapper, SmsCoupon
         UmsMember currentMember = memberService.getCurrentMember();
         Date now = new Date();
         //获取该用户所有优惠券
-        List<SmsCouponHistoryDetail> allList = couponHistoryMapper.getDetailList(currentMember.getId());
+        Map<String,Object> paramMap = new HashMap<>();
+        paramMap.put("memberId", currentMember.getId());
+        paramMap.put("useStatus", 0);
+        paramMap.put("isUseDate", true);
+        List<SmsCouponHistoryDetail> allList = couponHistoryMapper.getDetailList(paramMap);
         //根据优惠券使用类型来判断优惠券是否可用
         List<SmsCouponHistoryDetail> enableList = new ArrayList<>();
         List<SmsCouponHistoryDetail> disableList = new ArrayList<>();

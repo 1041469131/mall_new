@@ -94,13 +94,13 @@ public class PayController extends ApiBaseAction {
         String orderSn = "";
         if(MagicConstant.IS_NOT_PARENT.equals(isParentOrder)){
             orderInfo = orderService.getById(id);
-            totalFee = orderInfo.getPayAmount();
+            totalFee = orderInfo.getTotalAmount().subtract(orderInfo.getCouponAmount()).subtract(orderInfo.getDiscountAmount());
             orderSn = orderInfo.getOrderSn();
         }else {
             orderList = orderService.list(new QueryWrapper<OmsOrder>().eq("supply_id",id));
             if(!CollectionUtils.isEmpty(orderList)){
                 for(OmsOrder omsOrder:orderList){
-                    totalFee = totalFee.add(omsOrder.getPayAmount());
+                    totalFee = totalFee.add(omsOrder.getTotalAmount().subtract(omsOrder.getCouponAmount()).subtract(omsOrder.getDiscountAmount()));
                 }
             }
             orderSn = String.valueOf(id);

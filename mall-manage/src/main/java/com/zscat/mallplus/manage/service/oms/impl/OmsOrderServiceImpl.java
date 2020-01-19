@@ -476,7 +476,7 @@ public class OmsOrderServiceImpl extends ServiceImpl<OmsOrderMapper, OmsOrder> i
         OmsOrder cancelOrder = orderMapper.selectById(orderId);
         if (cancelOrder != null) {
             //修改订单状态为取消
-            cancelOrder.setStatus(4);
+            cancelOrder.setStatus(MagicConstant.ORDER_STATUS_YET_SHUTDOWN);
             orderMapper.updateById(cancelOrder);
             OmsOrderItem queryO = new OmsOrderItem();
             queryO.setOrderId(orderId);
@@ -769,14 +769,17 @@ public class OmsOrderServiceImpl extends ServiceImpl<OmsOrderMapper, OmsOrder> i
      * @param useStatus 0->未使用；1->已使用
      */
     private void updateCouponStatus(Long couponId, Long memberId, Integer useStatus) {
-        if (couponId == null) {return;}
+        if (couponId == null) {
+            return;
+        }
         //查询第一张优惠券
         SmsCouponHistory queryC= new SmsCouponHistory();
         queryC.setCouponId(couponId);
-        if (useStatus == 0){
-            queryC.setUseStatus(1);
+        queryC.setMemberId(memberId);
+        if (useStatus == MagicConstant.COUPON_USE_STATUS_4_NO){
+            queryC.setUseStatus(MagicConstant.COUPON_USE_STATUS_4_YES);
         }else {
-            queryC.setUseStatus(0);
+            queryC.setUseStatus(MagicConstant.COUPON_USE_STATUS_4_NO);
         }
         List<SmsCouponHistory> couponHistoryList = couponHistoryService.list(new QueryWrapper<>(queryC));
         if (!CollectionUtils.isEmpty(couponHistoryList)) {
@@ -908,17 +911,19 @@ public class OmsOrderServiceImpl extends ServiceImpl<OmsOrderMapper, OmsOrder> i
      */
     private void handleCouponAmount(List<OmsOrderItem> orderItemList, SmsCouponHistoryDetail couponHistoryDetail) {
         SmsCoupon coupon = couponHistoryDetail.getCoupon();
-        if (coupon.getUseType().equals(0)) {
+        if (coupon.getUseType()== MagicConstant.COUPON_USE_TYPE_ALL) {
             //全场通用
             calcPerCouponAmount(orderItemList, coupon);
-        } else if (coupon.getUseType().equals(1)) {
+        } else if (coupon.getUseType() == MagicConstant.COUPON_USE_TYPE_PRODUCT_CATEGORY) {
             //指定分类
             List<OmsOrderItem> couponOrderItemList = getCouponOrderItemByRelation(couponHistoryDetail, orderItemList, 0);
             calcPerCouponAmount(couponOrderItemList, coupon);
-        } else if (coupon.getUseType().equals(2)) {
+        } else if (coupon.getUseType() == MagicConstant.COUPON_USE_TYPE_PRODUCT) {
             //指定商品
             List<OmsOrderItem> couponOrderItemList = getCouponOrderItemByRelation(couponHistoryDetail, orderItemList, 1);
             calcPerCouponAmount(couponOrderItemList, coupon);
+        }else{
+            throw new RuntimeException("不存在该商品分类");
         }
     }
 
@@ -1142,7 +1147,7 @@ public class OmsOrderServiceImpl extends ServiceImpl<OmsOrderMapper, OmsOrder> i
             orderItemService.saveBatch(orderItemList);
             //如使用优惠券更新优惠券使用状态
             if (orderParam.getCouponId() != null) {
-                updateCouponStatus(orderParam.getCouponId(), currentMember.getId(), 1);
+                updateCouponStatus(orderParam.getCouponId(), currentMember.getId(), MagicConstant.COUPON_USE_STATUS_4_YES);
             }
             //如使用积分需要扣除积分
             if (orderParam.getUseIntegration() != null) {

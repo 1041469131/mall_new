@@ -22,16 +22,22 @@
 
     <resultMap id="couponHistoryDetailMap" type="com.zscat.mallplus.mbg.marking.vo.SmsCouponHistoryDetail"
                extends="BaseResultMap">
-        <association property="coupon" resultMap="com.zscat.mallplus.mapper.SmsCouponMapper.BaseResultMap"
+        <association property="coupon" resultMap="com.zscat.mallplus.mbg.marking.mapper.SmsCouponMapper.BaseResultMap"
                      columnPrefix="c_">
         </association>
         <collection property="productRelationList" columnPrefix="cpr_"
-                    resultMap="com.zscat.mallplus.mapper.SmsCouponProductRelationMapper.BaseResultMap">
+                    resultMap="com.zscat.mallplus.mbg.marking.mapper.SmsCouponProductRelationMapper.BaseResultMap">
         </collection>
         <collection property="categoryRelationList" columnPrefix="cpcr_"
-                    resultMap="com.zscat.mallplus.mapper.SmsCouponProductCategoryRelationMapper.BaseResultMap">
+                    resultMap="com.zscat.mallplus.mbg.marking.mapper.SmsCouponProductCategoryRelationMapper.BaseResultMap">
         </collection>
     </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, coupon_id, member_id, coupon_code, member_nickname, get_type, create_time, use_status, use_time, order_id, order_sn, start_time, end_time, note
+    </sql>
+
     <select id="getDetailList" resultMap="couponHistoryDetailMap">
         SELECT
         ch.*,
@@ -45,19 +51,41 @@
         c.note c_note,
         c.use_type c_use_type,
         c.type c_type,
-        cpr.id cpr_id,cpr.product_id cpr_product_id,
-        cpcr.id cpcr_id,cpcr.product_category_id cpcr_product_category_id
+        c.count c_count,
+        c.per_limit c_per_limit,
+        c.publish_count c_publish_count,
+        c.use_count c_use_count,
+        c.receive_count c_receive_count,
+        c.enable_time c_enable_time,
+        c.code c_code,
+        c.member_level c_member_level,
+        cpr.id cpr_id,
+        cpr.product_id cpr_product_id,
+        cpr.coupon_id cpr_coupon_id,
+        cpr.product_name cpr_product_name,
+        cpr.product_sn cpr_product_sn,
+        cpcr.id cpcr_id,
+        cpcr.coupon_id cpcr_coupon_id,
+        cpcr.product_category_name cpcr_product_category_name,
+        cpcr.parent_category_name cpcr_parent_category_name,
+        cpcr.product_category_id cpcr_product_category_id
         FROM
         sms_coupon_history ch
         LEFT JOIN sms_coupon c ON ch.coupon_id = c.id
         LEFT JOIN sms_coupon_product_relation cpr ON cpr.coupon_id = c.id
         LEFT JOIN sms_coupon_product_category_relation cpcr ON cpcr.coupon_id = c.id
-        WHERE ch.member_id = #{memberId}
-        AND ch.use_status = 0 and now() >c.start_time and c.end_time>now()
+        <where>
+            <if test="isUseDate != null">
+                now() >c.start_time and c.end_time>now()
+            </if>
+            <if test="memberId != null">
+                AND ch.member_id = #{memberId}
+            </if>
+            <if test="useStatus != null">
+                AND ch.use_status = #{useStatus}
+            </if>
+        </where>
+        ORDER BY c.amount DESC
     </select>
-    <!-- 通用查询结果列 -->
-    <sql id="Base_Column_List">
-        id, coupon_id, member_id, coupon_code, member_nickname, get_type, create_time, use_status, use_time, order_id, order_sn, start_time, end_time, note
-    </sql>
 
 </mapper>

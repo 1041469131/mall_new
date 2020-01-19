@@ -21,7 +21,7 @@ import java.util.List;
  */
 public interface ISmsCouponService extends IService<SmsCoupon> {
 
-    boolean saves(SmsCouponParam entity);
+    boolean saves(SmsCouponParam entity) throws Exception;
 
     boolean updateByIds(SmsCouponParam entity);
 
@@ -65,4 +65,9 @@ public interface ISmsCouponService extends IService<SmsCoupon> {
 
     List<SmsCoupon> selectAllCoupon();
 
+    /**
+     * 根据优惠券的类型对用户进行优惠券的分配
+     * @param couponType
+     */
+    String allocateCoupon(String couponType);
 }

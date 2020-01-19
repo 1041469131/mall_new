@@ -2,6 +2,7 @@ package com.zscat.mallplus.portal.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.zscat.mallplus.manage.service.marking.ISmsCouponService;
 import com.zscat.mallplus.manage.service.sys.ISysUserService;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberRegisterParamService;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberService;
@@ -62,6 +63,9 @@ public class UmsMemberController extends ApiBaseAction {
 
     @Autowired
     private IUmsMemberRegisterParamService iUmsMemberRegisterParamService;
+
+    @Autowired
+    private ISmsCouponService iSmsCouponService;
 
     @IgnoreAuth
     @ApiOperation("登录以后返回token")
@@ -209,6 +213,18 @@ public class UmsMemberController extends ApiBaseAction {
             umsMember.setMatchUserId(iSysUserService.getRandomSysUser().getId());
         }
         if(memberService.updateById(umsMember)){
+            if(MagicConstant.UMS_IS_COMPLETE_DONE.equals(umsMember.getIsRegister())){
+                return new CommonResult<>().success("注册成功");
+            }
+            if(MagicConstant.UMS_IS_COMPLETE_DONE.equals(umsMember.getIsComplete())){
+                String msg = iSmsCouponService.allocateCoupon("3");
+                if(!StringUtils.isEmpty(msg)){
+                    msg = ",但是分配优惠券失败，请联系客服;";
+                    return new CommonResult<>().success("完善资料成功"+msg);
+                }else{
+                    return new CommonResult<>().success("完善资料成功,优惠券已发放");
+                }
+            }
             return new CommonResult<>().success("注册成功");
         }else{
             return new CommonResult<>().failed("更新用户数据失败，注册失败");

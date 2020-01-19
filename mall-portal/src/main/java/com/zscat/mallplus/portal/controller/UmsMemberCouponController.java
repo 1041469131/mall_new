@@ -1,9 +1,11 @@
 package com.zscat.mallplus.portal.controller;
 
 
+import com.zscat.mallplus.manage.service.marking.ISmsCouponHistoryService;
 import com.zscat.mallplus.manage.service.marking.ISmsCouponService;
 import com.zscat.mallplus.manage.service.oms.IOmsCartItemService;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberService;
+import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
 import com.zscat.mallplus.mbg.marking.entity.SmsCoupon;
 import com.zscat.mallplus.mbg.marking.entity.SmsCouponHistory;
 import com.zscat.mallplus.mbg.marking.vo.SmsCouponHistoryDetail;
@@ -37,6 +39,9 @@ public class UmsMemberCouponController {
     @Autowired
     private IOmsCartItemService cartItemService;
 
+    @Autowired
+    private ISmsCouponHistoryService iSmsCouponHistoryService;
+
     @ApiOperation("领取指定优惠券")
     @RequestMapping(value = "/add")
     @ResponseBody
@@ -49,9 +54,11 @@ public class UmsMemberCouponController {
             allowableValues = "0,1,2", paramType = "query", dataType = "integer")
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     @ResponseBody
+    @IgnoreAuth
     public Object list(@RequestParam(value = "useStatus", required = false) Integer useStatus) {
-        List<SmsCouponHistory> couponHistoryList = couponService.getCouponByUserStatus(useStatus);
-        return new CommonResult().success(couponHistoryList);
+        iSmsCouponHistoryService.updateCouponStatus();
+        List<SmsCouponHistoryDetail> couponHistoryDetails = iSmsCouponHistoryService.listByStatus(useStatus);
+        return new CommonResult().success(couponHistoryDetails);
     }
 
     /**
