@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModelProperty;
+import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -195,11 +196,14 @@ public class PmsSkuStock implements Serializable {
     }
 
     public String getMeno() {
-        StringBuffer sb = new StringBuffer("规格:" + this.sp1);
-        if (this.sp2 != null) {
+        StringBuffer sb = new StringBuffer();
+        if (!StringUtils.isEmpty(this.sp1)) {
+            sb.append("," + this.sp1);
+        }
+        if (!StringUtils.isEmpty(this.sp2)) {
             sb.append("," + this.sp2);
         }
-        if (this.sp3 != null) {
+        if (!StringUtils.isEmpty(this.sp3)) {
             sb.append("," + this.sp3);
         }
         return sb.toString();

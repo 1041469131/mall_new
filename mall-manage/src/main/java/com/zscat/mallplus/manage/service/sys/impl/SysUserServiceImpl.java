@@ -210,7 +210,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Override
     public List<SysPermission> listUserPerms(Long id) {
-        if (!redisService.exists(String.format(Rediskey.menuList,id))){
+        if (StringUtils.isEmpty(redisService.get(String.format(Rediskey.menuList,id)))){
             List<SysPermission> list= permissionMapper.listUserPerms(id);
             String key =String.format(Rediskey.menuList,id);
             redisService.set(key,JsonUtil.objectToJson(list));

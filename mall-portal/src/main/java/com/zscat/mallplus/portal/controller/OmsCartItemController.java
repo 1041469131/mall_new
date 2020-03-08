@@ -1,9 +1,9 @@
 package com.zscat.mallplus.portal.controller;
 
 
+import com.alibaba.druid.support.json.JSONUtils;
 import com.zscat.mallplus.manage.service.oms.IOmsCartItemService;
 import com.zscat.mallplus.manage.service.pms.IPmsSkuStockService;
-import com.zscat.mallplus.manage.service.ums.IUmsMemberService;
 import com.zscat.mallplus.manage.utils.UserUtils;
 import com.zscat.mallplus.mbg.oms.entity.OmsCartItem;
 import com.zscat.mallplus.mbg.oms.vo.CartProduct;
@@ -151,5 +151,18 @@ public class OmsCartItemController {
         return new CommonResult().failed();
     }
 
+    /***************修改购物车的规格接口************************/
+
+    @ApiOperation("修改购物车中商品的规格")
+    @RequestMapping(value = "/updateAttr", method = RequestMethod.POST)
+    @ResponseBody
+    public Object updateAttr4Product(Long cartItemId,String attrs) {
+        Map<String,Object> attrMap = (Map<String,Object>)JSONUtils.parse(attrs);
+        int count = cartItemService.updateAttr4Product(cartItemId,attrMap);
+        if (count > 0) {
+            return new CommonResult().success(count);
+        }
+        return new CommonResult().failed();
+    }
 
 }

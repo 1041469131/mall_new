@@ -73,4 +73,6 @@ public interface IOmsCartItemService extends IService<OmsCartItem> {
      * 获取包含促销活动信息的购物车列表并且根据品牌进行分类
      */
     Map<String,List<CartPromotionItem>> mapCartPromotionItem(Long memberId);
+
+    int updateAttr4Product(Long cartItemId, Map<String,Object> attrMap);
 }

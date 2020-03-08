@@ -491,4 +491,27 @@ public class OmsCartItemServiceImpl extends ServiceImpl<OmsCartItemMapper, OmsCa
         }
         return cartPromotionItemMap;
     }
+
+    @Override
+    public int updateAttr4Product(Long cartItemId, Map<String,Object> attrMap) {
+        OmsCartItem oldOmsCartItem = cartItemMapper.selectById(cartItemId);
+        OmsCartItem cartItem = oldOmsCartItem;
+        if(oldOmsCartItem != null){
+            oldOmsCartItem.setId(oldOmsCartItem.getId());
+            oldOmsCartItem.setModifyDate(new Date());
+            oldOmsCartItem.setDeleteStatus(MagicConstant.DELETE_YET);
+            cartItemMapper.updateById(oldOmsCartItem);
+            if(attrMap != null){
+                cartItem.setId(null);
+                String sp1 = (String) attrMap.get("sp1");
+                String sp2 = (String) attrMap.get("sp2");
+                cartItem.setSp1(sp1);
+                cartItem.setSp1(sp2);
+                add(cartItem);
+                return 1;
+            }
+
+        }
+        return 0;
+    }
 }
