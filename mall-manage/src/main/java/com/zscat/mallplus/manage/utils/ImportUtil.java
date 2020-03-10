@@ -27,7 +27,31 @@ public class ImportUtil {
         ProductVo4Import productVo4Import = JsonUtil.jsonToPojo(productJsonStr, ProductVo4Import.class);
         PmsProduct product = assemblyProduct(productVo4Import);
         assemblyAndSaveSku(productVo4Import,product);
+        assemblyAndSaveProductCategory("");
+        assemblyAndSaveProductAttr("");
+        assemblyAndSaveBrand("");
         System.out.println("单元测试");
+    }
+
+    /**
+     * 组装品牌
+     * @param s
+     */
+    private static void assemblyAndSaveBrand(String brandName) {
+    }
+
+    /**
+     * 组装产品属性
+     * @param s
+     */
+    private static void assemblyAndSaveProductAttr(String attrName) {
+    }
+
+    /**
+     * 组装产品分类
+     * @param s
+     */
+    private static void assemblyAndSaveProductCategory(String productCategoryName) {
     }
 
     /**
