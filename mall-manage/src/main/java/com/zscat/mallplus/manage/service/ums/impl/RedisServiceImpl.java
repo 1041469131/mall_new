@@ -3,6 +3,8 @@ package com.zscat.mallplus.manage.service.ums.impl;
 
 import com.zscat.mallplus.manage.service.ums.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Service
 public class RedisServiceImpl implements RedisService {
+
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
     /**
@@ -49,6 +52,14 @@ public class RedisServiceImpl implements RedisService {
     }
 
     public boolean exists(final String key) {
-        return stringRedisTemplate.execute((RedisCallback<Boolean>) connection -> connection.exists(key.getBytes(DEFAULT_CHARSET)));
+        RedisCallback<Boolean> redisCallback = new RedisCallback<Boolean>() {
+            @Override
+            public Boolean doInRedis(RedisConnection redisConnection) throws DataAccessException {
+                return redisConnection.exists(key.getBytes(DEFAULT_CHARSET));
+            }
+        };
+        boolean flag = stringRedisTemplate.execute(redisCallback);
+        return flag;
+//        return stringRedisTemplate.execute((RedisCallback<Boolean>) connection -> connection.exists(key.getBytes(DEFAULT_CHARSET)));
     }
 }
