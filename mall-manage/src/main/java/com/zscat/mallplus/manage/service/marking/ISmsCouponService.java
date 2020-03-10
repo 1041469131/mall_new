@@ -6,6 +6,7 @@ import com.zscat.mallplus.mbg.marking.entity.SmsCouponHistory;
 import com.zscat.mallplus.mbg.marking.vo.SmsCouponHistoryDetail;
 import com.zscat.mallplus.mbg.marking.vo.SmsCouponParam;
 import com.zscat.mallplus.mbg.oms.vo.CartPromotionItem;
+import com.zscat.mallplus.mbg.ums.entity.UmsMember;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -69,5 +70,5 @@ public interface ISmsCouponService extends IService<SmsCoupon> {
      * 根据优惠券的类型对用户进行优惠券的分配
      * @param couponType
      */
-    String allocateCoupon(String couponType);
+    String allocateCoupon(String couponType,Long memberId);
 }

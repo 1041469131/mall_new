@@ -123,7 +123,7 @@ public class UmsMember implements Serializable {
     private String shirtSize;
 
     /**裤子 尺码*/
-    @ApiModelProperty(value = "裤子 尺码")
+    @ApiModelProperty(value = "裤子尺码")
     private String pantsSize;
 
     /**体貌特征*/
@@ -208,6 +208,12 @@ public class UmsMember implements Serializable {
 
     @ApiModelProperty(value = "0-没有注册成功 1-注册成功")
     private String isRegister;
+
+    @ApiModelProperty(value = "衣服的频率")
+    private String dressFreq;
+
+    @ApiModelProperty(value = "推荐的搭配数量")
+    private String matchCount;
 
     private static final long serialVersionUID = 1L;
 
@@ -617,5 +623,21 @@ public class UmsMember implements Serializable {
 
     public void setIsRegister(String isRegister) {
         this.isRegister = isRegister;
+    }
+
+    public String getDressFreq() {
+        return dressFreq;
+    }
+
+    public void setDressFreq(String dressFreq) {
+        this.dressFreq = dressFreq;
+    }
+
+    public String getMatchCount() {
+        return matchCount;
+    }
+
+    public void setMatchCount(String matchCount) {
+        this.matchCount = matchCount;
     }
 }

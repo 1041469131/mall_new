@@ -6,6 +6,7 @@ import com.zscat.mallplus.mbg.utils.CommonResult;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -76,4 +77,6 @@ public interface IUmsMemberService extends IService<UmsMember> {
     Object loginByAuthCode(String telephone, String authCode);
 
     Object modifyPhoneByAuthCode(UmsMember umsMember, String phone, String authCode);
+
+    List<UmsMember> getRecommedInfos(Long recommendedId);
 }

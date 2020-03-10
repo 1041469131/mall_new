@@ -20,13 +20,13 @@
         <result column="sort" property="sort" />
         <result column="sale" property="sale" />
         <result column="price" property="price" />
-        <result column="promotion_price" property="promotionPrice" />
+        <result column="market_price" property="market_price" />
         <result column="gift_growth" property="giftGrowth" />
         <result column="gift_point" property="giftPoint" />
         <result column="use_point_limit" property="usePointLimit" />
         <result column="sub_title" property="subTitle" />
         <result column="description" property="description" />
-        <result column="original_price" property="originalPrice" />
+        <result column="commodity_price" property="commodityPrice" />
         <result column="stock" property="stock" />
         <result column="low_stock" property="lowStock" />
         <result column="unit" property="unit" />
@@ -49,6 +49,10 @@
         <result column="supply_id" property="supplyId" />
         <result column="create_time" property="createTime" />
         <result column="school_id" property="schoolId" />
+        <result column="delivery_price" property="deliveryPrice" />
+        <result column="type" property="type" />
+        <result column="product_id_ext" property="productIdExt" />
+        <result column="url" property="url" />
     </resultMap>
 
     <resultMap id="cartProductMap" type="com.zscat.mallplus.mbg.oms.vo.CartProduct" autoMapping="true">
@@ -190,7 +194,7 @@
     </select>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, brand_id, product_category_id, feight_template_id, product_attribute_category_id, name, pic, product_sn, delete_status, publish_status, new_status, recommand_status, verify_status, sort, sale, price, promotion_price, gift_growth, gift_point, use_point_limit, sub_title, description, original_price, stock, low_stock, unit, weight, preview_status, service_ids, keywords, note, album_pics, detail_title, detail_desc, detail_html, detail_mobile_html, promotion_start_time, promotion_end_time, promotion_per_limit, promotion_type, brand_name, product_category_name, supply_id, create_time, school_id
+        id, brand_id, product_category_id, feight_template_id, product_attribute_category_id, name, pic, product_sn, delete_status, publish_status, new_status, recommand_status, verify_status, sort, sale, price, market_price, gift_growth, gift_point, use_point_limit, sub_title, description, commodity_price, stock, low_stock, unit, weight, preview_status, service_ids, keywords, note, album_pics, detail_title, detail_desc, detail_html, detail_mobile_html, promotion_start_time, promotion_end_time, promotion_per_limit, promotion_type, brand_name, product_category_name, supply_id, create_time, school_id,delivery_price,product_id_ext,type,url
     </sql>
 
 </mapper>

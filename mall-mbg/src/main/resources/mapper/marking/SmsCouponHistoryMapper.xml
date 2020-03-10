@@ -18,6 +18,7 @@
         <result column="start_time" property="startTime" />
         <result column="end_time" property="endTime" />
         <result column="note" property="note" />
+        <result column="effect_day" property="effectDay" />
     </resultMap>
 
     <resultMap id="couponHistoryDetailMap" type="com.zscat.mallplus.mbg.marking.vo.SmsCouponHistoryDetail"
@@ -35,7 +36,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, coupon_id, member_id, coupon_code, member_nickname, get_type, create_time, use_status, use_time, order_id, order_sn, start_time, end_time, note
+        id, coupon_id, member_id, coupon_code, member_nickname, get_type, create_time, use_status, use_time, order_id, order_sn, start_time, end_time, note,effect_day
     </sql>
 
     <select id="getDetailList" resultMap="couponHistoryDetailMap">
@@ -75,9 +76,6 @@
         LEFT JOIN sms_coupon_product_relation cpr ON cpr.coupon_id = c.id
         LEFT JOIN sms_coupon_product_category_relation cpcr ON cpcr.coupon_id = c.id
         <where>
-            <if test="isUseDate != null">
-                now() >c.start_time and c.end_time>now()
-            </if>
             <if test="memberId != null">
                 AND ch.member_id = #{memberId}
             </if>

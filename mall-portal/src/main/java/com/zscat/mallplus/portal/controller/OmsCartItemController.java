@@ -1,6 +1,7 @@
 package com.zscat.mallplus.portal.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zscat.mallplus.manage.service.oms.IOmsCartItemService;
 import com.zscat.mallplus.manage.service.pms.IPmsSkuStockService;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberService;
@@ -151,5 +152,38 @@ public class OmsCartItemController {
         return new CommonResult().failed();
     }
 
+    /*******************新增接口**********************/
 
+    @ApiOperation("修改购物车中商品的规格")
+    @RequestMapping(value = "/update/updateCartItem", method = RequestMethod.POST)
+    @ResponseBody
+    public Object updateCartItem(@RequestParam Long cartItemId,
+                                 @RequestParam Long proudctSkuId,@RequestParam Integer count) {
+//        UmsMember umsMember = UserUtils.getCurrentUmsMember();
+//        OmsCartItem existCartItem = cartItemService.getOne(new QueryWrapper<OmsCartItem>().eq("member_id",umsMember.getId()).
+//                notIn("id",cartItemId).eq("product_sku_id",proudctSkuId));
+//        if(existCartItem != null){
+//            cartItemService.removeById(existCartItem.getId());
+//        }
+        OmsCartItem cartItem = cartItemService.getById(cartItemId);
+        PmsSkuStock pmsSkuStock = pmsSkuStockService.getById(proudctSkuId);
+        if((pmsSkuStock != null && (pmsSkuStock.getStock()-pmsSkuStock.getLockStock()) > 0) && cartItem != null){
+            cartItem.setPrice(pmsSkuStock.getPrice());
+            cartItem.setProductId(pmsSkuStock.getProductId());
+            cartItem.setProductSkuCode(pmsSkuStock.getSkuCode());
+            cartItem.setQuantity(count);
+            cartItem.setProductSkuId(proudctSkuId);
+            cartItem.setProductAttr(pmsSkuStock.getMeno());
+            cartItem.setProductPic(pmsSkuStock.getPic());
+            cartItem.setSp1(pmsSkuStock.getSp1());
+            cartItem.setSp2(pmsSkuStock.getSp2());
+            cartItem.setSp3(pmsSkuStock.getSp3());
+            cartItem.setMemberId(UserUtils.getCurrentUmsMember().getId());
+        }
+        int cartItemCount = cartItemService.updateAttr(cartItem);
+        if (cartItemCount > 0) {
+            return new CommonResult().success(count);
+        }
+        return new CommonResult().failed();
+    }
 }

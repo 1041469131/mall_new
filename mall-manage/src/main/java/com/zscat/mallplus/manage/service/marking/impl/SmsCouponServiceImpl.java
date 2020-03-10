@@ -20,8 +20,10 @@ import com.zscat.mallplus.mbg.marking.vo.SmsCouponHistoryDetail;
 import com.zscat.mallplus.mbg.marking.vo.SmsCouponParam;
 import com.zscat.mallplus.mbg.oms.vo.CartPromotionItem;
 import com.zscat.mallplus.mbg.ums.entity.UmsMember;
+import com.zscat.mallplus.mbg.ums.mapper.UmsMemberMapper;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -55,6 +57,9 @@ public class SmsCouponServiceImpl extends ServiceImpl<SmsCouponMapper, SmsCoupon
     private IUmsMemberService memberService;
     @Resource
     private SmsCouponHistoryMapper couponHistoryMapper;
+
+    @Autowired
+    private UmsMemberMapper umsMemberMapper;
 
     @Override
     public boolean saves(SmsCouponParam couponParam) throws Exception {
@@ -149,14 +154,15 @@ public class SmsCouponServiceImpl extends ServiceImpl<SmsCouponMapper, SmsCoupon
     }
 
     @Override
-    public String allocateCoupon(String couponType) {
-        UmsMember currentMember = UserUtils.getCurrentUmsMember();
-        List<SmsCoupon> coupons = couponMapper.selectList(new QueryWrapper<SmsCoupon>().eq("type", couponType).eq("use_type", 0));
+    public String allocateCoupon(String couponType,Long memberId) {
+        UmsMember currentMember = umsMemberMapper.selectById(memberId);
+        List<SmsCoupon> coupons = couponMapper.selectList(new QueryWrapper<SmsCoupon>().eq("type", couponType).
+                eq("use_type", 0));
         if(!CollectionUtils.isEmpty(coupons)){
             for(SmsCoupon smsCoupon : coupons){
                 String msg = checkCoupon(smsCoupon, currentMember);
                 if(StringUtils.isEmpty(msg)){
-                    generateCoupon(smsCoupon,currentMember );
+                    generateCoupon(smsCoupon,currentMember);
                 }else{
                     return msg;
                 }
@@ -184,6 +190,7 @@ public class SmsCouponServiceImpl extends ServiceImpl<SmsCouponMapper, SmsCoupon
     private void generateCoupon(SmsCoupon coupon,UmsMember currentMember) {
         SmsCouponHistory couponHistory = new SmsCouponHistory();
         couponHistory.setCouponId(coupon.getId());
+        couponHistory.setEffectDay(coupon.getEffectDay());
         couponHistory.setCouponCode(generateCouponCode(currentMember.getId()));
         couponHistory.setCreateTime(new Date());
         couponHistory.setMemberId(currentMember.getId());
@@ -199,6 +206,7 @@ public class SmsCouponServiceImpl extends ServiceImpl<SmsCouponMapper, SmsCoupon
         couponHistory.setUseStatus(MagicConstant.COUPON_USE_STATUS_4_NO);
         couponHistory.setStartTime(coupon.getStartTime());
         couponHistory.setEndTime(coupon.getEndTime());
+        couponHistory.setUseTime(new Date());
         couponHistory.setNote(coupon.getName()+":满"+coupon.getMinPoint()+"减"+ coupon.getAmount());
         couponHistoryMapper.insert(couponHistory);
         //修改优惠券表的数量、领取数量
@@ -276,7 +284,6 @@ public class SmsCouponServiceImpl extends ServiceImpl<SmsCouponMapper, SmsCoupon
         Map<String,Object> paramMap = new HashMap<>();
         paramMap.put("memberId", currentMember.getId());
         paramMap.put("useStatus", 0);
-        paramMap.put("isUseDate", true);
         List<SmsCouponHistoryDetail> allList = couponHistoryMapper.getDetailList(paramMap);
         //根据优惠券使用类型来判断优惠券是否可用
         List<SmsCouponHistoryDetail> enableList = new ArrayList<>();

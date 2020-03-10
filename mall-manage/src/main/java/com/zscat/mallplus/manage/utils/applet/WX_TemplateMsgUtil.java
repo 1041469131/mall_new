@@ -21,7 +21,7 @@ public class WX_TemplateMsgUtil {
             JSONObject keyJson = new JSONObject();
             TemplateData  dta=  entry.getValue();
             keyJson.put("value",dta.getValue());
-            keyJson.put("color", dta.getColor());
+            keyJson.put("Color", dta.getColor());
             json.put(entry.getKey(), keyJson);
         }
         return json;

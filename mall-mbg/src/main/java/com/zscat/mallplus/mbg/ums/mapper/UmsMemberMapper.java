@@ -2,6 +2,9 @@ package com.zscat.mallplus.mbg.ums.mapper;
 
 import com.zscat.mallplus.mbg.ums.entity.UmsMember;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -15,4 +18,5 @@ public interface UmsMemberMapper extends BaseMapper<UmsMember> {
 
     UmsMember getRandomUmsMember();
 
+    List<UmsMember> getRecommedInfos(@Param("recommendedId") Long recommendedId);
 }

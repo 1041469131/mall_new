@@ -79,6 +79,8 @@ public class SmsCouponHistory implements Serializable {
 
     private String note;
 
+    @TableField("effect_day")
+    private Integer effectDay;
 
     public Long getId() {
         return id;
@@ -192,23 +194,11 @@ public class SmsCouponHistory implements Serializable {
         this.note = note;
     }
 
-    @Override
-    public String toString() {
-        return "SmsCouponHistory{" +
-        ", id=" + id +
-        ", couponId=" + couponId +
-        ", memberId=" + memberId +
-        ", couponCode=" + couponCode +
-        ", memberNickname=" + memberNickname +
-        ", getType=" + getType +
-        ", createTime=" + createTime +
-        ", useStatus=" + useStatus +
-        ", useTime=" + useTime +
-        ", orderId=" + orderId +
-        ", orderSn=" + orderSn +
-        ", startTime=" + startTime +
-        ", endTime=" + endTime +
-        ", note=" + note +
-        "}";
+    public Integer getEffectDay() {
+        return effectDay;
+    }
+
+    public void setEffectDay(Integer effectDay) {
+        this.effectDay = effectDay;
     }
 }

@@ -189,6 +189,10 @@ public class UmsMemberController {
             umsMemberVo.setBalanceBodyName(dealUserTag(balanceBody));
             String careClothes = umsMember.getCareClothes();//更在意衣服
             umsMemberVo.setCareClothes(dealUserTag(careClothes));
+            String dressFreq = umsMember.getDressFreq();//衣服频率
+            umsMemberVo.setDressFreqName(dealUserTag(dressFreq));
+            String matchCount = umsMember.getMatchCount();//搭配的次数
+            umsMemberVo.setMatchCountName(dealUserTag(matchCount));
             umsMemberVos.add(umsMemberVo);
         }
     }

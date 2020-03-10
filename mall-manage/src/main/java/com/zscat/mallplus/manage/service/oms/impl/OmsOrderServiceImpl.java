@@ -1055,7 +1055,9 @@ public class OmsOrderServiceImpl extends ServiceImpl<OmsOrderMapper, OmsOrder> i
             } else {
                 //使用优惠券
                 SmsCouponHistoryDetail couponHistoryDetail = getUseCoupon(cartPromotionItemList, orderParam.getCouponId());
-                if (couponHistoryDetail == null) {
+                Date useDate = couponHistoryDetail.getUseTime();//领券的时间
+                Date delayDate = DateUtils.delayDate(useDate,Long.valueOf(couponHistoryDetail.getEffectDay()));//领券的时间+有效时间
+                if (couponHistoryDetail == null || delayDate.before(new Date())) {
                     return new CommonResult().failed("该优惠券不可用");
                 }
                 //对下单商品的优惠券进行处理

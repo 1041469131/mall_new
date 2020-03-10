@@ -126,6 +126,8 @@ public class ApiBaseAction {
         }
         return xff;
     }
+
+
     public UmsMember getCurrentMember() {
         try {
             SecurityContext ctx = SecurityContextHolder.getContext();

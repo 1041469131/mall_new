@@ -110,6 +110,9 @@ public class SmsCoupon implements Serializable {
     @TableField("member_level")
     private Integer memberLevel;
 
+    @TableField("effect_day")
+    private Integer effectDay;
+
 
     public Long getId() {
         return id;
@@ -255,27 +258,11 @@ public class SmsCoupon implements Serializable {
         this.memberLevel = memberLevel;
     }
 
-    @Override
-    public String toString() {
-        return "SmsCoupon{" +
-        ", id=" + id +
-        ", type=" + type +
-        ", name=" + name +
-        ", platform=" + platform +
-        ", count=" + count +
-        ", amount=" + amount +
-        ", perLimit=" + perLimit +
-        ", minPoint=" + minPoint +
-        ", startTime=" + startTime +
-        ", endTime=" + endTime +
-        ", useType=" + useType +
-        ", note=" + note +
-        ", publishCount=" + publishCount +
-        ", useCount=" + useCount +
-        ", receiveCount=" + receiveCount +
-        ", enableTime=" + enableTime +
-        ", code=" + code +
-        ", memberLevel=" + memberLevel +
-        "}";
+    public Integer getEffectDay() {
+        return effectDay;
+    }
+
+    public void setEffectDay(Integer effectDay) {
+        this.effectDay = effectDay;
     }
 }

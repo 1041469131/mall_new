@@ -40,6 +40,12 @@ public class UmsMemberVo extends UmsMember {
     @ApiModelProperty("更在意衣服的")
     private String careClothes;
 
+    @ApiModelProperty("衣服的频率描述")
+    private String dressFreqName;
+
+    @ApiModelProperty("推荐的搭配数量描述")
+    private String matchCountName;
+
     public String getDressTypeName() {
         return dressTypeName;
     }
@@ -120,5 +126,21 @@ public class UmsMemberVo extends UmsMember {
     @Override
     public void setCareClothes(String careClothes) {
         this.careClothes = careClothes;
+    }
+
+    public String getDressFreqName() {
+        return dressFreqName;
+    }
+
+    public void setDressFreqName(String dressFreqName) {
+        this.dressFreqName = dressFreqName;
+    }
+
+    public String getMatchCountName() {
+        return matchCountName;
+    }
+
+    public void setMatchCountName(String matchCountName) {
+        this.matchCountName = matchCountName;
     }
 }

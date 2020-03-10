@@ -106,6 +106,7 @@ public class MagicConstant {
     public final static String FAVOR_TYPE_LIKE = "1";
 
     /****促销类型：0->没有促销使用原价;1->使用促销价；2->使用会员价；3->使用阶梯价格；4->使用满减价格；5->限时购*****/
+    public final static Integer PROMOTION_TYPE_INIT = 1;
     public final static Integer PROMOTION_TYPE_SALES = 1;
     public final static Integer PROMOTION_TYPE_MEMBER = 2;
     public final static Integer PROMOTION_TYPE_LADDER = 3;
@@ -162,5 +163,13 @@ public class MagicConstant {
     /*******获取类型：0->后台赠送；1->主动获取**/
     public final static Integer COUPON_GET_TYPE_4_BACK = 0;
     public final static Integer COUPON_GET_TYPE_4_ACTIVE = 1;
+
+    /*******新品状态:0->不是新品；1->新品**/
+    public final static Integer NEW_STATUS_OLD = 0;
+    public final static Integer NEW_STATUS_NEW = 1;
+
+    /*******是否为预告商品：0->不是；1->是**/
+    public final static Integer PREVIEW_STATUS_NOT = 0;
+    public final static Integer PREVIEW_STATUS_YES = 1;
 
 }

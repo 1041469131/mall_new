@@ -53,6 +53,8 @@
         <result column="match_user_id" jdbcType="BIGINT" property="matchUserId" />
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
         <result column="is_register" jdbcType="VARCHAR" property="isRegister" />
+        <result column="dress_freq" jdbcType="VARCHAR" property="dressFreq" />
+        <result column="match_count" jdbcType="VARCHAR" property="matchCount" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -63,11 +65,28 @@
         weight, height, shirt_size, pants_size, aspect, dress_style, dress_color, never_dress_style,
         never_dress_style_descr, never_dress_icon, never_dress_icon_descr, suite_lining,
         suite_lining_descr, enjoy_model, industry, item_budget, body_url, balance_body, balance_body_descr,
-        descr, is_complete, match_user_id, update_time,is_register
+        descr, is_complete, match_user_id, update_time,is_register,dress_freq,match_count
+    </sql>
+
+    <sql id="alias_column_list">
+        t.id, t.member_level_id, t.username, t.password, t.nickname, t.phone, t.status, t.create_time, t.icon,
+        t.gender, t.birthday, t.city, t.job, t.personalized_signature, t.source_type, t.integration, t.growth,
+        t.luckey_count, t.history_integration, t.avatar, t.session_key, t.weixin_openid, t.invitecode, t.blance, t.school_id,
+        t.weight, t.height, t.shirt_size, t.pants_size, t.aspect, t.dress_style, t.dress_color, t.never_dress_style,
+        t.never_dress_style_descr, t.never_dress_icon, t.never_dress_icon_descr, t.suite_lining,
+        t.suite_lining_descr, t.enjoy_model, t.industry, t.item_budget, t.body_url, t.balance_body, t.balance_body_descr,
+        t.descr, t.is_complete, t.match_user_id, t.update_time, t.is_register, t.dress_freq,t.match_count
     </sql>
     
     <select id="getRandomUmsMember" resultMap="BaseResultMap">
         SELECT <include refid="Base_Column_List" /> FROM ums_member ORDER BY RAND() LIMIT 1
+    </select>
+
+    <select id="getRecommedInfos" resultMap="BaseResultMap">
+        SELECT <include refid="alias_column_list" />
+        FROM ums_recommend_relation urr
+        LEFT JOIN ums_member t on t.id = urr.recommend_id
+        where urr.recommended_id = #{recommendedId} and urr.status = '1'
     </select>
 
 </mapper>

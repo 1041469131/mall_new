@@ -33,10 +33,7 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * <p>
@@ -417,5 +414,10 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
         umsMember.setPhone(phone);
         this.updateById(umsMember);
         return new CommonResult().success();
+    }
+
+    @Override
+    public List<UmsMember> getRecommedInfos(Long recommendedId) {
+        return memberMapper.getRecommedInfos(recommendedId);
     }
 }

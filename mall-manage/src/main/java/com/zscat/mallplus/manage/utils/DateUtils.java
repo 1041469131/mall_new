@@ -13,6 +13,7 @@ import java.util.Date;
  * 日期处理
  */
 public class DateUtils {
+
     private final static Logger logger = LoggerFactory.getLogger(DateUtils.class);
     /**
      * 时间格式(yyyy-MM-dd)
@@ -280,7 +281,7 @@ public class DateUtils {
     }
 
     /**
-     * 根据当前的日期往后推算日期
+     * 根据当前的日期往前推算日期
      * @param date
      * @param day
      * @return
@@ -292,8 +293,21 @@ public class DateUtils {
         return new Date(time); // 将毫秒数转换成日期
     }
 
+    /**
+     * 根据当前的日期往后推算日期
+     * @param date
+     * @param day
+     * @return
+     */
+    public static Date delayDate(Date date,Long day) {
+        long time = date.getTime(); // 得到指定日期的毫秒数
+        day = day*24*60*60*1000; // 要加上的天数转换成毫秒数
+        time+=day; // 相加得到新的毫秒数
+        return new Date(time); // 将毫秒数转换成日期
+    }
+
+
     public static void main(String[] args) throws Exception {
-        System.out.println(DateUtils.addDay(new Date(), -7));
-        System.out.println(DateUtils.calculateDaysNew(DateUtils.toDate(DateUtils.addDay(new Date(), -7)), new Date()));
+        System.out.println(format(delayDate(new Date(),30L),"yyyy-MM-dd HH:mm:ss"));
     }
 }

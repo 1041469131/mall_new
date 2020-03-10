@@ -24,13 +24,13 @@ public class TemplateData {
         this.value = value;
     }
     /**
-     * @return the color
+     * @return the Color
      */
     public String getColor() {
         return color;
     }
     /**
-     * @param color the color to set
+     * @param color the Color to set
      */
     public void setColor(String color) {
         this.color = color;

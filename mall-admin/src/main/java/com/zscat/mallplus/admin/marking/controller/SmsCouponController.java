@@ -115,9 +115,5 @@ public class SmsCouponController {
             log.error("查询优惠卷表明细：%s", e.getMessage(), e);
             return new CommonResult().failed();
         }
-
     }
-
-
-
 }

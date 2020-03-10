@@ -102,9 +102,9 @@ public class PmsProduct implements Serializable {
     /**
      * 促销价格
      */
-    @TableField("promotion_price")
-    @ApiModelProperty(value = "促销价格")
-    private BigDecimal promotionPrice;
+    @TableField("market_price")
+    @ApiModelProperty(value = "市场价格")
+    private BigDecimal marketPrice;
 
     /**
      * 赠送的成长值
@@ -142,9 +142,9 @@ public class PmsProduct implements Serializable {
     /**
      * 市场价
      */
-    @TableField("original_price")
-    @ApiModelProperty(value = "市场价")
-    private BigDecimal originalPrice;
+    @TableField("commodity_price")
+    @ApiModelProperty(value = "拿货价格")
+    private BigDecimal commodityPrice;
 
     /**
      * 库存
@@ -260,6 +260,34 @@ public class PmsProduct implements Serializable {
 
     @TableField("school_id")
     private Long schoolId;
+
+    /**
+     * 快递费
+     */
+    @TableField("delivery_price")
+    @ApiModelProperty(value = "快递费")
+    private BigDecimal deliveryPrice;
+
+    /**
+     * 外部id（比如外部商品的id）
+     */
+    @TableField("product_id_ext")
+    @ApiModelProperty(value = "外部id（比如外部商品的id）")
+    private String productIdExt;
+
+    /**
+     * 0-系统输入 1-网络数据
+     */
+    @TableField("type")
+    @ApiModelProperty(value = "0-系统输入 1-网络数据")
+    private String type;
+
+    /**
+     * 商品的url（比如商品的详细明细的url）
+     */
+    @TableField("url")
+    @ApiModelProperty(value = "商品的url（比如商品的详细明细的url）")
+    private String url;
 
 
     public Long getId() {
@@ -390,13 +418,6 @@ public class PmsProduct implements Serializable {
         this.price = price;
     }
 
-    public BigDecimal getPromotionPrice() {
-        return promotionPrice;
-    }
-
-    public void setPromotionPrice(BigDecimal promotionPrice) {
-        this.promotionPrice = promotionPrice;
-    }
 
     public Integer getGiftGrowth() {
         return giftGrowth;
@@ -436,14 +457,6 @@ public class PmsProduct implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public BigDecimal getOriginalPrice() {
-        return originalPrice;
-    }
-
-    public void setOriginalPrice(BigDecimal originalPrice) {
-        this.originalPrice = originalPrice;
     }
 
     public Integer getStock() {
@@ -622,54 +635,51 @@ public class PmsProduct implements Serializable {
         this.schoolId = schoolId;
     }
 
-    @Override
-    public String toString() {
-        return "PmsProduct{" +
-        ", id=" + id +
-        ", brandId=" + brandId +
-        ", productCategoryId=" + productCategoryId +
-        ", feightTemplateId=" + feightTemplateId +
-        ", productAttributeCategoryId=" + productAttributeCategoryId +
-        ", name=" + name +
-        ", pic=" + pic +
-        ", productSn=" + productSn +
-        ", deleteStatus=" + deleteStatus +
-        ", publishStatus=" + publishStatus +
-        ", newStatus=" + newStatus +
-        ", recommandStatus=" + recommandStatus +
-        ", verifyStatus=" + verifyStatus +
-        ", sort=" + sort +
-        ", sale=" + sale +
-        ", price=" + price +
-        ", promotionPrice=" + promotionPrice +
-        ", giftGrowth=" + giftGrowth +
-        ", giftPoint=" + giftPoint +
-        ", usePointLimit=" + usePointLimit +
-        ", subTitle=" + subTitle +
-        ", description=" + description +
-        ", originalPrice=" + originalPrice +
-        ", stock=" + stock +
-        ", lowStock=" + lowStock +
-        ", unit=" + unit +
-        ", weight=" + weight +
-        ", previewStatus=" + previewStatus +
-        ", serviceIds=" + serviceIds +
-        ", keywords=" + keywords +
-        ", note=" + note +
-        ", albumPics=" + albumPics +
-        ", detailTitle=" + detailTitle +
-        ", detailDesc=" + detailDesc +
-        ", detailHtml=" + detailHtml +
-        ", detailMobileHtml=" + detailMobileHtml +
-        ", promotionStartTime=" + promotionStartTime +
-        ", promotionEndTime=" + promotionEndTime +
-        ", promotionPerLimit=" + promotionPerLimit +
-        ", promotionType=" + promotionType +
-        ", brandName=" + brandName +
-        ", productCategoryName=" + productCategoryName +
-        ", supplyId=" + supplyId +
-        ", createTime=" + createTime +
-        ", schoolId=" + schoolId +
-        "}";
+    public BigDecimal getMarketPrice() {
+        return marketPrice;
+    }
+
+    public void setMarketPrice(BigDecimal marketPrice) {
+        this.marketPrice = marketPrice;
+    }
+
+    public BigDecimal getCommodityPrice() {
+        return commodityPrice;
+    }
+
+    public void setCommodityPrice(BigDecimal commodityPrice) {
+        this.commodityPrice = commodityPrice;
+    }
+
+    public BigDecimal getDeliveryPrice() {
+        return deliveryPrice;
+    }
+
+    public void setDeliveryPrice(BigDecimal deliveryPrice) {
+        this.deliveryPrice = deliveryPrice;
+    }
+
+    public String getProductIdExt() {
+        return productIdExt;
+    }
+
+    public void setProductIdExt(String productIdExt) {
+        this.productIdExt = productIdExt;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

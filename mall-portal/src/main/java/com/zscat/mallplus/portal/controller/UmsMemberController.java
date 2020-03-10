@@ -2,6 +2,7 @@ package com.zscat.mallplus.portal.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zscat.mallplus.manage.service.marking.ISmsCouponService;
 import com.zscat.mallplus.manage.service.sys.ISysUserService;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberRegisterParamService;
@@ -12,6 +13,8 @@ import com.zscat.mallplus.mbg.marking.entity.UserFormId;
 import com.zscat.mallplus.mbg.sys.entity.SysUser;
 import com.zscat.mallplus.mbg.ums.entity.UmsMember;
 import com.zscat.mallplus.mbg.ums.entity.UmsMemberRegisterParam;
+import com.zscat.mallplus.mbg.ums.entity.UmsRecommendRelation;
+import com.zscat.mallplus.mbg.ums.mapper.UmsRecommendRelationMapper;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.ValidatorUtils;
 import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
@@ -42,10 +45,13 @@ import java.util.Map;
 @Api(tags = "UmsMemberController", description = "会员管理")
 @RequestMapping("/api/member")
 public class UmsMemberController extends ApiBaseAction {
+
     @Autowired
     private IUmsMemberService memberService;
+
     @Value("${jwt.tokenHeader}")
     private String tokenHeader;
+
     @Value("${jwt.tokenHead}")
     private String tokenHead;
 
@@ -66,6 +72,9 @@ public class UmsMemberController extends ApiBaseAction {
 
     @Autowired
     private ISmsCouponService iSmsCouponService;
+
+    @Autowired
+    private UmsRecommendRelationMapper umsRecommendRelationMapper;
 
     @IgnoreAuth
     @ApiOperation("登录以后返回token")
@@ -206,7 +215,7 @@ public class UmsMemberController extends ApiBaseAction {
     @ApiOperation("用户注册接口(小程序)")
     @RequestMapping(value = "/register4MiniProgram")
     @ResponseBody
-    public CommonResult<UmsMember> register4MiniProgram(UmsMember umsMember) {
+    public CommonResult<UmsMember> register4MiniProgram(UmsMember umsMember,Long memberId) {
         umsMember.setId(UserUtils.getCurrentUmsMember().getId());
         umsMember.setUpdateTime(new Date());
         if(MagicConstant.UMS_IS_COMPLETE_DONE.equals(umsMember.getIsRegister())){
@@ -217,7 +226,18 @@ public class UmsMemberController extends ApiBaseAction {
                 return new CommonResult<>().success("注册成功");
             }
             if(MagicConstant.UMS_IS_COMPLETE_DONE.equals(umsMember.getIsComplete())){
-                String msg = iSmsCouponService.allocateCoupon("3");
+                String msg = iSmsCouponService.allocateCoupon("3",getCurrentMember().getId());
+                if(memberId != null){
+                    UmsRecommendRelation umsRecommendRelation = new UmsRecommendRelation();
+                    umsRecommendRelation.setStatus("1");
+                    umsRecommendRelation.setCreateTime(new Date());
+                    umsRecommendRelation.setUpdateTime(new Date());
+                    umsRecommendRelation.setRecommendedId(memberId);
+                    umsRecommendRelation.setRecommendId(UserUtils.getCurrentUmsMember().getId());
+                    umsRecommendRelationMapper.insert(umsRecommendRelation);
+                    iSmsCouponService.allocateCoupon("4",getCurrentMember().getId());//分享之后将优惠券发放给推荐的人
+                    iSmsCouponService.allocateCoupon("4",memberId);//将优惠券分享给被推荐的人
+                }
                 if(!StringUtils.isEmpty(msg)){
                     msg = ",但是分配优惠券失败，请联系客服;";
                     return new CommonResult<>().success("完善资料成功"+msg);
@@ -316,9 +336,12 @@ public class UmsMemberController extends ApiBaseAction {
         return memberService.modifyPhoneByAuthCode(umsMember,phone,authCode);
     }
 
-
-
-
-
-
+    @ApiOperation("根据被推荐的人id查询该推荐人推荐哪些人")
+    @RequestMapping(value = "/getRecommedInfos")
+    @ResponseBody
+    @IgnoreAuth
+    public Object getRecommedInfos(Long recommendedId) {
+        List<UmsMember> umsMembers = memberService.getRecommedInfos(recommendedId);
+        return new CommonResult<>().success(umsMembers);
+    }
 }
