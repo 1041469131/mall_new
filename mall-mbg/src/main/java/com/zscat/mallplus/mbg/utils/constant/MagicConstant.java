@@ -172,4 +172,47 @@ public class MagicConstant {
     public final static Integer PREVIEW_STATUS_NOT = 0;
     public final static Integer PREVIEW_STATUS_YES = 1;
 
+    /*******分类级别：0->1级；1->2级**/
+    public final static Integer LEVEL_FIRST = 0;
+    public final static Integer LEVEL_SECOND = 1;
+
+    /*******是否显示在导航栏：0->不显示；1->显示**/
+    public final static Integer NAV_STATUS_NOT_SHOW = 0;
+    public final static Integer NAV_STATUS_SHOW = 1;
+
+    /*******显示状态：0->不显示；1->显示**/
+    public final static Integer SHOW_STATUS_NOT_SHOW = 0;
+    public final static Integer SHOW_STATUS_SHOW = 1;
+
+    /*******属性选择类型：0->唯一；1->单选；2->多选**/
+    public final static Integer SELECT_TYPE_ONLY = 0;
+    public final static Integer SHOW_STATUS_RADIO = 1;
+    public final static Integer SHOW_STATUS_MULTI_RADIO = 2;
+
+    /*******属性录入方式：0->手工录入；1->从列表中选取**/
+    public final static Integer INPUT_TYPE_MANUAL = 0;
+    public final static Integer INPUT_TYPE_LIST = 1;
+
+    /*******分类筛选样式：0->普通；1->颜色**/
+    public final static Integer FILTER_TYPE_NORMAL = 0;
+    public final static Integer FILTER_TYPE_COLOR = 1;
+
+    /*******检索类型；0->不需要进行检索；1->关键字检索；2->范围检索**/
+    public final static Integer SEARCH_TYPE = 0;
+    public final static Integer SEARCH_TYPE_KEYWORD = 1;
+    public final static Integer SEARCH_TYPE_RANGE = 2;
+
+    /*******相同属性产品是否关联；0->不关联；1->关联**/
+    public final static Integer RELATED_STATUS_NOT = 0;
+    public final static Integer RELATED_STATUS_YET = 1;
+
+    /*******是否支持手动新增；0->不支持；1->支持**/
+    public final static Integer HAND_ADD_STATUS_NOT = 0;
+    public final static Integer HAND_ADD_STATUS_YET = 1;
+
+    /*******属性的类型；0->规格；1->参数**/
+    public final static Integer ATTR_TYPE_SPECI = 0;
+    public final static Integer ATTR_TYPE_PARAM = 1;
+
 }
+

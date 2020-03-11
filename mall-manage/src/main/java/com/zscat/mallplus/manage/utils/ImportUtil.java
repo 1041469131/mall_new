@@ -1,13 +1,14 @@
 package com.zscat.mallplus.manage.utils;
 
-import com.zscat.mallplus.mbg.pms.entity.PmsProduct;
-import com.zscat.mallplus.mbg.pms.entity.PmsSkuStock;
+import com.zscat.mallplus.manage.service.pms.*;
+import com.zscat.mallplus.mbg.pms.entity.*;
 import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
 import com.zscat.mallplus.mbg.utils.vo.ColorListVo;
-import com.zscat.mallplus.mbg.utils.vo.Img;
 import com.zscat.mallplus.mbg.utils.vo.ProductVo4Import;
 import com.zscat.mallplus.mbg.utils.vo.SkuVo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
@@ -20,38 +21,118 @@ import java.util.List;
  * @Date: 2020/3/10
  * @Description
  */
-//@Component
+@Component
 public class ImportUtil {
 
-    public static void importProduct(String productJsonStr){
+    @Autowired
+    private IPmsSkuStockService iPmsSkuStockService;
+
+    @Autowired
+    private IPmsProductService iPmsProductService;
+
+    @Autowired
+    private IPmsProductCategoryService iPmsProductCategoryService;
+
+    @Autowired
+    private IPmsBrandService iPmsBrandService;
+
+    @Autowired
+    private IPmsProductAttributeCategoryService iPmsProductAttributeCategoryService;
+
+    @Autowired
+    private IPmsProductAttributeService iPmsProductAttributeService;
+
+    @Autowired
+    private IPmsProductAttributeValueService iPmsProductAttributeValueService;
+
+    @Transactional
+    public void importProduct(String productJsonStr){
         ProductVo4Import productVo4Import = JsonUtil.jsonToPojo(productJsonStr, ProductVo4Import.class);
         PmsProduct product = assemblyProduct(productVo4Import);
+        iPmsProductService.save(product);
         assemblyAndSaveSku(productVo4Import,product);
-        assemblyAndSaveProductCategory("");
-        assemblyAndSaveProductAttr("");
-        assemblyAndSaveBrand("");
-        System.out.println("单元测试");
+        Long productCategoryId = assemblyAndSaveProductCategory("");
+        Long branId = assemblyAndSaveBrand("");
+        Long attrCategoryId = assemblyAndSaveProductAttrCategory("",productCategoryId);
+        Long productAttrId = assemblyAndSaveProductAttrs(productVo4Import,attrCategoryId);
+        assemblyAndSaveProductAttrValue(productVo4Import,productAttrId,product.getId());
+        product.setProductCategoryId(productCategoryId);
+        product.setProductAttributeCategoryId(attrCategoryId);
+        iPmsProductService.updateById(product);
+    }
+
+    /**
+     * 组装产品属性值
+     * @param productVo4Import
+     * @param productAttrId
+     */
+    private void assemblyAndSaveProductAttrValue(ProductVo4Import productVo4Import, Long productAttrId,Long productId) {
+        PmsProductAttributeValue pmsProductAttributeValue = new PmsProductAttributeValue();
+        pmsProductAttributeValue.setProductAttributeId(productAttrId);
+        pmsProductAttributeValue.setProductId(productId);
+        pmsProductAttributeValue.setValue("");//TODO
+        iPmsProductAttributeValueService.save(pmsProductAttributeValue);
+    }
+
+    /**
+     * 组装并且保存商品属性
+     * @param productVo4Import
+     */
+    private Long assemblyAndSaveProductAttrs(ProductVo4Import productVo4Import,Long attrCategoryId) {
+        PmsProductAttribute pmsProductAttribute = new PmsProductAttribute();
+        pmsProductAttribute.setProductAttributeCategoryId(attrCategoryId);
+        pmsProductAttribute.setName("");//TODO
+        pmsProductAttribute.setSelectType(MagicConstant.SELECT_TYPE_ONLY);//属性选择类型：0->唯一；1->单选；2->多选
+        pmsProductAttribute.setInputType(MagicConstant.INPUT_TYPE_LIST);//属性录入方式：0->手工录入；1->从列表中选取
+        pmsProductAttribute.setInputList("");//TODO 可选值列表，以逗号隔开
+        pmsProductAttribute.setFilterType(MagicConstant.FILTER_TYPE_NORMAL);//分类筛选样式：0->普通；1->颜色
+        pmsProductAttribute.setSearchType(MagicConstant.SEARCH_TYPE);//检索类型；0->不需要进行检索；1->关键字检索；2->范围检索
+        pmsProductAttribute.setRelatedStatus(MagicConstant.RELATED_STATUS_NOT);//相同属性产品是否关联；0->不关联；1->关联
+        pmsProductAttribute.setHandAddStatus(MagicConstant.HAND_ADD_STATUS_NOT);//是否支持手动新增；0->不支持；1->支持
+        pmsProductAttribute.setType(MagicConstant.ATTR_TYPE_SPECI);//TODO 属性的类型；0->规格；1->参数
+        iPmsProductAttributeService.save(pmsProductAttribute);
+        return pmsProductAttribute.getId();
     }
 
     /**
      * 组装品牌
      * @param s
      */
-    private static void assemblyAndSaveBrand(String brandName) {
+    private Long assemblyAndSaveBrand(String brandName) {
+        PmsBrand pmsBrand = new PmsBrand();
+        pmsBrand.setName(brandName);
+        iPmsBrandService.save(pmsBrand);
+        return pmsBrand.getId();
     }
 
     /**
      * 组装产品属性
      * @param s
      */
-    private static void assemblyAndSaveProductAttr(String attrName) {
+    private Long assemblyAndSaveProductAttrCategory(String attrName, Long productCategoryId) {
+        PmsProductAttributeCategory pmsProductAttributeCategory = new PmsProductAttributeCategory();
+        pmsProductAttributeCategory.setName(attrName);
+        pmsProductAttributeCategory.setCategoryId(productCategoryId);
+        iPmsProductAttributeCategoryService.save(pmsProductAttributeCategory);
+        return pmsProductAttributeCategory.getId();
     }
 
     /**
      * 组装产品分类
      * @param s
      */
-    private static void assemblyAndSaveProductCategory(String productCategoryName) {
+    private Long assemblyAndSaveProductCategory(String productCategoryName) {
+        PmsProductCategory pmsProductCategory = new PmsProductCategory();
+        pmsProductCategory.setParentId(0L);
+        pmsProductCategory.setName(productCategoryName);
+        pmsProductCategory.setLevel(MagicConstant.LEVEL_FIRST);
+        pmsProductCategory.setProductCount(0);
+        pmsProductCategory.setProductUnit("件");
+        pmsProductCategory.setNavStatus(MagicConstant.NAV_STATUS_NOT_SHOW);
+        pmsProductCategory.setShowStatus(MagicConstant.SHOW_STATUS_SHOW);
+        pmsProductCategory.setSort(0);
+        iPmsProductCategoryService.save(pmsProductCategory);
+        return pmsProductCategory.getId();
     }
 
     /**
@@ -60,7 +141,7 @@ public class ImportUtil {
      * @param product
      * @return
      */
-    private static void assemblyAndSaveSku(ProductVo4Import productVo4Import, PmsProduct product) {
+    private void assemblyAndSaveSku(ProductVo4Import productVo4Import, PmsProduct product) {
         List<PmsSkuStock> pmsSkuStocks = null;
         List<ColorListVo> colorListVoList = productVo4Import.getColorList();
         int totalStock = 0;
@@ -89,6 +170,9 @@ public class ImportUtil {
             }
         }
         product.setStock(totalStock);
+        if(!CollectionUtils.isEmpty(pmsSkuStocks)){
+            iPmsSkuStockService.saveBatch(pmsSkuStocks);
+        }
     }
 
     /**
@@ -96,7 +180,7 @@ public class ImportUtil {
      * @param productVo4Import
      * @return
      */
-    private static PmsProduct assemblyProduct(ProductVo4Import productVo4Import) {
+    private PmsProduct assemblyProduct(ProductVo4Import productVo4Import) {
         PmsProduct pmsProduct = new PmsProduct();
         pmsProduct.setFeightTemplateId(0L);
         pmsProduct.setName(productVo4Import.getTitle());
