@@ -1,5 +1,6 @@
 package com.zscat.mallplus.manage.utils;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zscat.mallplus.manage.service.pms.*;
 import com.zscat.mallplus.mbg.pms.entity.*;
 import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
@@ -51,14 +52,19 @@ public class ImportUtil {
         PmsProduct product = assemblyProduct(productVo4Import);
         iPmsProductService.save(product);
         assemblyAndSaveSku(productVo4Import,product);
-        Long productCategoryId = assemblyAndSaveProductCategory("");
-        Long branId = assemblyAndSaveBrand("");
-        Long attrCategoryId = assemblyAndSaveProductAttrCategory("",productCategoryId);
-        Long productAttrId = assemblyAndSaveProductAttrs(productVo4Import,attrCategoryId);
-        assemblyAndSaveProductAttrValue(productVo4Import,productAttrId,product.getId());
-        product.setProductCategoryId(productCategoryId);
-        product.setProductAttributeCategoryId(attrCategoryId);
-        iPmsProductService.updateById(product);
+        PmsProductCategory pmsProductCategory = iPmsProductCategoryService.getOne(new QueryWrapper<PmsProductCategory>().eq("name", ""));
+//        if(pmsProductCategory == null){
+            Long productCategoryId = assemblyAndSaveProductCategory("");
+            Long branId = assemblyAndSaveBrand("");
+            Long attrCategoryId = assemblyAndSaveProductAttrCategory("",productCategoryId);
+            Long productAttrId = assemblyAndSaveProductAttrs(productVo4Import,attrCategoryId);
+            assemblyAndSaveProductAttrValue(productVo4Import,productAttrId,product.getId());
+            product.setProductCategoryId(productCategoryId);
+            product.setProductAttributeCategoryId(attrCategoryId);
+            iPmsProductService.updateById(product);
+//        }else{
+//            iPmsProductService.updateById(product);
+//        }
     }
 
     /**
@@ -211,6 +217,7 @@ public class ImportUtil {
         pmsProduct.setPromotionType(MagicConstant.PROMOTION_TYPE_INIT);//促销类型：0->没有促销使用原价;1->使用促销价；2->使用会员价；3->使用阶梯价格；4->使用满减价格；5->限时购
         pmsProduct.setBrandName("");//品牌名称
         pmsProduct.setCreateTime(new Date());
+        pmsProduct.setType(MagicConstant.DATA_TYPE_NET);
         return pmsProduct;
     }
 }

@@ -214,5 +214,8 @@ public class MagicConstant {
     public final static Integer ATTR_TYPE_SPECI = 0;
     public final static Integer ATTR_TYPE_PARAM = 1;
 
+    /*******0-系统输入 1-网络数据**/
+    public final static String DATA_TYPE_SYSTEM = "0";
+    public final static String DATA_TYPE_NET = "1";
 }
 
