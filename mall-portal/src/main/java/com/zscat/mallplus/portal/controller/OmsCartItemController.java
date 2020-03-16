@@ -158,7 +158,7 @@ public class OmsCartItemController {
     @RequestMapping(value = "/update/updateCartItem", method = RequestMethod.POST)
     @ResponseBody
     public Object updateCartItem(@RequestParam Long cartItemId,
-                                 @RequestParam Long proudctSkuId,@RequestParam Integer count) {
+                                 @RequestParam Long proudctSkuId) {
 //        UmsMember umsMember = UserUtils.getCurrentUmsMember();
 //        OmsCartItem existCartItem = cartItemService.getOne(new QueryWrapper<OmsCartItem>().eq("member_id",umsMember.getId()).
 //                notIn("id",cartItemId).eq("product_sku_id",proudctSkuId));
@@ -171,7 +171,6 @@ public class OmsCartItemController {
             cartItem.setPrice(pmsSkuStock.getPrice());
             cartItem.setProductId(pmsSkuStock.getProductId());
             cartItem.setProductSkuCode(pmsSkuStock.getSkuCode());
-            cartItem.setQuantity(count);
             cartItem.setProductSkuId(proudctSkuId);
             cartItem.setProductAttr(pmsSkuStock.getMeno());
             cartItem.setProductPic(pmsSkuStock.getPic());
@@ -182,7 +181,7 @@ public class OmsCartItemController {
         }
         int cartItemCount = cartItemService.updateAttr(cartItem);
         if (cartItemCount > 0) {
-            return new CommonResult().success(count);
+            return new CommonResult().success();
         }
         return new CommonResult().failed();
     }

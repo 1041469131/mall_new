@@ -8,7 +8,8 @@ import redis.clients.jedis.Jedis;
 public class RedisTest {
 
     public static void main(String[] args) {
-        Jedis jedis = new Jedis("39.100.250.104",6379);
+        Jedis jedis = new Jedis("49.234.207.169",6379);
+        jedis.auth("Shihe@123");
         String ping = jedis.ping();
         if (ping.equalsIgnoreCase("PONG")) {
             System.out.println("redis connect success");

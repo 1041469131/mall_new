@@ -3,6 +3,8 @@ package com.zscat.mallplus.admin.pms.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zscat.mallplus.manage.service.pms.IPmsProductService;
+import com.zscat.mallplus.manage.utils.ImportUtil;
+import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.pms.entity.PmsProduct;
 import com.zscat.mallplus.mbg.pms.entity.PmsProductVertifyRecord;
@@ -15,6 +17,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +40,9 @@ import java.util.List;
 public class PmsProductController {
     @Resource
     private IPmsProductService IPmsProductService;
+
+    @Autowired
+    private ImportUtil importUtil;
 
     @SysLog(MODULE = "pms", REMARK = "根据条件查询所有商品信息列表")
     @ApiOperation("根据条件查询所有商品信息列表")
@@ -249,4 +255,15 @@ public class PmsProductController {
             return new CommonResult().failed();
         }
     }
+
+    @ApiOperation("导入商品")
+    @RequestMapping(value = "/importProduct", method = RequestMethod.POST)
+    @ResponseBody
+    @IgnoreAuth
+    public Object importProduct(String productStr) {
+        importUtil.importProduct(productStr);
+        return new CommonResult<>().success();
+    }
+
+
 }
