@@ -46,6 +46,9 @@ public class UmsMemberVo extends UmsMember {
     @ApiModelProperty("推荐的搭配数量描述")
     private String matchCountName;
 
+    @ApiModelProperty("推荐人id")
+    private String recommendId;
+
     public String getDressTypeName() {
         return dressTypeName;
     }
@@ -142,5 +145,13 @@ public class UmsMemberVo extends UmsMember {
 
     public void setMatchCountName(String matchCountName) {
         this.matchCountName = matchCountName;
+    }
+
+    public String getRecommendId() {
+        return recommendId;
+    }
+
+    public void setRecommendId(String recommendId) {
+        this.recommendId = recommendId;
     }
 }

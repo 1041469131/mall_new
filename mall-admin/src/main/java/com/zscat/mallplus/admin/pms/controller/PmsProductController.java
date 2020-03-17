@@ -23,7 +23,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -39,7 +41,7 @@ import java.util.List;
 @RequestMapping("/pms/PmsProduct")
 public class PmsProductController {
     @Resource
-    private IPmsProductService IPmsProductService;
+    private IPmsProductService iPmsProductService;
 
     @Autowired
     private ImportUtil importUtil;
@@ -53,12 +55,27 @@ public class PmsProductController {
                                       @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize
     ) {
         try {
-            return new CommonResult().success(IPmsProductService.page(new Page<PmsProduct>(pageNum, pageSize), new QueryWrapper<>(entity).eq("delete_status","0")
+            return new CommonResult().success(iPmsProductService.page(new Page<PmsProduct>(pageNum, pageSize), new QueryWrapper<>(entity).eq("delete_status","0")
                     .orderByAsc("sort").orderByDesc("create_time")));
         } catch (Exception e) {
             log.error("根据条件查询所有商品信息列表：%s", e.getMessage(), e);
         }
         return new CommonResult().failed();
+    }
+
+    @SysLog(MODULE = "pms", REMARK = "根据条件查询所有商品信息列表")
+    @ApiOperation("根据条件查询所有商品信息列表")
+    @GetMapping(value = "/listPmsProductByPage")
+    @IgnoreAuth
+    public Object listPmsProductByPage(@RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
+                                      @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize
+    ) {
+        Page<PmsProduct> pmsProductPage = new Page<>(pageNum,pageSize);
+        QueryWrapper<PmsProduct> queryWrapper = new QueryWrapper<>();
+        Map<String,Object> paramMap = new HashMap<>();
+        paramMap.put("deleteStatus","0");
+        Page<PmsProduct> pmsProductList = iPmsProductService.listPmsProductByPage(pmsProductPage,paramMap);
+        return pmsProductList;
     }
 
     @SysLog(MODULE = "pms", REMARK = "保存商品信息")
@@ -67,7 +84,7 @@ public class PmsProductController {
     @PreAuthorize("hasAuthority('pms:PmsProduct:create')")
     public Object savePmsProduct(@RequestBody PmsProductParam productParam) {
         try {
-            int count = IPmsProductService.create(productParam);
+            int count = iPmsProductService.create(productParam);
             if (count > 0) {
                 return new CommonResult().success(count);
             } else {
@@ -86,11 +103,11 @@ public class PmsProductController {
     @PreAuthorize("hasAuthority('pms:PmsProduct:update')")
     public Object updatePmsProduct(@PathVariable Long id, @RequestBody PmsProductParam productParam) {
         try {
-            PmsProduct pmsProduct = IPmsProductService.getById(id);
+            PmsProduct pmsProduct = iPmsProductService.getById(id);
             if(pmsProduct != null){
                 if(!(pmsProduct.getPublishStatus() == MagicConstant.PUBLISH_STATUS_UP || pmsProduct.getDeleteStatus() == MagicConstant.DELETE_YET ||
                         pmsProduct.getVerifyStatus() == MagicConstant.VERIFY_STATUS_VERIFYED)){
-                    int count = IPmsProductService.update(id, productParam);
+                    int count = iPmsProductService.update(id, productParam);
                     if (count > 0) {
                         return new CommonResult().success(count);
                     } else {
@@ -118,10 +135,10 @@ public class PmsProductController {
             if (ValidatorUtils.empty(id)) {
                 return new CommonResult().paramFailed("商品信息id");
             }
-            if (StringUtils.isEmpty(IPmsProductService.deleteProduct(id))) {
+            if (StringUtils.isEmpty(iPmsProductService.deleteProduct(id))) {
                 return new CommonResult().success();
             }else{
-                return new CommonResult().failed(IPmsProductService.deleteProduct(id));
+                return new CommonResult().failed(iPmsProductService.deleteProduct(id));
             }
         } catch (Exception e) {
             log.error("删除商品信息：%s", e.getMessage(), e);
@@ -138,7 +155,7 @@ public class PmsProductController {
             if (ValidatorUtils.empty(id)) {
                 return new CommonResult().paramFailed("商品信息id");
             }
-            PmsProduct coupon = IPmsProductService.getById(id);
+            PmsProduct coupon = iPmsProductService.getById(id);
             return new CommonResult().success(coupon);
         } catch (Exception e) {
             log.error("查询商品信息明细：%s", e.getMessage(), e);
@@ -153,7 +170,7 @@ public class PmsProductController {
     @SysLog(MODULE = "pms", REMARK = "批量删除商品信息")
     @PreAuthorize("hasAuthority('pms:PmsProduct:delete')")
     public Object deleteBatch(@RequestParam("ids") List<Long> ids) {
-        boolean count = IPmsProductService.removeByIds(ids);
+        boolean count = iPmsProductService.removeByIds(ids);
         if (count) {
             return new CommonResult().success(count);
         } else {
@@ -167,7 +184,7 @@ public class PmsProductController {
     @SysLog(MODULE = "pms", REMARK = "根据商品id获取商品编辑信息")
     @PreAuthorize("hasAuthority('pms:PmsProduct:read')")
     public Object getUpdateInfo(@PathVariable Long id) {
-        PmsProductResult productResult = IPmsProductService.getUpdateInfo(id);
+        PmsProductResult productResult = iPmsProductService.getUpdateInfo(id);
         return new CommonResult().success(productResult);
     }
 
@@ -176,7 +193,7 @@ public class PmsProductController {
     @ResponseBody
     @SysLog(MODULE = "pms", REMARK = "据商品id获取审核信息")
     public Object fetchVList(@PathVariable Long id) {
-        List<PmsProductVertifyRecord> list = IPmsProductService.getProductVertifyRecord(id);
+        List<PmsProductVertifyRecord> list = iPmsProductService.getProductVertifyRecord(id);
         return new CommonResult().success(list);
     }
 
@@ -188,7 +205,7 @@ public class PmsProductController {
     public Object updateVerifyStatus(@RequestParam("ids") Long ids,
                                      @RequestParam("verifyStatus") Integer verifyStatus,
                                      @RequestParam("detail") String detail) {
-        int count = IPmsProductService.updateVerifyStatus(ids, verifyStatus, detail);
+        int count = iPmsProductService.updateVerifyStatus(ids, verifyStatus, detail);
         if (count > 0) {
             return new CommonResult().success(count);
         } else {
@@ -203,7 +220,7 @@ public class PmsProductController {
     @PreAuthorize("hasAuthority('pms:PmsProduct:update')")
     public Object updatePublishStatus(@RequestParam("ids") List<Long> ids,
                                       @RequestParam("publishStatus") Integer publishStatus) {
-        int count = IPmsProductService.updatePublishStatus(ids, publishStatus);
+        int count = iPmsProductService.updatePublishStatus(ids, publishStatus);
         if (count > 0) {
             return new CommonResult().success(count);
         } else {
@@ -218,7 +235,7 @@ public class PmsProductController {
     @PreAuthorize("hasAuthority('pms:PmsProduct:update')")
     public Object updateRecommendStatus(@RequestParam("ids") List<Long> ids,
                                         @RequestParam("recommendStatus") Integer recommendStatus) {
-        int count = IPmsProductService.updateRecommendStatus(ids, recommendStatus);
+        int count = iPmsProductService.updateRecommendStatus(ids, recommendStatus);
         if (count > 0) {
             return new CommonResult().success(count);
         } else {
@@ -233,7 +250,7 @@ public class PmsProductController {
     @PreAuthorize("hasAuthority('pms:PmsProduct:update')")
     public Object updateNewStatus(@RequestParam("ids") List<Long> ids,
                                   @RequestParam("newStatus") Integer newStatus) {
-        int count = IPmsProductService.updateNewStatus(ids, newStatus);
+        int count = iPmsProductService.updateNewStatus(ids, newStatus);
         if (count > 0) {
             return new CommonResult().success(count);
         } else {
@@ -248,7 +265,7 @@ public class PmsProductController {
     @PreAuthorize("hasAuthority('pms:PmsProduct:delete')")
     public Object updateDeleteStatus(@RequestParam("ids") List<Long> ids,
                                      @RequestParam("deleteStatus") Integer deleteStatus) {
-        int count = IPmsProductService.updateDeleteStatus(ids, deleteStatus);
+        int count = iPmsProductService.updateDeleteStatus(ids, deleteStatus);
         if (count > 0) {
             return new CommonResult().success(count);
         } else {

@@ -197,4 +197,8 @@
         id, brand_id, product_category_id, feight_template_id, product_attribute_category_id, name, pic, product_sn, delete_status, publish_status, new_status, recommand_status, verify_status, sort, sale, price, market_price, gift_growth, gift_point, use_point_limit, sub_title, description, commodity_price, stock, low_stock, unit, weight, preview_status, service_ids, keywords, note, album_pics, detail_title, detail_desc, detail_html, detail_mobile_html, promotion_start_time, promotion_end_time, promotion_per_limit, promotion_type, brand_name, product_category_name, supply_id, create_time, school_id,delivery_price,product_id_ext,type,url
     </sql>
 
+    <select id="listPmsProductByPage" parameterType="Map" resultMap="BaseResultMap">
+        SELECT p.* FROM pms_product p WHERE p.delete_status = #{deleteStatus}
+    </select>
+
 </mapper>

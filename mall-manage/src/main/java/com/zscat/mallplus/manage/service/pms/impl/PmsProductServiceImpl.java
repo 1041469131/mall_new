@@ -1,6 +1,7 @@
 package com.zscat.mallplus.manage.service.pms.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zscat.mallplus.manage.service.cms.ICmsPrefrenceAreaProductRelationService;
 import com.zscat.mallplus.manage.service.cms.ICmsSubjectProductRelationService;
@@ -344,6 +345,11 @@ public class PmsProductServiceImpl extends ServiceImpl<PmsProductMapper, PmsProd
         }
 
         return map;
+    }
+
+    @Override
+    public Page<PmsProduct> listPmsProductByPage(Page<PmsProduct> pmsProductPage, Map<String, Object> paramMap) {
+        return productMapper.listPmsProductByPage(pmsProductPage,paramMap);
     }
 }
 

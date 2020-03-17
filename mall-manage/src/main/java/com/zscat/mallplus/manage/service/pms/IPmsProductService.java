@@ -1,5 +1,6 @@
 package com.zscat.mallplus.manage.service.pms;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zscat.mallplus.mbg.pms.entity.PmsProduct;
 import com.zscat.mallplus.mbg.pms.entity.PmsProductVertifyRecord;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -76,4 +78,6 @@ public interface IPmsProductService extends IService<PmsProduct> {
     String deleteProduct(Long productId);
 
     PmsProductAndGroup getProductAndGroup(Long id);
+
+    Page<PmsProduct> listPmsProductByPage(Page<PmsProduct> pmsProductPage, Map<String, Object> paramMap);
 }

@@ -15,6 +15,7 @@ import com.zscat.mallplus.mbg.ums.entity.UmsMember;
 import com.zscat.mallplus.mbg.ums.entity.UmsMemberRegisterParam;
 import com.zscat.mallplus.mbg.ums.entity.UmsRecommendRelation;
 import com.zscat.mallplus.mbg.ums.mapper.UmsRecommendRelationMapper;
+import com.zscat.mallplus.mbg.ums.vo.UmsMemberVo;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.ValidatorUtils;
 import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
@@ -215,7 +216,7 @@ public class UmsMemberController extends ApiBaseAction {
     @ApiOperation("用户注册接口(小程序)")
     @RequestMapping(value = "/register4MiniProgram")
     @ResponseBody
-    public CommonResult<UmsMember> register4MiniProgram(UmsMember umsMember,Long memberId) {
+    public CommonResult<UmsMember> register4MiniProgram(UmsMemberVo umsMember) {
         umsMember.setId(UserUtils.getCurrentUmsMember().getId());
         umsMember.setUpdateTime(new Date());
         if(MagicConstant.UMS_IS_COMPLETE_DONE.equals(umsMember.getIsRegister())){
@@ -227,16 +228,16 @@ public class UmsMemberController extends ApiBaseAction {
             }
             if(MagicConstant.UMS_IS_COMPLETE_DONE.equals(umsMember.getIsComplete())){
                 String msg = iSmsCouponService.allocateCoupon("3",getCurrentMember().getId());
-                if(memberId != null){
+                if(!StringUtils.isEmpty(umsMember.getRecommendId())){
                     UmsRecommendRelation umsRecommendRelation = new UmsRecommendRelation();
                     umsRecommendRelation.setStatus("1");
                     umsRecommendRelation.setCreateTime(new Date());
                     umsRecommendRelation.setUpdateTime(new Date());
-                    umsRecommendRelation.setRecommendedId(memberId);
+                    umsRecommendRelation.setRecommendedId(Long.valueOf(umsMember.getRecommendId()));
                     umsRecommendRelation.setRecommendId(UserUtils.getCurrentUmsMember().getId());
                     umsRecommendRelationMapper.insert(umsRecommendRelation);
                     iSmsCouponService.allocateCoupon("4",getCurrentMember().getId());//分享之后将优惠券发放给推荐的人
-                    iSmsCouponService.allocateCoupon("4",memberId);//将优惠券分享给被推荐的人
+                    iSmsCouponService.allocateCoupon("4",Long.valueOf(umsMember.getRecommendId()));//将优惠券分享给被推荐的人
                 }
                 if(!StringUtils.isEmpty(msg)){
                     msg = ",但是分配优惠券失败，请联系客服;";
