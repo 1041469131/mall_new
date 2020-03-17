@@ -71,7 +71,6 @@ public class PmsProductController {
                                       @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize
     ) {
         Page<PmsProduct> pmsProductPage = new Page<>(pageNum,pageSize);
-        QueryWrapper<PmsProduct> queryWrapper = new QueryWrapper<>();
         Map<String,Object> paramMap = new HashMap<>();
         paramMap.put("deleteStatus","0");
         Page<PmsProduct> pmsProductList = iPmsProductService.listPmsProductByPage(pmsProductPage,paramMap);
