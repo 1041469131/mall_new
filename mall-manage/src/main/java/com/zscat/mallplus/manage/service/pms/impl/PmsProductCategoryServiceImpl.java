@@ -13,6 +13,7 @@ import com.zscat.mallplus.mbg.pms.mapper.PmsProductMapper;
 import com.zscat.mallplus.mbg.pms.vo.PmsProductCategoryWithChildrenItem;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -30,13 +31,13 @@ import java.util.List;
 @Service
 public class PmsProductCategoryServiceImpl extends ServiceImpl<PmsProductCategoryMapper, PmsProductCategory> implements IPmsProductCategoryService {
 
-    @Resource
+    @Autowired
     private PmsProductCategoryMapper categoryMapper;
-    @Resource
+    @Autowired
     private PmsProductMapper productMapper;
-    @Resource
+    @Autowired
     private IPmsProductCategoryAttributeRelationService pmsProductCategoryAttributeRelationService;
-    @Resource
+    @Autowired
     private PmsProductCategoryAttributeRelationMapper productCategoryAttributeRelationMapper;
 
     @Override

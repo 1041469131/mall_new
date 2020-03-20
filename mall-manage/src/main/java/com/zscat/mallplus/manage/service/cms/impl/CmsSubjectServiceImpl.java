@@ -7,6 +7,7 @@ import com.zscat.mallplus.mbg.cms.entity.CmsSubject;
 import com.zscat.mallplus.mbg.cms.entity.CmsSubjectCategory;
 import com.zscat.mallplus.mbg.cms.mapper.CmsSubjectCategoryMapper;
 import com.zscat.mallplus.mbg.cms.mapper.CmsSubjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,11 +24,11 @@ import java.util.Date;
  */
 @Service
 public class CmsSubjectServiceImpl extends ServiceImpl<CmsSubjectMapper, CmsSubject> implements ICmsSubjectService {
-    @Resource
+    @Autowired
     private CmsSubjectMapper subjectMapper;
 
 
-    @Resource
+    @Autowired
     private CmsSubjectCategoryMapper subjectCategoryMapper;
 
     @Override

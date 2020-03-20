@@ -11,6 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +31,7 @@ import java.util.List;
 @Api(tags = "CmsTopicCommentController", description = "专题评论表管理")
 @RequestMapping("/cms/CmsTopicComment")
 public class CmsTopicCommentController {
-    @Resource
+    @Autowired
     private ICmsTopicCommentService ICmsTopicCommentService;
 
     @SysLog(MODULE = "cms", REMARK = "根据条件查询所有专题评论表列表")

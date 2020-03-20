@@ -43,19 +43,19 @@ import java.util.*;
 @Service
 public class SmsCouponServiceImpl extends ServiceImpl<SmsCouponMapper, SmsCoupon> implements ISmsCouponService {
 
-    @Resource
+    @Autowired
     private SmsCouponMapper couponMapper;
-    @Resource
+    @Autowired
     private SmsCouponProductRelationMapper productRelationMapper;
-    @Resource
+    @Autowired
     private SmsCouponProductCategoryRelationMapper productCategoryRelationMapper;
-    @Resource
+    @Autowired
     private ISmsCouponProductRelationService productRelationDao;
-    @Resource
+    @Autowired
     private ISmsCouponProductCategoryRelationService productCategoryRelationDao;
-    @Resource
+    @Autowired
     private IUmsMemberService memberService;
-    @Resource
+    @Autowired
     private SmsCouponHistoryMapper couponHistoryMapper;
 
     @Autowired
@@ -297,7 +297,7 @@ public class SmsCouponServiceImpl extends ServiceImpl<SmsCouponMapper, SmsCoupon
                 //判断是否满足优惠起点
                 //计算购物车商品的总价
                 BigDecimal totalAmount = calcTotalAmount(cartItemList);
-                if (now.before(endTime) && totalAmount.subtract(minPoint).intValue() >= 0) {
+                if (now.before(endTime) && totalAmount.subtract(minPoint).compareTo(BigDecimal.ZERO) >= 0) {
                     enableList.add(couponHistoryDetail);
                 } else {
                     disableList.add(couponHistoryDetail);

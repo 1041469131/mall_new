@@ -11,6 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +31,7 @@ import java.util.List;
 @Api(tags = "UmsMemberProductCategoryRelationController", description = "会员与产品分类关系表（用户喜欢的分类）管理")
 @RequestMapping("/ums/UmsMemberProductCategoryRelation")
 public class UmsMemberProductCategoryRelationController {
-    @Resource
+    @Autowired
     private IUmsMemberProductCategoryRelationService IUmsMemberProductCategoryRelationService;
 
     @SysLog(MODULE = "ums", REMARK = "根据条件查询所有会员与产品分类关系表（用户喜欢的分类）列表")

@@ -11,6 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +31,7 @@ import java.util.List;
 @Api(tags = "CmsSubjectProductRelationController", description = "专题商品关系表管理")
 @RequestMapping("/cms/CmsSubjectProductRelation")
 public class CmsSubjectProductRelationController {
-    @Resource
+    @Autowired
     private ICmsSubjectProductRelationService ICmsSubjectProductRelationService;
 
     @SysLog(MODULE = "cms", REMARK = "根据条件查询所有专题商品关系表列表")

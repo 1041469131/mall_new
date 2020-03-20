@@ -11,6 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +31,7 @@ import java.util.List;
 @Api(tags = "PmsProductAttributeValueController", description = "存储产品参数信息的表管理")
 @RequestMapping("/pms/PmsProductAttributeValue")
 public class PmsProductAttributeValueController {
-    @Resource
+    @Autowired
     private IPmsProductAttributeValueService IPmsProductAttributeValueService;
 
     @SysLog(MODULE = "pms", REMARK = "根据条件查询所有存储产品参数信息的表列表")

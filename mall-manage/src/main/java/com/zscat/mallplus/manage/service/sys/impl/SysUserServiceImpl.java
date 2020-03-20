@@ -50,34 +50,34 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
      @Autowired(required = false)
      private AuthenticationManager authenticationManager;
-    @Resource
+    @Autowired
     private UserDetailsService userDetailsService;
-    @Resource
+    @Autowired
     private JwtTokenUtil jwtTokenUtil;
-    @Resource
+    @Autowired
     private PasswordEncoder passwordEncoder;
     @Value("${jwt.tokenHead}")
     private String tokenHead;
-    @Resource
+    @Autowired
     private SysUserMapper adminMapper;
-    @Resource
+    @Autowired
     private SysUserRoleMapper adminRoleRelationMapper;
-    @Resource
+    @Autowired
     private ISysUserRoleService adminRoleRelationService;
-    @Resource
+    @Autowired
     private SysUserPermissionMapper adminPermissionRelationMapper;
-    @Resource
+    @Autowired
     private SysRoleMapper roleMapper;
-    @Resource
+    @Autowired
     private ISysUserPermissionService userPermissionService;
-    @Resource
+    @Autowired
     private ISysRolePermissionService rolePermissionService;
-    @Resource
+    @Autowired
     private ISysUserRoleService userRoleService;
-    @Resource
+    @Autowired
     private SysPermissionMapper permissionMapper;
 
-    @Resource
+    @Autowired
     private RedisService redisService;
     @Override
     public String refreshToken(String oldToken) {

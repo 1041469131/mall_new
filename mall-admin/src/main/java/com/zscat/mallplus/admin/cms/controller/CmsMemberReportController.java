@@ -11,6 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +31,7 @@ import java.util.List;
 @Api(tags = "CmsMemberReportController", description = "用户举报表管理")
 @RequestMapping("/cms/CmsMemberReport")
 public class CmsMemberReportController {
-    @Resource
+    @Autowired
     private ICmsMemberReportService ICmsMemberReportService;
 
     @SysLog(MODULE = "cms", REMARK = "根据条件查询所有用户举报表列表")

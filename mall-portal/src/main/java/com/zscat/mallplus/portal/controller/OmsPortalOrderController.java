@@ -143,8 +143,6 @@ public class OmsPortalOrderController extends ApiBaseAction {
         return new CommonResult().success(null);
     }
 
-
-
     /**
      * 查看物流
      */

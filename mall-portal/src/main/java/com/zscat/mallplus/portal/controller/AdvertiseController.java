@@ -8,6 +8,7 @@ import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,7 +24,7 @@ import java.util.List;
 public class AdvertiseController {
 
 
-    @Resource
+    @Autowired
     private ISmsHomeAdvertiseService iSmsHomeAdvertiseService;
 
     @IgnoreAuth

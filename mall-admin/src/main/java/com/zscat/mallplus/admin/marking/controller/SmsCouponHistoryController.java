@@ -11,6 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +31,7 @@ import java.util.List;
 @Api(tags = "SmsCouponHistoryController", description = "优惠券使用、领取历史表管理")
 @RequestMapping("/marking/SmsCouponHistory")
 public class SmsCouponHistoryController {
-    @Resource
+    @Autowired
     private ISmsCouponHistoryService ISmsCouponHistoryService;
 
     @SysLog(MODULE = "marking", REMARK = "根据条件查询所有优惠券使用、领取历史表列表")

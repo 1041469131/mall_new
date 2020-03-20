@@ -14,6 +14,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +34,7 @@ import java.util.List;
 @Api(tags = "OmsOrderController", description = "订单表管理")
 @RequestMapping("/oms/OmsOrder")
 public class OmsOrderController {
-    @Resource
+    @Autowired
     private IOmsOrderService IOmsOrderService;
 
     @SysLog(MODULE = "oms", REMARK = "根据条件查询所有订单表列表")

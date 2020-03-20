@@ -11,6 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +31,7 @@ import java.util.List;
 @Api(tags = "UmsMemberLevelController", description = "会员等级表管理")
 @RequestMapping("/ums/UmsMemberLevel")
 public class UmsMemberLevelController {
-    @Resource
+    @Autowired
     private IUmsMemberLevelService IUmsMemberLevelService;
 
     @SysLog(MODULE = "ums", REMARK = "根据条件查询所有会员等级表列表")

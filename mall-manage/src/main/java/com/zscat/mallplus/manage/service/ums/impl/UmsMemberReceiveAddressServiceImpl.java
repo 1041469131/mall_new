@@ -8,6 +8,7 @@ import com.zscat.mallplus.mbg.ums.entity.UmsMember;
 import com.zscat.mallplus.mbg.ums.entity.UmsMemberReceiveAddress;
 import com.zscat.mallplus.mbg.ums.mapper.UmsMemberReceiveAddressMapper;
 import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +26,7 @@ import java.util.Date;
 @Service
 public class UmsMemberReceiveAddressServiceImpl extends ServiceImpl<UmsMemberReceiveAddressMapper, UmsMemberReceiveAddress> implements IUmsMemberReceiveAddressService {
 
-    @Resource
+    @Autowired
     private UmsMemberReceiveAddressMapper addressMapper;
     @Override
     public UmsMemberReceiveAddress getDefaultItem() {

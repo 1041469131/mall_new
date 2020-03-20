@@ -7,7 +7,9 @@ import com.zscat.mallplus.mbg.ums.entity.UmsMember;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -93,4 +95,6 @@ public interface IOmsOrderService extends IService<OmsOrder> {
     int payOrder(TbThanks tbThanks);
 
     CommonResult confirmOrder(Long orderId);
+
+    Map<String, Object> payPrepay(String str, String ipStr, BigDecimal totalFee, String isParentOrder, OmsOrder orderInfo, List<OmsOrder> orderList) throws Exception;
 }

@@ -11,6 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +31,7 @@ import java.util.List;
 @Api(tags = "SmsCouponProductRelationController", description = "优惠券和产品的关系表管理")
 @RequestMapping("/marking/SmsCouponProductRelation")
 public class SmsCouponProductRelationController {
-    @Resource
+    @Autowired
     private ISmsCouponProductRelationService ISmsCouponProductRelationService;
 
     @SysLog(MODULE = "marking", REMARK = "根据条件查询所有优惠券和产品的关系表列表")

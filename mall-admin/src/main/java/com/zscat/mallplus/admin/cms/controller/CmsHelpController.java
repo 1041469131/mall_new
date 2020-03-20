@@ -33,7 +33,7 @@ import java.util.List;
 @Api(tags = "CmsHelpController", description = "帮助表管理")
 @RequestMapping("/cms/CmsHelp")
 public class CmsHelpController {
-    @Resource
+    @Autowired
     private ICmsHelpService ICmsHelpService;
 
     @Autowired

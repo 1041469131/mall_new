@@ -11,6 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +31,7 @@ import java.util.List;
 @Api(tags = "UmsGrowthChangeHistoryController", description = "成长值变化历史记录表管理")
 @RequestMapping("/ums/UmsGrowthChangeHistory")
 public class UmsGrowthChangeHistoryController {
-    @Resource
+    @Autowired
     private IUmsGrowthChangeHistoryService IUmsGrowthChangeHistoryService;
 
     @SysLog(MODULE = "ums", REMARK = "根据条件查询所有成长值变化历史记录表列表")

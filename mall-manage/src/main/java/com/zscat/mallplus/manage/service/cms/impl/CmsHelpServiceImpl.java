@@ -6,6 +6,7 @@ import com.zscat.mallplus.mbg.cms.entity.CmsHelp;
 import com.zscat.mallplus.mbg.cms.entity.CmsHelpCategory;
 import com.zscat.mallplus.mbg.cms.mapper.CmsHelpCategoryMapper;
 import com.zscat.mallplus.mbg.cms.mapper.CmsHelpMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,9 +24,9 @@ import java.util.Date;
 @Service
 public class CmsHelpServiceImpl extends ServiceImpl<CmsHelpMapper, CmsHelp> implements ICmsHelpService {
 
-    @Resource
+    @Autowired
     private CmsHelpMapper helpMapper;
-    @Resource
+    @Autowired
     private CmsHelpCategoryMapper helpCategoryMapper;
 
     @Override

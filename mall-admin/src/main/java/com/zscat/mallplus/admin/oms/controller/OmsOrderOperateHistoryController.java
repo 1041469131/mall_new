@@ -11,6 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +31,7 @@ import java.util.List;
 @Api(tags = "OmsOrderOperateHistoryController", description = "订单操作历史记录管理")
 @RequestMapping("/oms/OmsOrderOperateHistory")
 public class OmsOrderOperateHistoryController {
-    @Resource
+    @Autowired
     private IOmsOrderOperateHistoryService IOmsOrderOperateHistoryService;
 
     @SysLog(MODULE = "oms", REMARK = "根据条件查询所有订单操作历史记录列表")

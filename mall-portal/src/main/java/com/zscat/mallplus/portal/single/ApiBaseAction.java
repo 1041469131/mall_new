@@ -1,15 +1,11 @@
 package com.zscat.mallplus.portal.single;
 
 
-import com.zscat.mallplus.manage.vo.MemberDetails;
-import com.zscat.mallplus.mbg.ums.entity.UmsMember;
+import com.zscat.mallplus.portal.util.ResponseUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.WebDataBinder;
@@ -21,7 +17,6 @@ import org.springframework.web.context.request.WebRequest;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
 import java.util.Map;
 
 
@@ -53,48 +48,11 @@ public class ApiBaseAction {
     @ResponseBody
     public Map<String, Object> bindException(Exception e) {
         if (e instanceof BindException) {
-            return toResponsObject(1, "参数绑定异常", e.getMessage());
+            return ResponseUtil.toResponsObject(1, "参数绑定异常", e.getMessage());
         }
-        return toResponsObject(1, "处理异常", e.getMessage());
+        return  ResponseUtil.toResponsObject(1, "处理异常", e.getMessage());
     }
 
-    /**
-     * @param requestCode
-     * @param msg
-     * @param data
-     * @return Map<String   ,   Object>
-     * @throws
-     * @Description:构建统一格式返回对象
-     * @date 2016年9月2日
-     * @author zhuliyun
-     */
-    public static Map<String, Object> toResponsObject(int requestCode, String msg, Object data) {
-        Map<String, Object> obj = new HashMap<String, Object>();
-        obj.put("code", requestCode);
-        obj.put("msg", msg);
-        if (data != null)
-            obj.put("data", data);
-        return obj;
-    }
-
-    public static Map<String, Object> toResponsSuccess(Object data) {
-        Map<String, Object> rp = toResponsObject(200, "执行成功", data);
-        return rp;
-    }
-
-    public static Map<String, Object> toResponsMsgSuccess(String msg) {
-        return toResponsObject(200, msg, "");
-    }
-
-    public static Map<String, Object> toResponsSuccessForSelect(Object data) {
-        Map<String, Object> result = new HashMap<>(2);
-        result.put("list", data);
-        return toResponsObject(200, "执行成功", result);
-    }
-
-    public static Map<String, Object> toResponsFail(String msg) {
-        return toResponsObject(1, msg, null);
-    }
 
     /**
      * initBinder 初始化绑定 <br>
@@ -126,31 +84,4 @@ public class ApiBaseAction {
         }
         return xff;
     }
-
-
-    public UmsMember getCurrentMember() {
-        try {
-            SecurityContext ctx = SecurityContextHolder.getContext();
-            Authentication auth = ctx.getAuthentication();
-            MemberDetails memberDetails = (MemberDetails) auth.getPrincipal();
-            return memberDetails.getUmsMember();
-        }catch (Exception e){
-            return new UmsMember();
-        }
-    }
-
-    /**
-     * 获取请求的用户Id
-     *
-     * @return 客户端Ip
-     */
-    /*public String getUserId() {
-        String token = request.getHeader(AuthorizationInterceptor.LOGIN_TOKEN_KEY);
-        //查询token信息
-        TokenEntity tokenEntity = tokenService.queryByToken(token);
-        if (tokenEntity == null || tokenEntity.getExpireTime().getTime() < System.currentTimeMillis()) {
-            return null;
-        }
-        return tokenEntity.getUserId();
-    }*/
 }

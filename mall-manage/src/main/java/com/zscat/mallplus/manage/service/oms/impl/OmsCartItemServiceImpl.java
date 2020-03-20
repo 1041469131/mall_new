@@ -18,6 +18,7 @@ import com.zscat.mallplus.mbg.pms.vo.PromotionProduct;
 import com.zscat.mallplus.mbg.ums.entity.UmsMember;
 import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -38,11 +39,11 @@ import java.util.*;
 @Service
 public class OmsCartItemServiceImpl extends ServiceImpl<OmsCartItemMapper, OmsCartItem> implements IOmsCartItemService {
 
-    @Resource
+    @Autowired
     private OmsCartItemMapper cartItemMapper;
-    @Resource
+    @Autowired
     private IUmsMemberService memberService;
-    @Resource
+    @Autowired
     private PmsProductMapper pmsProductMapper;
 
     @Override

@@ -40,7 +40,7 @@ import java.util.List;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    @Resource
+    @Autowired
     private ISysUserService sysUserService;
 
     @Autowired

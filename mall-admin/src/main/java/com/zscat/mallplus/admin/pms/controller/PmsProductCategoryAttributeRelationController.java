@@ -11,6 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +31,7 @@ import java.util.List;
 @Api(tags = "PmsProductCategoryAttributeRelationController", description = "产品的分类和属性的关系表，用于设置分类筛选条件（只支持一级分类）管理")
 @RequestMapping("/pms/PmsProductCategoryAttributeRelation")
 public class PmsProductCategoryAttributeRelationController {
-    @Resource
+    @Autowired
     private IPmsProductCategoryAttributeRelationService IPmsProductCategoryAttributeRelationService;
 
     @SysLog(MODULE = "pms", REMARK = "根据条件查询所有产品的分类和属性的关系表，用于设置分类筛选条件（只支持一级分类）列表")

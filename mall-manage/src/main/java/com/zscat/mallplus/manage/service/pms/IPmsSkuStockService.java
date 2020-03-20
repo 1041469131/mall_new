@@ -26,4 +26,12 @@ public interface IPmsSkuStockService extends IService<PmsSkuStock> {
     int update(Long pid, List<PmsSkuStock> skuStockList);
 
     List<PmsSkuStockVo> querySkuStockVos(String[] skuIds, Long userId);
+
+    /**
+     * 更新sku库存包含商品的相关信息
+     * @param skuId
+     * @param returnType（0-退回，1-减去）
+     * @return
+     */
+    void updateStockCount(Long skuId,Integer count,String returnType);
 }

@@ -48,26 +48,26 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
 
     private Logger logger = LoggerFactory.getLogger(UmsMemberServiceImpl.class);
 
-    @Resource
+    @Autowired
     private UmsMemberMapper memberMapper;
 
-    @Resource
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Resource
+    @Autowired
     private RedisService redisService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UmsMemberServiceImpl.class);
    /* @Resource
     private AuthenticationManager authenticationManager;*/
 
-    @Resource
+    @Autowired
     private UserDetailsService userDetailsService;
 
-    @Resource
+    @Autowired
     private SysAreaMapper areaMapper;
 
-    @Resource
+    @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
     @Value("${redis.key.prefix.authCode}")
@@ -79,7 +79,7 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
     @Value("${jwt.tokenHead}")
     private String tokenHead;
 
-    @Resource
+    @Autowired
     private UmsMemberMemberTagRelationMapper umsMemberMemberTagRelationMapper;
 
 

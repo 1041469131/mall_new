@@ -10,6 +10,7 @@ import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.ValidatorUtils;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +31,7 @@ import java.util.List;
 @RequestMapping("/pms/PmsProductAttribute")
 public class PmsProductAttributeController {
 
-    @Resource
+    @Autowired
     private IPmsProductAttributeService IPmsProductAttributeService;
 
     @SysLog(MODULE = "pms", REMARK = "根据条件查询所有商品属性参数表列表")

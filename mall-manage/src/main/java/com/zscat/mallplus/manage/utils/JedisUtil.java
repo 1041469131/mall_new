@@ -8,6 +8,7 @@ package com.zscat.mallplus.manage.utils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
@@ -16,7 +17,7 @@ import javax.annotation.Resource;
 public class JedisUtil {
     static Logger log = LoggerFactory.getLogger(JedisUtil.class);
 
-    @Resource
+    @Autowired
     private static JedisPool jedisPool;
 
     public static Jedis getResource() {

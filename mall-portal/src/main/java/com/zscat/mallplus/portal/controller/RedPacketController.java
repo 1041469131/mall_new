@@ -10,6 +10,7 @@ import com.zscat.mallplus.mbg.marking.entity.SmsUserRedPacket;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -29,9 +30,9 @@ import java.util.List;
 @Api(tags = "RedPacketController", description = "红包管理")
 @RequestMapping("/api/redPacket")
 public class RedPacketController {
-    @Resource
+    @Autowired
     private ISmsRedPacketService redPacketService;
-    @Resource
+    @Autowired
     private ISmsUserRedPacketService userRedPacketService;
 
     @SysLog(MODULE = "sms", REMARK = "添加红包")

@@ -78,10 +78,10 @@ public class AppletMemberController extends ApiBaseAction {
     @Autowired
     private RedisService redisService;
 
-    @Resource
+    @Autowired
     private ISmsRedPacketService redPacketService;
 
-    @Resource
+    @Autowired
     private ISmsUserRedPacketService userRedPacketService;
 
 

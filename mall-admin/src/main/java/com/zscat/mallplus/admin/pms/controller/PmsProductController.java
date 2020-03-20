@@ -40,7 +40,7 @@ import java.util.Map;
 @Api(tags = "PmsProductController", description = "商品信息管理")
 @RequestMapping("/pms/PmsProduct")
 public class PmsProductController {
-    @Resource
+    @Autowired
     private IPmsProductService iPmsProductService;
 
     @Autowired

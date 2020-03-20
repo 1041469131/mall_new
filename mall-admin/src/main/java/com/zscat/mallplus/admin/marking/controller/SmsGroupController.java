@@ -12,6 +12,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,7 +33,7 @@ import java.util.List;
 @Api(tags = "SmsGroupController", description = "管理")
 @RequestMapping("/marking/SmsGroup")
 public class SmsGroupController {
-    @Resource
+    @Autowired
     private ISmsGroupService ISmsGroupService;
 
     @SysLog(MODULE = "marking", REMARK = "根据条件查询所有列表")
