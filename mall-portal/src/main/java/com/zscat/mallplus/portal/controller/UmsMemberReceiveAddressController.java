@@ -3,6 +3,7 @@ package com.zscat.mallplus.portal.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberReceiveAddressService;
+import com.zscat.mallplus.manage.utils.UserUtils;
 import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
 import com.zscat.mallplus.mbg.ums.entity.UmsMemberReceiveAddress;
 import com.zscat.mallplus.mbg.utils.CommonResult;
@@ -35,7 +36,7 @@ public class UmsMemberReceiveAddressController extends ApiBaseAction {
     @RequestMapping(value = "/add")
     @ResponseBody
     public Object add(UmsMemberReceiveAddress address) {
-        address.setMemberId(this.getCurrentMember().getId());
+        address.setMemberId(UserUtils.getCurrentUmsMember().getId());
         address.setCreateTime(new Date());
         address.setUpdateTime(new Date());
         boolean count = memberReceiveAddressService.save(address);
@@ -61,18 +62,18 @@ public class UmsMemberReceiveAddressController extends ApiBaseAction {
     @ResponseBody
     public Object update(UmsMemberReceiveAddress address) {
         boolean count = false ;
-        address.setMemberId(this.getCurrentMember().getId());
+        address.setMemberId(UserUtils.getCurrentUmsMember().getId());
         address.setCreateTime(new Date());
         address.setUpdateTime(new Date());
         if(address.getDefaultStatus() == MagicConstant.DEFAULT_STATUS_YES){
             int defaultCount = memberReceiveAddressService.count(new QueryWrapper<UmsMemberReceiveAddress>().
-                    eq("member_id", this.getCurrentMember().getId()).eq("default_status", MagicConstant.DEFAULT_STATUS_YES));
+                    eq("member_id", UserUtils.getCurrentUmsMember().getId()).eq("default_status", MagicConstant.DEFAULT_STATUS_YES));
             if(defaultCount > 0){
                 UmsMemberReceiveAddress def = new UmsMemberReceiveAddress();
                 def.setDefaultStatus(MagicConstant.DEFAULT_STATUS_NO);
                 def.setUpdateTime(new Date());
                 memberReceiveAddressService.update(def, new QueryWrapper<UmsMemberReceiveAddress>().
-                        eq("member_id", this.getCurrentMember().getId()).eq("default_status", MagicConstant.DEFAULT_STATUS_YES));
+                        eq("member_id", UserUtils.getCurrentUmsMember().getId()).eq("default_status", MagicConstant.DEFAULT_STATUS_YES));
             }
         }
         if (address!=null && address.getId()!=null){
@@ -91,7 +92,8 @@ public class UmsMemberReceiveAddressController extends ApiBaseAction {
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     @ResponseBody
     public Object list() {
-        List<UmsMemberReceiveAddress> addressList = memberReceiveAddressService.list(new QueryWrapper<UmsMemberReceiveAddress>().eq("member_id",this.getCurrentMember().getId()));
+        List<UmsMemberReceiveAddress> addressList = memberReceiveAddressService.list(new QueryWrapper<UmsMemberReceiveAddress>().eq("member_id",
+                UserUtils.getCurrentUmsMember().getId()));
         return new CommonResult().success(addressList);
     }
 

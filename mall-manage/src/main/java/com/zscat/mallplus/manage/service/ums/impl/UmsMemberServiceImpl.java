@@ -3,15 +3,20 @@ package com.zscat.mallplus.manage.service.ums.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zscat.mallplus.manage.config.WxAppletProperties;
+import com.zscat.mallplus.manage.service.marking.ISmsCouponService;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberService;
 import com.zscat.mallplus.manage.service.ums.RedisService;
 import com.zscat.mallplus.manage.utils.*;
 import com.zscat.mallplus.manage.vo.MemberDetails;
 import com.zscat.mallplus.mbg.exception.ApiMallPlusException;
+import com.zscat.mallplus.mbg.marking.mapper.SmsCouponHistoryMapper;
 import com.zscat.mallplus.mbg.sys.mapper.SysAreaMapper;
 import com.zscat.mallplus.mbg.ums.entity.UmsMember;
+import com.zscat.mallplus.mbg.ums.entity.UmsRecommendRelation;
 import com.zscat.mallplus.mbg.ums.mapper.UmsMemberMapper;
 import com.zscat.mallplus.mbg.ums.mapper.UmsMemberMemberTagRelationMapper;
+import com.zscat.mallplus.mbg.ums.mapper.UmsRecommendRelationMapper;
+import com.zscat.mallplus.mbg.ums.vo.UmsMemberVo;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
 import net.sf.json.JSONObject;
@@ -29,10 +34,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -49,13 +56,16 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
     private Logger logger = LoggerFactory.getLogger(UmsMemberServiceImpl.class);
 
     @Autowired
-    private UmsMemberMapper memberMapper;
+    private UmsMemberMapper umsMemberMapper;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
     private RedisService redisService;
+
+    @Autowired
+    private SmsCouponHistoryMapper smsCouponHistoryMapper;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UmsMemberServiceImpl.class);
    /* @Resource
@@ -65,7 +75,10 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
     private UserDetailsService userDetailsService;
 
     @Autowired
-    private SysAreaMapper areaMapper;
+    private ISmsCouponService iSmsCouponService;
+
+    @Autowired
+    private UmsRecommendRelationMapper umsRecommendRelationMapper;
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
@@ -88,12 +101,12 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
         UmsMember umsMember = new UmsMember();
         umsMember.setUsername(username);
 
-        return memberMapper.selectOne(new QueryWrapper<>(umsMember));
+        return umsMemberMapper.selectOne(new QueryWrapper<>(umsMember));
     }
 
     @Override
     public UmsMember getById(Long id) {
-        return memberMapper.selectById(id);
+        return umsMemberMapper.selectById(id);
     }
 
     @Override
@@ -121,7 +134,7 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
         UmsMember queryM = new UmsMember();
         queryM.setUsername(user.getUsername());
         queryM.setPassword(passwordEncoder.encode(user.getPassword()));
-        UmsMember umsMembers = memberMapper.selectOne(new QueryWrapper<>(queryM));
+        UmsMember umsMembers = umsMemberMapper.selectOne(new QueryWrapper<>(queryM));
         if (umsMembers!=null) {
             return new CommonResult().failed("该用户已经存在");
         }
@@ -133,7 +146,7 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
         umsMember.setCreateTime(new Date());
         umsMember.setStatus(MagicConstant.ACCOUNT_STATUS_ON);
 
-        memberMapper.insert(umsMember);
+        umsMemberMapper.insert(umsMember);
         umsMember.setPassword(null);
         return new CommonResult().success("注册成功", null);
     }
@@ -170,7 +183,7 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
     public CommonResult updatePassword(String telephone, String password, String authCode) {
         UmsMember example = new UmsMember();
         example.setPhone(telephone);
-        UmsMember member = memberMapper.selectOne(new QueryWrapper<>(example));
+        UmsMember member = umsMemberMapper.selectOne(new QueryWrapper<>(example));
         if (member==null) {
             return new CommonResult().failed("该账号不存在");
         }
@@ -180,7 +193,7 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
         }
 
         member.setPassword(passwordEncoder.encode(password));
-        memberMapper.updateById(member);
+        umsMemberMapper.updateById(member);
         return new CommonResult().success("密码修改成功", null);
     }
 
@@ -201,7 +214,7 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
         UmsMember record = new UmsMember();
         record.setId(id);
         record.setIntegration(integration);
-        memberMapper.updateById(record);
+        umsMemberMapper.updateById(record);
     }
 
 
@@ -218,7 +231,7 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
     public UmsMember queryByOpenId(String openId) {
         UmsMember queryO = new UmsMember();
         queryO.setWeixinOpenid(openId);
-        return memberMapper.selectOne(new QueryWrapper<>(queryO));
+        return umsMemberMapper.selectOne(new QueryWrapper<>(queryO));
     }
 
     @Override
@@ -274,15 +287,15 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
                 umsMember.setNickname(me.get("nickName").toString());
                 umsMember.setSessionKey(sessionData.getString("session_key"));
 
-                memberMapper.insert(umsMember);
+                umsMemberMapper.insert(umsMember);
                 token = jwtTokenUtil.generateToken(umsMember.getUsername());
                 resultObj.put("userId", umsMember.getId());
                 resultObj.put("is_complete", "0");
             }else {
                 token = jwtTokenUtil.generateToken(userVo.getUsername());
                 userVo.setSessionKey(sessionData.getString("session_key"));
-                memberMapper.updateById(userVo);
-                resultObj.put("userId", userVo.getId());
+                umsMemberMapper.updateById(userVo);
+                resultObj.put("userId", String.valueOf(userVo.getId()));
                 resultObj.put("is_complete", userVo.getIsComplete());
             }
 
@@ -373,7 +386,7 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
 
     @Override
     public UmsMember getRandomUmsMember() {
-        return memberMapper.getRandomUmsMember();
+        return umsMemberMapper.getRandomUmsMember();
     }
 
     @Override
@@ -417,7 +430,55 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
     }
 
     @Override
-    public List<UmsMember> getRecommedInfos(Long recommendedId) {
-        return memberMapper.getRecommedInfos(recommendedId);
+    public Map<String,Object> getRecommedInfos(Long recommendedId) {
+        Map<String,Object> paramMap = new HashMap<>();
+        List<UmsMember> umsMembers = umsMemberMapper.getRecommedInfos(recommendedId);
+        paramMap.put("umsMembers",umsMembers);
+        BigDecimal totalAmount = smsCouponHistoryMapper.getTotalAmout(recommendedId);
+        paramMap.put("totalAmount",totalAmount);
+        if(!CollectionUtils.isEmpty(umsMembers)){
+            paramMap.put("totalSize",umsMembers.size());
+        }
+        return paramMap;
+    }
+
+    @Override
+    @Transactional
+    public String register4MiniProgram(UmsMemberVo umsMember, Long matchUserId) {
+        umsMember.setId(UserUtils.getCurrentUmsMember().getId());
+        umsMember.setUpdateTime(new Date());
+        if(MagicConstant.UMS_IS_COMPLETE_DONE.equals(umsMember.getIsRegister())){
+            umsMember.setMatchUserId(matchUserId);
+        }
+        if(updateById(umsMember)){
+            if(MagicConstant.UMS_IS_COMPLETE_DONE.equals(umsMember.getIsRegister())){
+                if(!org.apache.commons.lang.StringUtils.isEmpty(umsMember.getRecommendId())){
+                    Integer count = umsRecommendRelationMapper.selectCount(new QueryWrapper<UmsRecommendRelation>().eq("recommended_id",UserUtils.getCurrentUmsMember().getId()).
+                            eq("status","1"));
+                    if(count == 0){
+                        UmsRecommendRelation umsRecommendRelation = new UmsRecommendRelation();
+                        umsRecommendRelation.setStatus("1");
+                        umsRecommendRelation.setCreateTime(new Date());
+                        umsRecommendRelation.setUpdateTime(new Date());
+                        umsRecommendRelation.setRecommendedId(UserUtils.getCurrentUmsMember().getId());
+                        umsRecommendRelation.setRecommendId(Long.valueOf(umsMember.getRecommendId()));
+                        umsRecommendRelationMapper.insert(umsRecommendRelation);
+                        iSmsCouponService.allocateCoupon("4",umsMember.getId());//分享之后将优惠券发放给被推荐的人
+                        iSmsCouponService.allocateCoupon("4",umsRecommendRelation.getRecommendId());//将优惠券分享给推荐的人
+                        return "注册成功";
+                    }
+                }
+            }
+            if(MagicConstant.UMS_IS_COMPLETE_DONE.equals(umsMember.getIsComplete())){
+                String msg = iSmsCouponService.allocateCoupon("3",umsMember.getId());//分配注册优惠券
+                if(!org.apache.commons.lang.StringUtils.isEmpty(msg)){
+                    msg = ",但是分配优惠券失败，请联系客服;";
+                    return "完善资料成功"+msg;
+                }else{
+                    return "完善资料成功,优惠券已发放";
+                }
+            }
+    }
+        return null;
     }
 }

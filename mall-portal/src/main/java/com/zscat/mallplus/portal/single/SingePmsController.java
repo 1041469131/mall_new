@@ -12,6 +12,7 @@ import com.zscat.mallplus.manage.service.pms.IPmsProductCategoryService;
 import com.zscat.mallplus.manage.service.pms.IPmsProductService;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberLevelService;
 import com.zscat.mallplus.manage.utils.DateUtils;
+import com.zscat.mallplus.manage.utils.UserUtils;
 import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.marking.entity.SmsGroup;
@@ -111,7 +112,7 @@ public class SingePmsController extends ApiBaseAction {
     @PostMapping(value = "/createGoods")
     public Object createGoods(PmsProduct productParam) {
         CommonResult commonResult;
-        UmsMember member = this.getCurrentMember();
+        UmsMember member = UserUtils.getCurrentUmsMember();
         if (member.getMemberLevelId()>0){
             UmsMemberLevel memberLevel = memberLevelService.getById(member.getMemberLevelId());
             PmsProduct newSubject = new PmsProduct();

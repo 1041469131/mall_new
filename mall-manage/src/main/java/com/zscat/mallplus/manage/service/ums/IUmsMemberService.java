@@ -2,11 +2,11 @@ package com.zscat.mallplus.manage.service.ums;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zscat.mallplus.mbg.ums.entity.UmsMember;
+import com.zscat.mallplus.mbg.ums.vo.UmsMemberVo;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -78,5 +78,13 @@ public interface IUmsMemberService extends IService<UmsMember> {
 
     Object modifyPhoneByAuthCode(UmsMember umsMember, String phone, String authCode);
 
-    List<UmsMember> getRecommedInfos(Long recommendedId);
+    Map<String,Object> getRecommedInfos(Long recommendedId);
+
+    /**
+     * 用户注册
+     * @param umsMember
+     * @param matchUserId
+     * @return
+     */
+    String register4MiniProgram(UmsMemberVo umsMember, Long matchUserId);
 }

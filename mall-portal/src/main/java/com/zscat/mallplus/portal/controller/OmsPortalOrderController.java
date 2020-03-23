@@ -7,6 +7,7 @@ import com.zscat.mallplus.manage.service.oms.IOmsOrderService;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberService;
 import com.zscat.mallplus.manage.service.ums.RedisService;
 import com.zscat.mallplus.manage.utils.JsonUtil;
+import com.zscat.mallplus.manage.utils.UserUtils;
 import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
 import com.zscat.mallplus.mbg.exception.ApiMallPlusException;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrder;
@@ -151,7 +152,7 @@ public class OmsPortalOrderController extends ApiBaseAction {
     @RequestMapping("/getWayBillInfo")
     public Object getWayBillInfo(@RequestParam(value = "orderId", required = false, defaultValue = "0") Long orderId) throws Exception {
         try {
-            UmsMember member = this.getCurrentMember();
+            UmsMember member = UserUtils.getCurrentUmsMember();
             OmsOrder order = orderService.getById(orderId);
             if(order==null){
                return null;

@@ -1,11 +1,12 @@
 package com.zscat.mallplus.mbg.oms.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-
+@TableName("oms_order_trade")
 public class OmsOrderTrade implements Serializable {
 
     private Long id;

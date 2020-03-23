@@ -11,10 +11,10 @@ import io.swagger.annotations.ApiModelProperty;
 public class UmsMemberVo extends UmsMember {
 
     @ApiModelProperty("穿衣风格名称")
-    private String dressTypeName;
+    private String dressStyleName;
 
     @ApiModelProperty("穿衣的色系名称")
-    private String dressColorIdName;
+    private String dressColorName;
 
     @ApiModelProperty("重来不穿的风格名称")
     private String neverDressStyleName;
@@ -38,7 +38,7 @@ public class UmsMemberVo extends UmsMember {
     private String aspectName;
 
     @ApiModelProperty("更在意衣服的")
-    private String careClothes;
+    private String careClothesName;
 
     @ApiModelProperty("衣服的频率描述")
     private String dressFreqName;
@@ -49,20 +49,20 @@ public class UmsMemberVo extends UmsMember {
     @ApiModelProperty("推荐人id")
     private String recommendId;
 
-    public String getDressTypeName() {
-        return dressTypeName;
+    public String getDressStyleName() {
+        return dressStyleName;
     }
 
-    public void setDressTypeName(String dressTypeName) {
-        this.dressTypeName = dressTypeName;
+    public void setDressStyleName(String dressStyleName) {
+        this.dressStyleName = dressStyleName;
     }
 
-    public String getDressColorIdName() {
-        return dressColorIdName;
+    public String getDressColorName() {
+        return dressColorName;
     }
 
-    public void setDressColorIdName(String dressColorIdName) {
-        this.dressColorIdName = dressColorIdName;
+    public void setDressColorName(String dressColorName) {
+        this.dressColorName = dressColorName;
     }
 
     public String getNeverDressStyleName() {
@@ -121,14 +121,12 @@ public class UmsMemberVo extends UmsMember {
         this.aspectName = aspectName;
     }
 
-    @Override
-    public String getCareClothes() {
-        return careClothes;
+    public String getCareClothesName() {
+        return careClothesName;
     }
 
-    @Override
-    public void setCareClothes(String careClothes) {
-        this.careClothes = careClothes;
+    public void setCareClothesName(String careClothesName) {
+        this.careClothesName = careClothesName;
     }
 
     public String getDressFreqName() {

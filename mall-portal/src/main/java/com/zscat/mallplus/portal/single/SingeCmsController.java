@@ -11,6 +11,7 @@ import com.zscat.mallplus.manage.service.pms.IPmsProductAttributeCategoryService
 import com.zscat.mallplus.manage.service.pms.IPmsProductCategoryService;
 import com.zscat.mallplus.manage.service.pms.IPmsProductService;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberLevelService;
+import com.zscat.mallplus.manage.utils.UserUtils;
 import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.cms.entity.CmsSubject;
@@ -91,7 +92,7 @@ public class SingeCmsController extends ApiBaseAction {
     @PostMapping(value = "/createSubject")
     public Object createSubject(CmsSubject subject, BindingResult result) {
         CommonResult commonResult;
-        UmsMember member = this.getCurrentMember();
+        UmsMember member = UserUtils.getCurrentUmsMember();
         if (member.getMemberLevelId()>0){
             UmsMemberLevel memberLevel = memberLevelService.getById(member.getMemberLevelId());
             CmsSubject newSubject = new CmsSubject();

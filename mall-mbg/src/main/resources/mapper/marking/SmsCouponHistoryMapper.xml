@@ -86,4 +86,12 @@
         ORDER BY c.amount DESC
     </select>
 
+    <select id="getTotalAmout" resultType="java.math.BigDecimal">
+        SELECT sum(t3.amount) as amount
+        FROM ums_recommend_relation t1
+        LEFT JOIN sms_coupon_history t2 on t1.recommended_id = t2.member_id
+        LEFT JOIN sms_coupon t3 on t3.id = t2.coupon_id
+        WHERE t1.recommend_id = #{recommendedId} and t3.type = 4
+    </select>
+
 </mapper>

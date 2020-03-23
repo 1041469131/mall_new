@@ -177,4 +177,9 @@
             #{item.productSkuId}
         </foreach>
     </update>
+
+    <select id="listOmsOrders" resultMap="BaseResultMap">
+      SELECT <include refid="Base_Column_List"/>
+        FROM OMS_ORDER WHERE ORDER_SN = #{outTradeNo} OR SUPPLY_ID = #{outTradeNo}
+    </select>
 </mapper>

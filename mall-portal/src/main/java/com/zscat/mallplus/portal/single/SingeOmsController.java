@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zscat.mallplus.manage.service.marking.ISmsGroupService;
 import com.zscat.mallplus.manage.service.oms.IOmsOrderService;
+import com.zscat.mallplus.manage.utils.UserUtils;
 import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrder;
@@ -52,7 +53,7 @@ public class SingeOmsController extends ApiBaseAction {
     @SysLog(MODULE = "order", REMARK = "商品详情预览订单")
     @GetMapping(value = "/preOrder")
     public Object preOrder(GroupAndOrderVo orderParam) {
-        UmsMember member = this.getCurrentMember();
+        UmsMember member = UserUtils.getCurrentUmsMember();
         orderParam.setMemberId(member.getId());
         orderParam.setName(member.getNickname());
         return orderService.preSingelOrder(orderParam);
@@ -66,7 +67,7 @@ public class SingeOmsController extends ApiBaseAction {
     @SysLog(MODULE = "order", REMARK = "商品详情生成订单")
     @PostMapping(value = "/bookOrder")
     public Object bookOrder(GroupAndOrderVo orderParam) {
-        UmsMember member = this.getCurrentMember();
+        UmsMember member = UserUtils.getCurrentUmsMember();
         return orderService.generateSingleOrder(orderParam,member);
     }
 }

@@ -83,10 +83,10 @@
     </select>
 
     <select id="getRecommedInfos" resultMap="BaseResultMap">
-        SELECT <include refid="alias_column_list" />
+        SELECT t.nickname, t.icon,t.create_time
         FROM ums_recommend_relation urr
-        LEFT JOIN ums_member t on t.id = urr.recommend_id
-        where urr.recommended_id = #{recommendedId} and urr.status = '1'
+        LEFT JOIN ums_member t on t.id = urr.recommended_id
+        where urr.recommend_id = #{recommendedId} and urr.status = '1'
     </select>
 
 </mapper>

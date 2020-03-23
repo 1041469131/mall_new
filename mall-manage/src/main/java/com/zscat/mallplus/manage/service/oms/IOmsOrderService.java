@@ -97,4 +97,6 @@ public interface IOmsOrderService extends IService<OmsOrder> {
     CommonResult confirmOrder(Long orderId);
 
     Map<String, Object> payPrepay(String str, String ipStr, BigDecimal totalFee, String isParentOrder, OmsOrder orderInfo, List<OmsOrder> orderList) throws Exception;
+
+    List<OmsOrder> listOmsOrders(String outTradeNo);
 }

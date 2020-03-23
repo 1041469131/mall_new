@@ -4,15 +4,18 @@ package com.zscat.mallplus.portal.controller;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zscat.mallplus.manage.config.WxAppletProperties;
+import com.zscat.mallplus.manage.service.oms.IOmsOrderItemService;
 import com.zscat.mallplus.manage.service.oms.IOmsOrderReturnSaleService;
 import com.zscat.mallplus.manage.service.oms.IOmsOrderService;
 import com.zscat.mallplus.manage.service.oms.IOmsOrderTradeService;
+import com.zscat.mallplus.manage.service.pms.IPmsSkuStockService;
 import com.zscat.mallplus.manage.utils.*;
 import com.zscat.mallplus.manage.utils.applet.WechatRefundApiResult;
 import com.zscat.mallplus.manage.utils.applet.WechatUtil;
 import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrder;
+import com.zscat.mallplus.mbg.oms.entity.OmsOrderItem;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrderReturnSale;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrderTrade;
 import com.zscat.mallplus.mbg.ums.entity.UmsMember;
@@ -62,6 +65,12 @@ public class PayController extends ApiBaseAction {
 
     @Autowired
     private IOmsOrderReturnSaleService iOmsOrderReturnSaleService;
+
+    @Autowired
+    private IOmsOrderItemService iOmsOrderItemService;
+
+    @Autowired
+    private IPmsSkuStockService iPmsSkuStockService;
 
 
 
@@ -219,16 +228,22 @@ public class PayController extends ApiBaseAction {
                 response.getWriter().write(setXml("SUCCESS", "OK"));
             } else if (result_code.equalsIgnoreCase("SUCCESS")) {
                 //订单编号
-                String out_trade_no = result.getOut_trade_no();
-                log.error("订单" + out_trade_no + "支付成功");
+                String outTradeNo = result.getOut_trade_no();
+                log.error("订单" + outTradeNo + "支付成功");
                 // 业务处理
                 OmsOrder param = new OmsOrder();
-                param.setOrderSn(out_trade_no);
-                List<OmsOrder> list = orderService.list(new QueryWrapper<OmsOrder>().eq("order_sn",out_trade_no).or().eq("supply_id",out_trade_no));
+                param.setOrderSn(outTradeNo);
+                List<OmsOrder> list = orderService.listOmsOrders(outTradeNo);
                 List<OmsOrderTrade> omsOrderTrades = null;
                 if(!CollectionUtils.isEmpty(list)){
                     omsOrderTrades = new ArrayList<>();
                     for(OmsOrder orderInfo:list){
+                        List<OmsOrderItem> omsOrderItems = iOmsOrderItemService.list(new QueryWrapper<OmsOrderItem>().eq("order_id",orderInfo.getId()));
+                        if(!CollectionUtils.isEmpty(omsOrderItems)){
+                            for(OmsOrderItem omsOrderItem : omsOrderItems){
+                                iPmsSkuStockService.updateStockCount(omsOrderItem.getProductSkuId(),omsOrderItem.getProductQuantity(),"1");
+                            }
+                        }
                         orderInfo.setStatus(MagicConstant.ORDER_STATUS_WAIT_SEND);
                         orderInfo.setPaymentTime(new Date());
                         orderInfo.setTransactionId(result.getTransaction_id());

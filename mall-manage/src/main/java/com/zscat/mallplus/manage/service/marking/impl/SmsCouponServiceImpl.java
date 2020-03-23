@@ -2,6 +2,7 @@ package com.zscat.mallplus.manage.service.marking.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zscat.mallplus.manage.service.marking.ISmsCouponHistoryService;
 import com.zscat.mallplus.manage.service.marking.ISmsCouponProductCategoryRelationService;
 import com.zscat.mallplus.manage.service.marking.ISmsCouponProductRelationService;
 import com.zscat.mallplus.manage.service.marking.ISmsCouponService;
@@ -25,6 +26,7 @@ import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -57,7 +59,8 @@ public class SmsCouponServiceImpl extends ServiceImpl<SmsCouponMapper, SmsCoupon
     private IUmsMemberService memberService;
     @Autowired
     private SmsCouponHistoryMapper couponHistoryMapper;
-
+    @Autowired
+    private ISmsCouponHistoryService iSmsCouponHistoryService;
     @Autowired
     private UmsMemberMapper umsMemberMapper;
 
@@ -90,9 +93,12 @@ public class SmsCouponServiceImpl extends ServiceImpl<SmsCouponMapper, SmsCoupon
     }
 
     @Override
+    @Transactional
     public boolean updateByIds(SmsCouponParam couponParam) {
         couponParam.setId(couponParam.getId());
-        int count = couponMapper.updateById(couponParam);
+        couponMapper.updateById(couponParam);
+        //更新相应的用户使用的优惠券
+        updateSmsCouponHistory(couponParam);
         //删除后插入优惠券和商品关系表
         if (couponParam.getUseType().equals(MagicConstant.COUPON_USE_TYPE_PRODUCT)) {
             for (SmsCouponProductRelation productRelation : couponParam.getProductRelationList()) {
@@ -110,6 +116,20 @@ public class SmsCouponServiceImpl extends ServiceImpl<SmsCouponMapper, SmsCoupon
             productCategoryRelationDao.saveBatch(couponParam.getProductCategoryRelationList());
         }
         return true;
+    }
+
+    /**
+     * 更新用户使用的优惠券
+     * @param couponParam
+     */
+    private void updateSmsCouponHistory(SmsCouponParam couponParam) {
+        List<SmsCouponHistory> smsCouponHistories = couponHistoryMapper.selectList(new QueryWrapper<SmsCouponHistory>().eq("coupon_id",couponParam.getId()));
+        if(!CollectionUtils.isEmpty(smsCouponHistories)){
+            for(SmsCouponHistory smsCouponHistory : smsCouponHistories){
+                smsCouponHistory.setEffectDay(couponParam.getEffectDay());
+            }
+            iSmsCouponHistoryService.saveOrUpdateBatch(smsCouponHistories);
+        }
     }
 
     private void deleteProductCategoryRelation(Long id) {

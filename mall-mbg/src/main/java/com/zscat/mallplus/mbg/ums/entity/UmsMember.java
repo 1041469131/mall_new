@@ -4,13 +4,10 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import org.springframework.format.annotation.NumberFormat;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -601,14 +598,6 @@ public class UmsMember implements Serializable {
         this.matchUserId = matchUserId;
     }
 
-    public String getCareClothes() {
-        return careClothes;
-    }
-
-    public void setCareClothes(String careClothes) {
-        this.careClothes = careClothes;
-    }
-
     public String getSessionKey() {
         return sessionKey;
     }
@@ -639,5 +628,13 @@ public class UmsMember implements Serializable {
 
     public void setMatchCount(String matchCount) {
         this.matchCount = matchCount;
+    }
+
+    public String getCareClothes() {
+        return careClothes;
+    }
+
+    public void setCareClothes(String careClothes) {
+        this.careClothes = careClothes;
     }
 }

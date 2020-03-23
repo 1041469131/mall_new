@@ -45,4 +45,6 @@ public interface OmsOrderMapper extends BaseMapper<OmsOrder> {
      * 批量发货
      */
     int delivery(@Param("list") List<OmsOrderDeliveryParam> deliveryParamList);
+
+    List<OmsOrder> listOmsOrders(@Param("outTradeNo") String outTradeNo);
 }

@@ -364,6 +364,7 @@ public class OmsOrderServiceImpl extends ServiceImpl<OmsOrderMapper, OmsOrder> i
     }
 
     @Override
+//    @Transactional
     public CommonResult generateOrder(OrderParam orderParam) {
 
         String type = orderParam.getType();
@@ -471,9 +472,9 @@ public class OmsOrderServiceImpl extends ServiceImpl<OmsOrderMapper, OmsOrder> i
     }
 
     @Override
+    @Transactional
     public Object cancelOrder(Long orderId) {
         //查询为付款的取消订单
-
         OmsOrder cancelOrder = orderMapper.selectById(orderId);
         if (cancelOrder != null) {
             //修改订单状态为取消
@@ -1228,7 +1229,7 @@ public class OmsOrderServiceImpl extends ServiceImpl<OmsOrderMapper, OmsOrder> i
 
     @Override
     @Transactional
-    public Map<String, Object> payPrepay(String orderSn, String ipStr, BigDecimal totalFee, String isParentOrder,
+    public Map<String, Object> payPrepay(String ipStr, String orderSn, BigDecimal totalFee, String isParentOrder,
                                          OmsOrder orderInfo, List<OmsOrder> orderList) throws Exception {
         String nonceStr = CharUtil.getRandomString(32);
         Map<Object, Object> resultObj = new TreeMap();
@@ -1310,11 +1311,10 @@ public class OmsOrderServiceImpl extends ServiceImpl<OmsOrderMapper, OmsOrder> i
         // 业务处理
         orderInfo.setPrepayId(prepayId);
         orderService.updateById(orderInfo);
-        List<OmsOrderItem> omsOrderItems = orderItemService.list(new QueryWrapper<OmsOrderItem>().eq("order_id",orderInfo.getId()));
-        if(CollectionUtils.isNotEmpty(omsOrderItems)){
-            for(OmsOrderItem omsOrderItem : omsOrderItems){
-                iPmsSkuStockService.updateStockCount(omsOrderItem.getProductSkuId(),omsOrderItem.getProductQuantity(),"1");
-            }
-        }
+    }
+
+    @Override
+    public List<OmsOrder> listOmsOrders(String outTradeNo) {
+        return orderMapper.listOmsOrders(outTradeNo);
     }
 }

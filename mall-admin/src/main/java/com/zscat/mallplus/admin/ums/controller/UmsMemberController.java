@@ -49,13 +49,19 @@ public class UmsMemberController {
     @SysLog(MODULE = "ums", REMARK = "根据条件查询所有会员表列表")
     @ApiOperation("根据条件查询所有会员表列表")
     @GetMapping(value = "/list")
-    @PreAuthorize("hasAuthority('ums:UmsMember:read')")
-    public Object getUmsMemberByPage(UmsMember entity,
+//    @PreAuthorize("hasAuthority('ums:UmsMember:read')")
+    @IgnoreAuth
+    public Object getUmsMemberByPage(String keyword,
                                      @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
                                      @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize
     ) {
         try {
-            return new CommonResult().success(IUmsMemberService.page(new Page<UmsMember>(pageNum, pageSize), new QueryWrapper<>(entity)));
+            if(!StringUtils.isEmpty(keyword)){
+                return new CommonResult().success(IUmsMemberService.page(new Page<UmsMember>(pageNum, pageSize), new QueryWrapper<UmsMember>().like("nickname",keyword)));
+            }else{
+                return new CommonResult().success(IUmsMemberService.page(new Page<UmsMember>(pageNum, pageSize), new QueryWrapper<UmsMember>()));
+            }
+
         } catch (Exception e) {
             log.error("根据条件查询所有会员表列表：%s", e.getMessage(), e);
         }
@@ -172,9 +178,9 @@ public class UmsMemberController {
             UmsMemberVo umsMemberVo = new UmsMemberVo();
             BeanUtils.copyProperties(umsMember, umsMemberVo);
             String dressTypeId = umsMember.getDressStyle();//穿衣风格
-            umsMemberVo.setDressTypeName(dealUserTag(dressTypeId));
+            umsMemberVo.setDressStyleName(dealUserTag(dressTypeId));
             String dressColorId = umsMember.getDressColor();//穿衣的色系
-            umsMemberVo.setDressColorIdName(dealUserTag(dressColorId));
+            umsMemberVo.setDressColorName(dealUserTag(dressColorId));
             String neverDressStyle = umsMember.getNeverDressStyle();//重来不穿的风格
             umsMemberVo.setNeverDressStyleName(dealUserTag(neverDressStyle));
             String neverDressIcon = umsMember.getNeverDressIcon();//永远不穿的图案
@@ -188,11 +194,13 @@ public class UmsMemberController {
             String balanceBody = umsMember.getBalanceBody();//平衡身体
             umsMemberVo.setBalanceBodyName(dealUserTag(balanceBody));
             String careClothes = umsMember.getCareClothes();//更在意衣服
-            umsMemberVo.setCareClothes(dealUserTag(careClothes));
+            umsMemberVo.setCareClothesName(dealUserTag(careClothes));
             String dressFreq = umsMember.getDressFreq();//衣服频率
             umsMemberVo.setDressFreqName(dealUserTag(dressFreq));
             String matchCount = umsMember.getMatchCount();//搭配的次数
             umsMemberVo.setMatchCountName(dealUserTag(matchCount));
+            String aspect = umsMember.getAspect();//体貌特征
+            umsMemberVo.setAspectName(dealUserTag(aspect));
             umsMemberVos.add(umsMemberVo);
         }
     }

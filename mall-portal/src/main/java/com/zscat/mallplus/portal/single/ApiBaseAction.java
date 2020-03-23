@@ -1,7 +1,7 @@
 package com.zscat.mallplus.portal.single;
 
 
-import com.zscat.mallplus.portal.util.ResponseUtil;
+import com.zscat.mallplus.manage.utils.ResponseUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
