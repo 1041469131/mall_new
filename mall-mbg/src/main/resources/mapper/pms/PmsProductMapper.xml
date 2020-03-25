@@ -202,7 +202,10 @@
     </sql>
 
     <select id="listPmsProductByPage" resultMap="BaseResultMap">
-        SELECT p.* FROM pms_product p WHERE p.delete_status = #{paramMap.deleteStatus}
+        SELECT P.* FROM PMS_PRODUCT P
+        LEFT JOIN PMS_PRODUCT_ATTRIBUTE_VALUE pv ON p.id = pv.product_id
+        SELECT P.* FROM PMS_PRODUCT P
+        LEFT JOIN PMS_PRODUCT_ATTRIBUTE_VALUE pv ON p.id = pv.product_id
     </select>
 
 </mapper>
