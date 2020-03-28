@@ -53,10 +53,9 @@ public class MatchLibraryAssemble {
             pmsProductMatchLibraryVos = new ArrayList<>();
             for(PmsProductUserMatchLibrary pmsProductUserMatchLibrary : pmsProductUserMatchLibraries){
                 updateUserMatchFavorType(pmsProductUserMatchLibrary);
-//                    PmsProductMatchLibraryVo pmsProductMatchLibraryVo = assembleSingleUserMatchLibrary(pmsProductUserMatchLibrary);
-                PmsProductMatchLibraryVo pmsProductMatchLibraryVo = new PmsProductMatchLibraryVo();
+                PmsProductMatchLibraryVo pmsProductMatchLibraryVo = assembleSingleUserMatchLibrary(pmsProductUserMatchLibrary);
                 pmsProductMatchLibraryVo.setPmsProductUserMatchLibrary(pmsProductUserMatchLibrary);
-                    pmsProductMatchLibraryVos.add(pmsProductMatchLibraryVo);
+                pmsProductMatchLibraryVos.add(pmsProductMatchLibraryVo);
                 }
         }
         return pmsProductMatchLibraryVos;
@@ -72,7 +71,7 @@ public class MatchLibraryAssemble {
 
     /**
      * 组装单个用户匹配
-     * @param pmsProductUserMatchLibraries
+     * @param pmsProductUserMatchLibrary
      * @return
      */
     public static PmsProductMatchLibraryVo assembleSingleUserMatchLibrary(PmsProductUserMatchLibrary pmsProductUserMatchLibrary){

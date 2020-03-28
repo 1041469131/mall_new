@@ -23,6 +23,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,6 +72,10 @@ public class PmsProductController {
                                       @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize
     ) {
         Page<PmsProduct> pmsProductPage = new Page<>(pageNum,pageSize);
+        List<Long> productAttributeIds = new ArrayList<>();
+        productAttributeIds.add(431L);
+        productAttributeIds.add(414L);
+        productAttributeIds.add(415L);
         Map<String,Object> paramMap = new HashMap<>();
         paramMap.put("deleteStatus","0");
         Page<PmsProduct> pmsProductList = iPmsProductService.listPmsProductByPage(pmsProductPage,paramMap);

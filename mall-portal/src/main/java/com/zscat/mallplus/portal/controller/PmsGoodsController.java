@@ -30,7 +30,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 首页内容管理Controller
@@ -69,9 +72,6 @@ public class PmsGoodsController {
     private RedisService redisService;
 
     @Autowired
-    private IPmsProductMatchLibraryService iPmsProductMatchLibraryService;
-
-    @Autowired
     private IPmsProductUserMatchLibraryService iPmsProductUserMatchLibraryService;
 
     @Autowired
@@ -79,12 +79,6 @@ public class PmsGoodsController {
 
     @Autowired
     private IPmsSkuStockService iPmsSkuStockService;
-
-    @Autowired
-    private IPmsProductService iPmsProductService;
-
-    @Autowired
-    private PmsSkuStockMapper pmsSkuStockMapper;
 
     @IgnoreAuth
     @ApiOperation("查询商品列表1")

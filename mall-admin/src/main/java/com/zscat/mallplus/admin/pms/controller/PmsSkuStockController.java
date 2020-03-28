@@ -31,6 +31,7 @@ import java.util.List;
 @Api(tags = "PmsSkuStockController", description = "sku的库存管理")
 @RequestMapping("/pms/PmsSkuStock")
 public class PmsSkuStockController {
+
     @Autowired
     private IPmsSkuStockService IPmsSkuStockService;
 

@@ -203,9 +203,16 @@
 
     <select id="listPmsProductByPage" resultMap="BaseResultMap">
         SELECT P.* FROM PMS_PRODUCT P
-        LEFT JOIN PMS_PRODUCT_ATTRIBUTE_VALUE pv ON p.id = pv.product_id
-        SELECT P.* FROM PMS_PRODUCT P
-        LEFT JOIN PMS_PRODUCT_ATTRIBUTE_VALUE pv ON p.id = pv.product_id
+        LEFT JOIN PMS_PRODUCT_ATTRIBUTE_VALUE PV ON P.ID = PV.PRODUCT_ID
+        WHERE 1=1
+        <if test="paramMap.productAttributeIds != null and paramMap.productAttributeIds.length > 0">
+            AND PV.PRODUCT_ATTRIBUTE_ID IN
+            <foreach collection="paramMap.productAttributeIds" item="productAttributeId" index="index"
+                     open="(" close=")" separator=",">
+                #{productAttributeId}
+            </foreach>
+        </if>
+        GROUP BY PV.PRODUCT_ID
     </select>
 
 </mapper>

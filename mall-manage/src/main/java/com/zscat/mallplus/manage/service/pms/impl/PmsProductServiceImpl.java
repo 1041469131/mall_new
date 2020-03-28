@@ -42,7 +42,7 @@ import java.util.*;
 public class PmsProductServiceImpl extends ServiceImpl<PmsProductMapper, PmsProduct> implements IPmsProductService {
 
     @Resource
-    private PmsProductMapper productMapper;
+    private PmsProductMapper pmsProductMapper;
     @Resource
     private IPmsMemberPriceService memberPriceDao;
     @Resource
@@ -87,7 +87,7 @@ public class PmsProductServiceImpl extends ServiceImpl<PmsProductMapper, PmsProd
         //创建商品
         PmsProduct product = productParam;
         product.setCreateTime(new Date());
-        productMapper.insert(product);
+        pmsProductMapper.insert(product);
         //根据促销类型设置价格：、阶梯价格、满减价格
         Long productId = product.getId();
         //会员价格
@@ -129,7 +129,7 @@ public class PmsProductServiceImpl extends ServiceImpl<PmsProductMapper, PmsProd
 
     @Override
     public PmsProductResult getUpdateInfo(Long id) {
-        return productMapper.getUpdateInfo(id);
+        return pmsProductMapper.getUpdateInfo(id);
     }
 
     @Override
@@ -137,7 +137,7 @@ public class PmsProductServiceImpl extends ServiceImpl<PmsProductMapper, PmsProd
         //更新商品信息
         PmsProduct product = productParam;
         product.setId(id);
-        productMapper.updateById(product);
+        pmsProductMapper.updateById(product);
         //会员价格
         memberPriceMapper.delete(new QueryWrapper<>(new PmsMemberPrice()).eq("product_id",id));
         relateAndInsertList(memberPriceDao, productParam.getMemberPriceList(), id);
@@ -169,7 +169,7 @@ public class PmsProductServiceImpl extends ServiceImpl<PmsProductMapper, PmsProd
     public int updateVerifyStatus(Long ids, Integer verifyStatus, String detail) {
         PmsProduct product = new PmsProduct();
         product.setVerifyStatus(verifyStatus);
-        int count = productMapper.update(product, new QueryWrapper<PmsProduct>().in("id",ids) );
+        int count = pmsProductMapper.update(product, new QueryWrapper<PmsProduct>().in("id",ids) );
         //修改完审核状态后插入审核记录
 
         PmsProductVertifyRecord record = new PmsProductVertifyRecord();
@@ -187,7 +187,7 @@ public class PmsProductServiceImpl extends ServiceImpl<PmsProductMapper, PmsProd
         PmsProduct record = new PmsProduct();
         record.setPublishStatus(publishStatus);
 
-        return productMapper.update(record, new QueryWrapper<PmsProduct>().in("id",ids));
+        return pmsProductMapper.update(record, new QueryWrapper<PmsProduct>().in("id",ids));
     }
 
     @Override
@@ -195,7 +195,7 @@ public class PmsProductServiceImpl extends ServiceImpl<PmsProductMapper, PmsProd
         PmsProduct record = new PmsProduct();
         record.setRecommandStatus(recommendStatus);
 
-        return productMapper.update(record, new QueryWrapper<PmsProduct>().in("id",ids));
+        return pmsProductMapper.update(record, new QueryWrapper<PmsProduct>().in("id",ids));
     }
 
     @Override
@@ -203,14 +203,14 @@ public class PmsProductServiceImpl extends ServiceImpl<PmsProductMapper, PmsProd
         PmsProduct record = new PmsProduct();
         record.setNewStatus(newStatus);
 
-        return productMapper.update(record, new QueryWrapper<PmsProduct>().in("id",ids));
+        return pmsProductMapper.update(record, new QueryWrapper<PmsProduct>().in("id",ids));
     }
 
     @Override
     public int updateDeleteStatus(List<Long> ids, Integer deleteStatus) {
         PmsProduct record = new PmsProduct();
         record.setDeleteStatus(deleteStatus);
-        return productMapper.update(record, new QueryWrapper<PmsProduct>().in("id",ids));
+        return pmsProductMapper.update(record, new QueryWrapper<PmsProduct>().in("id",ids));
     }
 
     @Override
@@ -222,7 +222,7 @@ public class PmsProductServiceImpl extends ServiceImpl<PmsProductMapper, PmsProd
             queryWrapper.like("name",keyword);
 
         }
-        return productMapper.selectList(queryWrapper);
+        return pmsProductMapper.selectList(queryWrapper);
     }
 
     @Override
@@ -259,7 +259,7 @@ public class PmsProductServiceImpl extends ServiceImpl<PmsProductMapper, PmsProd
     @Override
     public String deleteProduct(Long productId) {
         StringBuffer errMsg = new StringBuffer();
-        PmsProduct pmsProduct = productMapper.selectById(productId);
+        PmsProduct pmsProduct = pmsProductMapper.selectById(productId);
         int deleteStatus = pmsProduct.getDeleteStatus();//删除状态
         int pushStatus = pmsProduct.getPublishStatus();//上架状态
         int verifyStatus = pmsProduct.getVerifyStatus();//审核状态
@@ -276,13 +276,13 @@ public class PmsProductServiceImpl extends ServiceImpl<PmsProductMapper, PmsProd
             errMsg.insert(0, "该条记录");
         }
         pmsProduct.setDeleteStatus(MagicConstant.DEFAULT_STATUS_YES);
-        productMapper.updateById(pmsProduct);
+        pmsProductMapper.updateById(pmsProduct);
         return errMsg.toString();
     }
 
     @Override
     public PmsProductAndGroup getProductAndGroup(Long id) {
-        PmsProduct goods = productMapper.selectById(id);
+        PmsProduct goods = pmsProductMapper.selectById(id);
         PmsProductAndGroup vo = new PmsProductAndGroup();
         try {
             BeanUtils.copyProperties(goods, vo);
@@ -349,7 +349,7 @@ public class PmsProductServiceImpl extends ServiceImpl<PmsProductMapper, PmsProd
 
     @Override
     public Page<PmsProduct> listPmsProductByPage(Page<PmsProduct> pmsProductPage, Map<String, Object> paramMap) {
-        return productMapper.listPmsProductByPage(pmsProductPage,paramMap);
+        return pmsProductMapper.listPmsProductByPage(pmsProductPage,paramMap);
     }
 }
 
