@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zscat.mallplus.manage.service.oms.IOmsOrderReturnApplyService;
 import com.zscat.mallplus.manage.service.oms.IOmsOrderReturnSaleService;
 import com.zscat.mallplus.manage.service.oms.IOmsOrderService;
+import com.zscat.mallplus.manage.utils.JsonUtil;
+import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrder;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrderReturnApply;
@@ -21,10 +23,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -187,10 +191,14 @@ public class OmsOrderReturnApplyController {
 
     @SysLog(MODULE = "oms", REMARK = "修改售后申请的状态")
     @ApiOperation("修改售后申请的状态")
-    @RequestMapping(value = "/update/status/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/update/status", method = RequestMethod.POST)
     @ResponseBody
-    public Object updateStatus(@PathVariable Long id,@RequestBody OmsUpdateStatusParam statusParam) {
-        int count = iOmsOrderReturnSaleService.updateStatus(statusParam.getId(), statusParam);
+    public Object updateStatus(Long id, String saleJson) {
+        if(StringUtils.isEmpty(saleJson)){
+            return new CommonResult().failed("返回的json字符串为空");
+        }
+        Map<String,Object> saleMap = JsonUtil.readJsonToMap(saleJson);
+        int count = iOmsOrderReturnSaleService.updateStatus(id, saleMap);
         if (count > 0) {
             return new CommonResult().success(count);
         }
