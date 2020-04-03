@@ -1,6 +1,7 @@
 package com.zscat.mallplus.manage.service.ums.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zscat.mallplus.manage.config.WxAppletProperties;
 import com.zscat.mallplus.manage.service.marking.ISmsCouponService;
@@ -480,5 +481,10 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
             }
     }
         return null;
+    }
+
+    @Override
+    public Page<UmsMemberVo> pageUmsMembers(Page<UmsMemberVo> umsMemberPage, Map<String, Object> paramMap) {
+        return umsMemberMapper.pageUmsMembers(umsMemberPage,paramMap);
     }
 }

@@ -4,7 +4,11 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberTagService;
 import com.zscat.mallplus.mbg.ums.entity.UmsMemberTag;
 import com.zscat.mallplus.mbg.ums.mapper.UmsMemberTagMapper;
+import com.zscat.mallplus.mbg.ums.vo.UmsMemberTagVo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>
@@ -17,4 +21,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class UmsMemberTagServiceImpl extends ServiceImpl<UmsMemberTagMapper, UmsMemberTag> implements IUmsMemberTagService {
 
+    @Autowired
+    private UmsMemberTagMapper umsMemberTagMapper;
+
+    @Override
+    public List<UmsMemberTagVo> listUmsMemberTags(Long matchUserId) {
+        return umsMemberTagMapper.listUmsMemberTags(matchUserId);
+    }
 }

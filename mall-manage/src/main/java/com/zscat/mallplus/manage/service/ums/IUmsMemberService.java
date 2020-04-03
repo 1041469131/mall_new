@@ -1,6 +1,8 @@
 package com.zscat.mallplus.manage.service.ums;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zscat.mallplus.mbg.pms.entity.PmsProduct;
 import com.zscat.mallplus.mbg.ums.entity.UmsMember;
 import com.zscat.mallplus.mbg.ums.vo.UmsMemberVo;
 import com.zscat.mallplus.mbg.utils.CommonResult;
@@ -87,4 +89,6 @@ public interface IUmsMemberService extends IService<UmsMember> {
      * @return
      */
     String register4MiniProgram(UmsMemberVo umsMember, Long matchUserId);
+
+    Page<UmsMemberVo> pageUmsMembers(Page<UmsMemberVo> umsMemberPage, Map<String, Object> paramMap);
 }

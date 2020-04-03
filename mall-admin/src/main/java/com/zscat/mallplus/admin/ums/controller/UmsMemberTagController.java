@@ -3,6 +3,8 @@ package com.zscat.mallplus.admin.ums.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberTagService;
+import com.zscat.mallplus.manage.utils.UserUtils;
+import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.ums.entity.UmsMemberTag;
 import com.zscat.mallplus.mbg.utils.CommonResult;
@@ -11,11 +13,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -38,12 +41,9 @@ public class UmsMemberTagController {
     @ApiOperation("根据条件查询所有用户标签表列表")
     @GetMapping(value = "/list")
     @PreAuthorize("hasAuthority('ums:UmsMemberTag:read')")
-    public Object getUmsMemberTagByPage(UmsMemberTag entity,
-                                        @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
-                                        @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize
-    ) {
+    public Object getUmsMemberTagByPage() {
         try {
-            return new CommonResult().success(IUmsMemberTagService.page(new Page<UmsMemberTag>(pageNum, pageSize), new QueryWrapper<>(entity)));
+            return new CommonResult().success(IUmsMemberTagService.listUmsMemberTags(UserUtils.getCurrentMember().getId()));
         } catch (Exception e) {
             log.error("根据条件查询所有用户标签表列表：%s", e.getMessage(), e);
         }
@@ -54,8 +54,14 @@ public class UmsMemberTagController {
     @ApiOperation("保存用户标签表")
     @PostMapping(value = "/create")
     @PreAuthorize("hasAuthority('ums:UmsMemberTag:create')")
+    @IgnoreAuth
     public Object saveUmsMemberTag(@RequestBody UmsMemberTag entity) {
         try {
+            if(!StringUtils.isNotEmpty(entity.getPlatformType())){
+                entity.setPlatformType("0");
+            }
+            entity.setCreateTime(new Date());
+            entity.setMatchUserId(UserUtils.getCurrentMember().getId());
             if (IUmsMemberTagService.save(entity)) {
                 return new CommonResult().success();
             }

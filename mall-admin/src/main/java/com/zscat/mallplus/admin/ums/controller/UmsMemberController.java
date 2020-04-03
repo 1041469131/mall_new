@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberRegisterParamService;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberService;
+import com.zscat.mallplus.manage.utils.UserUtils;
 import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
 import com.zscat.mallplus.mbg.annotation.SysLog;
+import com.zscat.mallplus.mbg.pms.entity.PmsProduct;
 import com.zscat.mallplus.mbg.ums.entity.UmsMember;
 import com.zscat.mallplus.mbg.ums.entity.UmsMemberRegisterParam;
 import com.zscat.mallplus.mbg.ums.vo.UmsMemberVo;
@@ -24,7 +26,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -49,8 +53,7 @@ public class UmsMemberController {
     @SysLog(MODULE = "ums", REMARK = "根据条件查询所有会员表列表")
     @ApiOperation("根据条件查询所有会员表列表")
     @GetMapping(value = "/list")
-//    @PreAuthorize("hasAuthority('ums:UmsMember:read')")
-    @IgnoreAuth
+    @PreAuthorize("hasAuthority('ums:UmsMember:read')")
     public Object getUmsMemberByPage(String keyword,
                                      @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
                                      @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize
@@ -66,6 +69,21 @@ public class UmsMemberController {
             log.error("根据条件查询所有会员表列表：%s", e.getMessage(), e);
         }
         return new CommonResult().failed();
+    }
+
+
+    @SysLog(MODULE = "ums", REMARK = "分页查询会员表列表")
+    @ApiOperation("分页查询会员表列表")
+    @GetMapping(value = "/pageUmsMembers")
+    @IgnoreAuth
+    public Object pageUmsMembers(@RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
+                                       @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize
+    ) {
+        Page<UmsMemberVo> umsMemberPage = new Page<>(pageNum,pageSize);
+        List<Long> productAttributeIds = new ArrayList<>();
+        Map<String,Object> paramMap = new HashMap<>();
+        Page<UmsMemberVo> pmsProductList = IUmsMemberService.pageUmsMembers(umsMemberPage,paramMap);
+        return pmsProductList;
     }
 
     @SysLog(MODULE = "ums", REMARK = "保存会员表")
@@ -153,7 +171,7 @@ public class UmsMemberController {
     }
 
 
-    /*********新增接口******************/
+    /******************************************新增接口*****************************************/
     @ApiOperation(value = "根据用户昵称查询用户详情")
     @RequestMapping(value = "/query/detail", method = RequestMethod.POST)
     @ResponseBody
@@ -207,7 +225,7 @@ public class UmsMemberController {
 
     /**
      * 处理用户的标签
-     * @param dressTypeId
+     * @param tagId
      */
     private String dealUserTag(String tagId) {
         if(StringUtils.isEmpty(tagId)){
@@ -226,5 +244,22 @@ public class UmsMemberController {
         }
         return stringBuffer.toString();
     }
+
+    @ApiOperation(value = "根据搭配师id查询搭配师下面的粉丝(不需要传搭配师id后台通过登录自己获取)")
+    @RequestMapping(value = "/listUmsMember4Matcher", method = RequestMethod.GET)
+    @ResponseBody
+    @SysLog(MODULE = "ums", REMARK = "根据搭配师id查询搭配师下面的粉丝")
+    @PreAuthorize("hasAuthority('ums:UmsMember:read')")
+    public CommonResult<List<UmsMemberVo>> listUmsMember4Matcher() {
+        Long matchUserId = UserUtils.getCurrentMember().getId();
+        List<UmsMember> umsMembers = IUmsMemberService.list(new QueryWrapper<UmsMember>().like("match_user_id", matchUserId));
+        List<UmsMemberVo> umsMemberVos = null;
+        if(!CollectionUtils.isEmpty(umsMembers)){
+            umsMemberVos = new ArrayList<>();
+            dealUmsMembers(umsMembers,umsMemberVos);
+        }
+        return new CommonResult<>().success(umsMemberVos);
+    }
+
 
 }

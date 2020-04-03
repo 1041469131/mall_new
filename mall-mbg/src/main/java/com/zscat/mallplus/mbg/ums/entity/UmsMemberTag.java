@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+
 import java.io.Serializable;
 
 /**
@@ -21,6 +24,7 @@ public class UmsMemberTag implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.AUTO)
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
     private String name;
@@ -38,6 +42,18 @@ public class UmsMemberTag implements Serializable {
 
     @TableField("create_time")
     private Date createTime;
+
+    /**搭配师id*/
+    @TableField("match_user_id")
+    private Long matchUserId;
+
+    /**平台类型 0-平台 1-搭配平台*/
+    @TableField("platform_type")
+    private String platformType;
+
+    /**备注*/
+    @TableField("remark")
+    private String remark;
 
 
     public Long getId() {
@@ -80,14 +96,27 @@ public class UmsMemberTag implements Serializable {
         this.createTime = createTime;
     }
 
-    @Override
-    public String toString() {
-        return "UmsMemberTag{" +
-        ", id=" + id +
-        ", name=" + name +
-        ", type=" + type +
-        ", genType=" + genType +
-        ", createTime=" + createTime +
-        "}";
+    public Long getMatchUserId() {
+        return matchUserId;
+    }
+
+    public void setMatchUserId(Long matchUserId) {
+        this.matchUserId = matchUserId;
+    }
+
+    public String getPlatformType() {
+        return platformType;
+    }
+
+    public void setPlatformType(String platformType) {
+        this.platformType = platformType;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }

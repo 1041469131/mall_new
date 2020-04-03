@@ -269,17 +269,5 @@ public class SysUserController extends ApiController {
         List<SysPermission> permissionList = sysUserService.getPermissionListByUserId(adminId);
         return new CommonResult().success(permissionList);
     }
-
-
-    public static void main(String[] args) {
-        List<Map<String,String>> paramList = new ArrayList<>();
-        Map<String,String> map = new HashMap<>();
-        map.put("1","2" );
-        Map<String,String> map1 = new HashMap<>();
-        map1.put("3","4" );
-        paramList.add(map);
-        paramList.add(map1);
-        System.out.println(JSON.toJSONString(paramList));
-    }
 }
 

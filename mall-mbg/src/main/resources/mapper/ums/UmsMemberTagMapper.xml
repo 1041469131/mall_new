@@ -9,11 +9,27 @@
         <result column="type" property="type" />
         <result column="gen_type" property="genType" />
         <result column="create_time" property="createTime" />
+        <!--新增字段-->
+        <result column="match_user_id" property="matchUserId" />
+        <result column="platform_type" property="platformType" />
+        <result column="remark" property="remark" />
+    </resultMap>
+
+    <resultMap id="umsMemberTagVo" type="com.zscat.mallplus.mbg.ums.vo.UmsMemberTagVo"
+               extends="BaseResultMap">
+        <result column="fanCount" property="fanCount" />
+
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, type, gen_type, create_time
+        T.ID, T.NAME, T.TYPE, T.GEN_TYPE, T.CREATE_TIME ,T.MATCH_USER_ID ,T.PLATFORM_TYPE,T.REMARK
     </sql>
+
+    <select id="listUmsMemberTags" resultMap="umsMemberTagVo">
+        SELECT COUNT(TR.TAG_ID) AS FANCOUNT,<include refid="Base_Column_List"/> FROM UMS_MEMBER_TAG T
+        LEFT JOIN UMS_MEMBER_MEMBER_TAG_RELATION TR ON T.ID = TR.TAG_ID
+        WHERE T.MATCH_USER_ID = #{matchUserId} GROUP BY TR.TAG_ID
+    </select>
 
 </mapper>

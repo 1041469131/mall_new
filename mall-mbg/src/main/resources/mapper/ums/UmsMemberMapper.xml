@@ -56,6 +56,8 @@
         <result column="dress_freq" jdbcType="VARCHAR" property="dressFreq" />
         <result column="match_count" jdbcType="VARCHAR" property="matchCount" />
     </resultMap>
+    
+
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
@@ -87,6 +89,10 @@
         FROM ums_recommend_relation urr
         LEFT JOIN ums_member t on t.id = urr.recommended_id
         where urr.recommend_id = #{recommendedId} and urr.status = '1'
+    </select>
+    
+    <select id="pageUmsMembers">
+        
     </select>
 
 </mapper>

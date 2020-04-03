@@ -797,7 +797,7 @@ public class OmsOrderServiceImpl extends ServiceImpl<OmsOrderMapper, OmsOrder> i
             //原价-促销价格-优惠券抵扣-积分抵扣
             BigDecimal realAmount = orderItem.getProductPrice()
                     .subtract(orderItem.getPromotionAmount())
-                    .subtract(orderItem.getCouponAmount())
+                    .subtract(orderItem.getCouponAmount() == null?BigDecimal.ZERO:orderItem.getCouponAmount())
                     .subtract(orderItem.getIntegrationAmount());
             orderItem.setRealAmount(realAmount);
         }
@@ -1167,14 +1167,16 @@ public class OmsOrderServiceImpl extends ServiceImpl<OmsOrderMapper, OmsOrder> i
         } else {
             //使用优惠券
             SmsCouponHistoryDetail couponHistoryDetail = getUseCoupon(cartPromotionItemList, orderParam.getCouponId());
-            Date useDate = couponHistoryDetail.getCreateTime();//领券的时间
-            Date delayDate = DateUtils.delayDate(useDate,Long.valueOf(couponHistoryDetail.getEffectDay() == null?0:couponHistoryDetail.getEffectDay()));//领券的时间+有效时间
-            if (couponHistoryDetail == null || delayDate.before(new Date())) {
-                return "该优惠券不可用";
+            if(couponHistoryDetail != null){
+                Date useDate = couponHistoryDetail.getCreateTime();//领券的时间
+                Date delayDate = DateUtils.delayDate(useDate,Long.valueOf(couponHistoryDetail.getEffectDay() == null?0:couponHistoryDetail.getEffectDay()));//领券的时间+有效时间
+                if (couponHistoryDetail == null || delayDate.before(new Date())) {
+                    return "该优惠券不可用";
+                }
+                //对下单商品的优惠券进行处理
+                handleCouponAmount(orderItemList, couponHistoryDetail);
+                updateCouponStatus(orderParam.getCouponId(), memberId, MagicConstant.COUPON_USE_STATUS_4_YES);
             }
-            //对下单商品的优惠券进行处理
-            handleCouponAmount(orderItemList, couponHistoryDetail);
-            updateCouponStatus(orderParam.getCouponId(), memberId, MagicConstant.COUPON_USE_STATUS_4_YES);
         }
         return null;
     }
