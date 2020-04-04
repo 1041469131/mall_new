@@ -24,6 +24,10 @@ public class UmsMemberRegisterParam implements Serializable {
     @ApiModelProperty(value = "参数名称")
     private String name;
 
+    /**参数名称*/
+    @ApiModelProperty(value = "属性名对应的code")
+    private String code;
+
     /**参数对应的图片地址*/
     @ApiModelProperty(value = "参数对应的图片地址")
     private String url;
@@ -138,5 +142,13 @@ public class UmsMemberRegisterParam implements Serializable {
 
     public void setOrderNum(Integer orderNum) {
         this.orderNum = orderNum;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 }
