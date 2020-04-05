@@ -3,6 +3,7 @@ package com.zscat.mallplus.admin.ums.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberMemberTagRelationService;
+import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.ums.entity.UmsMemberMemberTagRelation;
 import com.zscat.mallplus.mbg.ums.vo.UmsMemberMemberTagRelationVo;
@@ -39,7 +40,8 @@ public class UmsMemberMemberTagRelationController {
     @SysLog(MODULE = "ums", REMARK = "保存用户和标签关系表")
     @ApiOperation("保存用户和标签关系表")
     @PostMapping(value = "/create")
-    @PreAuthorize("hasAuthority('ums:UmsMemberMemberTagRelation:create')")
+//    @PreAuthorize("hasAuthority('ums:UmsMemberMemberTagRelation:create')")
+    @IgnoreAuth
     public Object saveUmsMemberMemberTagRelation(@RequestBody UmsMemberMemberTagRelationVo entity) {
         try {
             if (IUmsMemberMemberTagRelationService.saveTagRelation(entity)) {

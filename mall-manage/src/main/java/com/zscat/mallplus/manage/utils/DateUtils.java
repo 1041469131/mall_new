@@ -306,6 +306,34 @@ public class DateUtils {
         return new Date(time); // 将毫秒数转换成日期
     }
 
+    /**
+     * 根据当前的日期往前或者往后推算n个月
+     * @param date
+     * @param day
+     * @return
+     */
+    public static Date adjustMonth(Date date,Integer month) {
+        System.out.println(date);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.MONTH,month );
+        return calendar.getTime(); // 将毫秒数转换成日期
+    }
+
+    /**
+     * 根据当前的日期往前或者往后推算n天
+     * @param date
+     * @param day
+     * @return
+     */
+    public static Date adjustDay(Date date,Integer day) {
+        System.out.println(date);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DAY_OF_MONTH,day);
+        return calendar.getTime(); // 将毫秒数转换成日期
+    }
+
 
 
 
@@ -313,5 +341,7 @@ public class DateUtils {
         System.out.println(format(delayDate(new Date(),30L),"yyyy-MM-dd HH:mm:ss"));
         System.out.println(format(new Date(),"yyyy-MM-dd"));
         System.out.println(format(new Date(),"HH:mm:ss"));
+        System.out.println(adjustMonth(new Date(),-5 ));
+        System.out.println(adjustDay(new Date(),27 ));
     }
 }

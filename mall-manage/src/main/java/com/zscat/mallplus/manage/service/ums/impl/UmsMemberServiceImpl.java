@@ -517,7 +517,7 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
                         }
                     }
                     vUmsMemberVo.setRecomendCount(skuMap.keySet().size());
-                    String status = getStatus(null,vUmsMemberVo.getDressFreqCode());
+                    String status = getStatus(vUmsMember.getRecomendDate(),vUmsMemberVo.getDressFreqCode());
                 }
                 vUmsMemberVos.add(vUmsMemberVo);
             }
@@ -532,7 +532,18 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
      * @return
      */
     private String getStatus(Date recomendTime, String dressFreqCode) {
-
+        Date nextRecomendTime = null;
+        if(recomendTime != null){
+            if("everymonth".equals(dressFreqCode)){
+                nextRecomendTime = DateUtils.adjustMonth(recomendTime,1 );
+            }else if("everytwomonth".equals(dressFreqCode)){
+                nextRecomendTime = DateUtils.adjustMonth(recomendTime,2 );
+            }else if("everyquarter".equals(dressFreqCode)){
+                nextRecomendTime = DateUtils.adjustMonth(recomendTime,3 );
+            }
+        }else{
+            return "0";
+        }
         return "0";
     }
 }
