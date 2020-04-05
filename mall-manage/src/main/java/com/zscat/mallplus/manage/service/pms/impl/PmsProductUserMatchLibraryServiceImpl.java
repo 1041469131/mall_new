@@ -45,15 +45,12 @@ public class PmsProductUserMatchLibraryServiceImpl extends ServiceImpl<PmsProduc
                 UmsMemberStatisticsInfo umsMemberStatisticsInfo = umsMemberStatisticsInfoMapper.selectOne(new QueryWrapper<UmsMemberStatisticsInfo>().
                         eq("member_id",pmsProductUserMatchLibrary.getUserId()));
                 if(umsMemberStatisticsInfo != null){
-                    umsMemberStatisticsInfo.setRecomendDate(DateUtils.format(new Date(),"yyyy-MM-dd"));
-                    umsMemberStatisticsInfo.setRecomendTime(DateUtils.format(new Date(),"HH:mm:ss"));
+                    umsMemberStatisticsInfo.setRecomendDate(new Date());
                     umsMemberStatisticsInfoMapper.updateById(umsMemberStatisticsInfo);
                 }else{
                     umsMemberStatisticsInfo.setMemberId(pmsProductUserMatchLibrary.getUserId());
-                    umsMemberStatisticsInfo.setRecomendDate(DateUtils.format(new Date(),"yyyy-MM-dd"));
-                    umsMemberStatisticsInfo.setRecomendTime(DateUtils.format(new Date(),"HH:mm:ss"));
-                    umsMemberStatisticsInfo.setCreateDate(DateUtils.format(new Date(),"yyyy-MM-dd"));
-                    umsMemberStatisticsInfo.setCreateTime(DateUtils.format(new Date(),"HH:mm:ss"));
+                    umsMemberStatisticsInfo.setRecomendDate(new Date());
+                    umsMemberStatisticsInfo.setCreateDate(new Date());
                     umsMemberStatisticsInfoMapper.insert(umsMemberStatisticsInfo);
                 }
             }

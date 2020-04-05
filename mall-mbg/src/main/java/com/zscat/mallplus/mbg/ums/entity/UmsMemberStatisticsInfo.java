@@ -1,14 +1,14 @@
 package com.zscat.mallplus.mbg.ums.entity;
 
-import java.math.BigDecimal;
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * <p>
@@ -99,17 +99,10 @@ public class UmsMemberStatisticsInfo implements Serializable {
     private Date recentOrderTime;
 
     @ApiModelProperty("推荐日期")
-    private String recomendDate;
-
-    @ApiModelProperty("推荐时间")
-    private String recomendTime;
+    private Date recomendDate;
 
     @ApiModelProperty("创建日期")
-    private String createDate;
-
-    @ApiModelProperty("创建时间")
-    private String createTime;
-
+    private Date createDate;
 
     public Long getId() {
         return id;
@@ -239,35 +232,19 @@ public class UmsMemberStatisticsInfo implements Serializable {
         this.recentOrderTime = recentOrderTime;
     }
 
-    public String getRecomendDate() {
+    public Date getRecomendDate() {
         return recomendDate;
     }
 
-    public void setRecomendDate(String recomendDate) {
+    public void setRecomendDate(Date recomendDate) {
         this.recomendDate = recomendDate;
     }
 
-    public String getRecomendTime() {
-        return recomendTime;
-    }
-
-    public void setRecomendTime(String recomendTime) {
-        this.recomendTime = recomendTime;
-    }
-
-    public String getCreateDate() {
+    public Date getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(String createDate) {
+    public void setCreateDate(Date createDate) {
         this.createDate = createDate;
-    }
-
-    public String getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(String createTime) {
-        this.createTime = createTime;
     }
 }
