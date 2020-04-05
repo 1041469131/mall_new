@@ -27,9 +27,11 @@
     </sql>
 
     <select id="listUmsMemberTags" resultMap="BaseResultMap">
-        SELECT COUNT(TR.TAG_ID) AS FANCOUNT,<include refid="Base_Column_List"/> FROM UMS_MEMBER_TAG T
-        LEFT JOIN UMS_MEMBER_MEMBER_TAG_RELATION TR ON T.ID = TR.TAG_ID
-        WHERE T.MATCH_USER_ID = #{matchUserId} GROUP BY TR.TAG_ID
+        SELECT IFNULL(TR.FAN_COUNT,0) AS FANCOUNT,<include refid="Base_Column_List"/> FROM UMS_MEMBER_TAG T
+        LEFT JOIN (
+        SELECT COUNT(MEMBER_ID) AS FAN_COUNT,TAG_ID FROM UMS_MEMBER_MEMBER_TAG_RELATION GROUP BY TAG_ID
+        ) TR ON T.ID = TR.TAG_ID
+        WHERE T.MATCH_USER_ID = #{matchUserId}
     </select>
 
     <select id="listTagsByMemberId" resultMap="umsMemberTagVo">
