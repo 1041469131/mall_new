@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.Date;
 
 /**
@@ -100,6 +101,9 @@ public class UmsMemberStatisticsInfo implements Serializable {
 
     @ApiModelProperty("推荐日期")
     private Date recomendDate;
+
+    @ApiModelProperty("推荐日期的时间戳")
+    private Long recomendTime;
 
     @ApiModelProperty("创建日期")
     private Date createDate;
@@ -246,5 +250,13 @@ public class UmsMemberStatisticsInfo implements Serializable {
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
+    }
+
+    public Long getRecomendTime() {
+        return recomendTime;
+    }
+
+    public void setRecomendTime(Long recomendTime) {
+        this.recomendTime = recomendTime;
     }
 }

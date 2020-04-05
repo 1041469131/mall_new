@@ -3,6 +3,7 @@ package com.zscat.mallplus.admin.ums.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberStatisticsInfoService;
+import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.ums.entity.UmsMemberStatisticsInfo;
 import com.zscat.mallplus.mbg.utils.CommonResult;
@@ -15,6 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -36,7 +38,7 @@ public class UmsMemberStatisticsInfoController {
     @SysLog(MODULE = "ums", REMARK = "根据条件查询所有会员统计信息列表")
     @ApiOperation("根据条件查询所有会员统计信息列表")
     @GetMapping(value = "/list")
-    @PreAuthorize("hasAuthority('ums:UmsMemberStatisticsInfo:read')")
+//    @PreAuthorize("hasAuthority('ums:UmsMemberStatisticsInfo:read')")
     public Object getUmsMemberStatisticsInfoByPage(UmsMemberStatisticsInfo entity,
                                                    @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
                                                    @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize
@@ -52,9 +54,12 @@ public class UmsMemberStatisticsInfoController {
     @SysLog(MODULE = "ums", REMARK = "保存会员统计信息")
     @ApiOperation("保存会员统计信息")
     @PostMapping(value = "/create")
-    @PreAuthorize("hasAuthority('ums:UmsMemberStatisticsInfo:create')")
+//    @PreAuthorize("hasAuthority('ums:UmsMemberStatisticsInfo:create')")
+    @IgnoreAuth
     public Object saveUmsMemberStatisticsInfo(@RequestBody UmsMemberStatisticsInfo entity) {
         try {
+            entity.setRecomendDate(new Date());
+            entity.setRecomendTime(new Date().getTime());
             if (IUmsMemberStatisticsInfoService.save(entity)) {
                 return new CommonResult().success();
             }

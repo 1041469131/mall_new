@@ -253,7 +253,7 @@ public class UmsMemberController {
     @SysLog(MODULE = "ums", REMARK = "根据搭配师id查询搭配师下面的粉丝")
 //    @PreAuthorize("hasAuthority('ums:UmsMember:read')")
     public CommonResult<List<VUmsMemberVo>> listUmsMember4Matcher(){
-        Long matchUserId = UserUtils.getCurrentMember().getId();
+        Long matchUserId = 3L;
         List<VUmsMemberVo> umsMembers = IUmsMemberService.listVUmsMembers(matchUserId);
         return new CommonResult<>().success(umsMembers);
     }

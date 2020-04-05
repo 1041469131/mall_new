@@ -59,7 +59,7 @@ public class VUmsMember implements Serializable {
     private String tagname;
 
     @ApiModelProperty(value = "推荐的日期")
-    private Date recomendDate;
+    private Long recomendTime;
 
     @ApiModelProperty(value = "头像地址")
     private String icon;
@@ -178,11 +178,11 @@ public class VUmsMember implements Serializable {
         this.icon = icon;
     }
 
-    public Date getRecomendDate() {
-        return recomendDate;
+    public Long getRecomendTime() {
+        return recomendTime;
     }
 
-    public void setRecomendDate(Date recomendDate) {
-        this.recomendDate = recomendDate;
+    public void setRecomendTime(Long recomendTime) {
+        this.recomendTime = recomendTime;
     }
 }
