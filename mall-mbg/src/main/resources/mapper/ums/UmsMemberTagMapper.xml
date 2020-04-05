@@ -26,10 +26,17 @@
         T.ID, T.NAME, T.TYPE, T.GEN_TYPE, T.CREATE_TIME ,T.MATCH_USER_ID ,T.PLATFORM_TYPE,T.REMARK
     </sql>
 
-    <select id="listUmsMemberTags" resultMap="umsMemberTagVo">
+    <select id="listUmsMemberTags" resultMap="BaseResultMap">
         SELECT COUNT(TR.TAG_ID) AS FANCOUNT,<include refid="Base_Column_List"/> FROM UMS_MEMBER_TAG T
         LEFT JOIN UMS_MEMBER_MEMBER_TAG_RELATION TR ON T.ID = TR.TAG_ID
         WHERE T.MATCH_USER_ID = #{matchUserId} GROUP BY TR.TAG_ID
+    </select>
+
+    <select id="listTagsByMemberId" resultMap="umsMemberTagVo">
+        SELECT <include refid="Base_Column_List"/>
+        FROM UMS_MEMBER_MEMBER_TAG_RELATION TR
+        LEFT JOIN UMS_MEMBER_TAG T ON T.ID = TR.TAG_ID
+        WHERE TR.member_id = #{memberId}
     </select>
 
 </mapper>

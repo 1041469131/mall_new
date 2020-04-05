@@ -19,4 +19,5 @@ public interface UmsMemberTagMapper extends BaseMapper<UmsMemberTag> {
 
     List<UmsMemberTagVo> listUmsMemberTags(@Param("matchUserId") Long matchUserId);
 
+    List<UmsMemberTag> listTagsByMemberId(@Param("memberId") Long memberId);
 }

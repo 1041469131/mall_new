@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableField;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 
 /**
@@ -24,9 +26,11 @@ public class UmsMemberMemberTagRelation implements Serializable {
     private Long id;
 
     @TableField("member_id")
+    @ApiModelProperty("用户id")
     private Long memberId;
 
     @TableField("tag_id")
+    @ApiModelProperty("标签id，前端传入的数据不需要管这个字段")
     private Long tagId;
 
     @TableField("create_time")

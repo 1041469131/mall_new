@@ -248,25 +248,11 @@ public class UmsMemberController {
     }
 
     @ApiOperation(value = "根据搭配师id查询搭配师下面的粉丝(不需要传搭配师id后台通过登录自己获取)")
-    @RequestMapping(value = "/listUmsMember4Matcher", method = RequestMethod.GET)
+    @RequestMapping(value = "/listUmsMembers", method = RequestMethod.POST)
     @ResponseBody
     @SysLog(MODULE = "ums", REMARK = "根据搭配师id查询搭配师下面的粉丝")
-    @PreAuthorize("hasAuthority('ums:UmsMember:read')")
-    public CommonResult<List<UmsMemberVo>> listUmsMember4Matcher() {
-        Long matchUserId = UserUtils.getCurrentMember().getId();
-        List<UmsMember> umsMembers = IUmsMemberService.list(new QueryWrapper<UmsMember>().like("match_user_id", matchUserId));
-        List<UmsMemberVo> umsMemberVos = null;
-        if(!CollectionUtils.isEmpty(umsMembers)){
-            umsMemberVos = new ArrayList<>();
-            dealUmsMembers(umsMembers,umsMemberVos);
-        }
-        return new CommonResult<>().success(umsMemberVos);
-    }
-
-    @RequestMapping(value = "/listVUmsMembers", method = RequestMethod.GET)
-    @ResponseBody
-    @IgnoreAuth
-    public CommonResult<List<VUmsMemberVo>> listVUmsMembers(){
+//    @PreAuthorize("hasAuthority('ums:UmsMember:read')")
+    public CommonResult<List<VUmsMemberVo>> listUmsMember4Matcher(){
         Long matchUserId = UserUtils.getCurrentMember().getId();
         List<VUmsMemberVo> umsMembers = IUmsMemberService.listVUmsMembers(matchUserId);
         return new CommonResult<>().success(umsMembers);

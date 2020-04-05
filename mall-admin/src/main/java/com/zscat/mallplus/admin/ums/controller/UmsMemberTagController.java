@@ -40,7 +40,8 @@ public class UmsMemberTagController {
     @SysLog(MODULE = "ums", REMARK = "根据条件查询所有用户标签表列表")
     @ApiOperation("根据条件查询所有用户标签表列表")
     @GetMapping(value = "/list")
-    @PreAuthorize("hasAuthority('ums:UmsMemberTag:read')")
+//    @PreAuthorize("hasAuthority('ums:UmsMemberTag:read')")
+    @IgnoreAuth
     public Object getUmsMemberTagByPage() {
         try {
             return new CommonResult().success(IUmsMemberTagService.listUmsMemberTags(UserUtils.getCurrentMember().getId()));
@@ -53,12 +54,13 @@ public class UmsMemberTagController {
     @SysLog(MODULE = "ums", REMARK = "保存用户标签表")
     @ApiOperation("保存用户标签表")
     @PostMapping(value = "/create")
-    @PreAuthorize("hasAuthority('ums:UmsMemberTag:create')")
+//    @PreAuthorize("hasAuthority('ums:UmsMemberTag:create')")
+//    @IgnoreAuth
     @IgnoreAuth
     public Object saveUmsMemberTag(@RequestBody UmsMemberTag entity) {
         try {
-            if(!StringUtils.isNotEmpty(entity.getPlatformType())){
-                entity.setPlatformType("0");
+            if(entity.getGenType() == null){
+                entity.setGenType(2);
             }
             entity.setCreateTime(new Date());
             entity.setMatchUserId(UserUtils.getCurrentMember().getId());
@@ -74,8 +76,9 @@ public class UmsMemberTagController {
 
     @SysLog(MODULE = "ums", REMARK = "更新用户标签表")
     @ApiOperation("更新用户标签表")
-    @PostMapping(value = "/update/{id}")
-    @PreAuthorize("hasAuthority('ums:UmsMemberTag:update')")
+    @PostMapping(value = "/update")
+//    @PreAuthorize("hasAuthority('ums:UmsMemberTag:update')")
+    @IgnoreAuth
     public Object updateUmsMemberTag(@RequestBody UmsMemberTag entity) {
         try {
             if (IUmsMemberTagService.updateById(entity)) {
@@ -90,8 +93,9 @@ public class UmsMemberTagController {
 
     @SysLog(MODULE = "ums", REMARK = "删除用户标签表")
     @ApiOperation("删除用户标签表")
-    @DeleteMapping(value = "/delete/{id}")
-    @PreAuthorize("hasAuthority('ums:UmsMemberTag:delete')")
+    @RequestMapping(value = "/delete/{id}",method = RequestMethod.POST)
+//    @PreAuthorize("hasAuthority('ums:UmsMemberTag:delete')")
+    @IgnoreAuth
     public Object deleteUmsMemberTag(@ApiParam("用户标签表id") @PathVariable Long id) {
         try {
             if (ValidatorUtils.empty(id)) {
@@ -137,6 +141,16 @@ public class UmsMemberTagController {
         } else {
             return new CommonResult().failed();
         }
+    }
+
+    @ApiOperation(value = "根据粉丝id查询用户的标签")
+    @RequestMapping(value = "/listTagsByMemberId", method = RequestMethod.GET)
+    @ResponseBody
+    @SysLog(MODULE = "ums", REMARK = "根据粉丝id查询用户的标签")
+//    @PreAuthorize("hasAuthority('ums:UmsMemberTag:delete')")
+    public CommonResult<List<UmsMemberTag>> listTagsByMemberId(Long memberId) {
+        List<UmsMemberTag> umsMemberTags = IUmsMemberTagService.listTagsByMemberId(memberId);
+        return new CommonResult<>().success(umsMemberTags);
     }
 
 }

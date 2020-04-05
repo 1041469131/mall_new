@@ -28,4 +28,9 @@ public class UmsMemberTagServiceImpl extends ServiceImpl<UmsMemberTagMapper, Ums
     public List<UmsMemberTagVo> listUmsMemberTags(Long matchUserId) {
         return umsMemberTagMapper.listUmsMemberTags(matchUserId);
     }
+
+    @Override
+    public List<UmsMemberTag> listTagsByMemberId(Long memberId) {
+        return umsMemberTagMapper.listTagsByMemberId(memberId);
+    }
 }

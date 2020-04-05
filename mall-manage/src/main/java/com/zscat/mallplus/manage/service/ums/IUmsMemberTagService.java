@@ -19,4 +19,5 @@ public interface IUmsMemberTagService extends IService<UmsMemberTag> {
 
     List<UmsMemberTagVo> listUmsMemberTags(@Param("matchUserId") Long matchUserId);
 
+    List<UmsMemberTag> listTagsByMemberId(Long memberId);
 }
