@@ -3,6 +3,7 @@ package com.zscat.mallplus.mbg.ums.mapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zscat.mallplus.mbg.ums.entity.UmsMember;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.zscat.mallplus.mbg.ums.entity.VUmsMember;
 import com.zscat.mallplus.mbg.ums.vo.UmsMemberVo;
 import org.apache.ibatis.annotations.Param;
 
@@ -24,4 +25,6 @@ public interface UmsMemberMapper extends BaseMapper<UmsMember> {
     List<UmsMember> getRecommedInfos(@Param("recommendedId") Long recommendedId);
 
     Page<UmsMemberVo> pageUmsMembers(Page<UmsMemberVo> umsMemberPage, Map<String, Object> paramMap);
+
+    List<VUmsMember> listVUmsMembers(Long matchUserId);
 }

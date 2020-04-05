@@ -11,18 +11,23 @@ import com.zscat.mallplus.manage.utils.*;
 import com.zscat.mallplus.manage.vo.MemberDetails;
 import com.zscat.mallplus.mbg.exception.ApiMallPlusException;
 import com.zscat.mallplus.mbg.marking.mapper.SmsCouponHistoryMapper;
+import com.zscat.mallplus.mbg.pms.entity.PmsProductUserMatchLibrary;
+import com.zscat.mallplus.mbg.pms.mapper.PmsProductUserMatchLibraryMapper;
 import com.zscat.mallplus.mbg.sys.mapper.SysAreaMapper;
 import com.zscat.mallplus.mbg.ums.entity.UmsMember;
 import com.zscat.mallplus.mbg.ums.entity.UmsRecommendRelation;
+import com.zscat.mallplus.mbg.ums.entity.VUmsMember;
 import com.zscat.mallplus.mbg.ums.mapper.UmsMemberMapper;
 import com.zscat.mallplus.mbg.ums.mapper.UmsMemberMemberTagRelationMapper;
 import com.zscat.mallplus.mbg.ums.mapper.UmsRecommendRelationMapper;
 import com.zscat.mallplus.mbg.ums.vo.UmsMemberVo;
+import com.zscat.mallplus.mbg.ums.vo.VUmsMemberVo;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -67,6 +72,9 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
 
     @Autowired
     private SmsCouponHistoryMapper smsCouponHistoryMapper;
+
+    @Autowired
+    private PmsProductUserMatchLibraryMapper pmsProductUserMatchLibraryMapper;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UmsMemberServiceImpl.class);
    /* @Resource
@@ -486,5 +494,33 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
     @Override
     public Page<UmsMemberVo> pageUmsMembers(Page<UmsMemberVo> umsMemberPage, Map<String, Object> paramMap) {
         return umsMemberMapper.pageUmsMembers(umsMemberPage,paramMap);
+    }
+
+    @Override
+    public List<VUmsMemberVo> listVUmsMembers(Long matchUserId) {
+        List<VUmsMemberVo> vUmsMemberVos = null;
+        List<VUmsMember> vUmsMembers = umsMemberMapper.listVUmsMembers(matchUserId);
+        if(!CollectionUtils.isEmpty(vUmsMembers)){
+            vUmsMemberVos = new ArrayList<>();
+            for (VUmsMember vUmsMember : vUmsMembers){
+                VUmsMemberVo vUmsMemberVo = new VUmsMemberVo();
+                BeanUtils.copyProperties(vUmsMember,vUmsMemberVo);
+                List<PmsProductUserMatchLibrary> pmsProductUserMatchLibraries = pmsProductUserMatchLibraryMapper.selectList(new QueryWrapper<PmsProductUserMatchLibrary>().
+                        eq("user_id",vUmsMember.getId()).eq("recommend_type","1").orderByDesc("update_time"));
+                if(!CollectionUtils.isEmpty(pmsProductUserMatchLibraries)){
+                    vUmsMemberVo.setRecomendTime(pmsProductUserMatchLibraries.get(0).getUpdateTime());
+                    Map<String,Object> skuMap = new HashMap<>();
+                    for(PmsProductUserMatchLibrary pmsProductUserMatchLibrary : pmsProductUserMatchLibraries){
+                        String[] skus = pmsProductUserMatchLibrary.getSkuIds().split(",");
+                        for(String sku:skus){
+                            skuMap.put(sku,sku);
+                        }
+                    }
+                    vUmsMemberVo.setRecomendCount(skuMap.keySet().size());
+                }
+                vUmsMemberVos.add(vUmsMemberVo);
+            }
+        }
+        return vUmsMemberVos;
     }
 }

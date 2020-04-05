@@ -10,7 +10,9 @@ import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.pms.entity.PmsProduct;
 import com.zscat.mallplus.mbg.ums.entity.UmsMember;
 import com.zscat.mallplus.mbg.ums.entity.UmsMemberRegisterParam;
+import com.zscat.mallplus.mbg.ums.entity.VUmsMember;
 import com.zscat.mallplus.mbg.ums.vo.UmsMemberVo;
+import com.zscat.mallplus.mbg.ums.vo.VUmsMemberVo;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.ValidatorUtils;
 import io.swagger.annotations.Api;
@@ -261,5 +263,13 @@ public class UmsMemberController {
         return new CommonResult<>().success(umsMemberVos);
     }
 
+    @RequestMapping(value = "/listVUmsMembers", method = RequestMethod.GET)
+    @ResponseBody
+    @IgnoreAuth
+    public CommonResult<List<VUmsMemberVo>> listVUmsMembers(){
+        Long matchUserId = UserUtils.getCurrentMember().getId();
+        List<VUmsMemberVo> umsMembers = IUmsMemberService.listVUmsMembers(matchUserId);
+        return new CommonResult<>().success(umsMembers);
+    }
 
 }
