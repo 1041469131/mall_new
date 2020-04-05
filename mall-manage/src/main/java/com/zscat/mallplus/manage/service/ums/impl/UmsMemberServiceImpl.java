@@ -497,6 +497,7 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
     }
 
     @Override
+    @Transactional
     public List<VUmsMemberVo> listVUmsMembers(Long matchUserId) {
         List<VUmsMemberVo> vUmsMemberVos = null;
         List<VUmsMember> vUmsMembers = umsMemberMapper.listVUmsMembers(matchUserId);
