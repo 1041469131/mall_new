@@ -1,0 +1,33 @@
+package com.zscat.mallplus.mbg.ums.vo;
+
+import com.zscat.mallplus.mbg.ums.entity.VUmsMember;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
+import java.util.Date;
+
+@ApiModel("粉丝和平台管理扩展对象")
+public class VUmsMemberVo extends VUmsMember {
+
+    @ApiModelProperty("推荐时间")
+    private Date recomendTime;
+
+    @ApiModelProperty("推荐数量")
+    private Integer recomendCount;
+
+    public Date getRecomendTime() {
+        return recomendTime;
+    }
+
+    public void setRecomendTime(Date recomendTime) {
+        this.recomendTime = recomendTime;
+    }
+
+    public Integer getRecomendCount() {
+        return recomendCount;
+    }
+
+    public void setRecomendCount(Integer recomendCount) {
+        this.recomendCount = recomendCount;
+    }
+}
