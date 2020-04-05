@@ -518,10 +518,22 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
                         }
                     }
                     vUmsMemberVo.setRecomendCount(skuMap.keySet().size());
+                    String status = getStatus(vUmsMemberVo.getRecomendTime(),vUmsMemberVo.getDressFreqCode());
                 }
                 vUmsMemberVos.add(vUmsMemberVo);
             }
         }
         return vUmsMemberVos;
+    }
+
+    /**
+     * 获取粉丝的处理状态
+     * @param recomendTime
+     * @param dressFreqCode
+     * @return
+     */
+    private String getStatus(Date recomendTime, String dressFreqCode) {
+
+        return "0";
     }
 }

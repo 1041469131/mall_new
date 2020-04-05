@@ -51,9 +51,6 @@ public class PmsProductMatchController {
     @Autowired
     private IPmsProductService iPmsProductService;
 
-    @Autowired
-    private IPmsSkuStockService iPmsSkuStockService;
-
     @IgnoreAuth
     @SysLog(MODULE = "pms", REMARK = "保存或者更新搭配库信息")
     @ApiOperation("保存或者更新搭配库信息")
@@ -185,17 +182,8 @@ public class PmsProductMatchController {
     @PreAuthorize("hasAuthority('pms:PmsBrand:read')")
     public CommonResult<PmsProductUserMatchLibrary> updateUserMatchLibraryStatus(@ApiParam("用户搭配库id组合格式{1,2,3}") String matchIdParam,
                                                                                  @ApiParam("推荐用户状态 0-未推荐 1-推荐")String recommType) {
-        String[] matchIdArray = matchIdParam.split(",");
-        List<String> matchIds = Arrays.asList(matchIdArray);
-        List<PmsProductUserMatchLibrary> pmsProductUserMatchLibraries = new ArrayList<>();
-        for(String matchId : matchIds){
-            PmsProductUserMatchLibrary pmsProductUserMatchLibrary = new PmsProductUserMatchLibrary();
-            pmsProductUserMatchLibrary.setUpdateTime(new Date());
-            pmsProductUserMatchLibrary.setRecommendType(recommType);
-            pmsProductUserMatchLibrary.setId(Long.valueOf(matchId));
-            pmsProductUserMatchLibraries.add(pmsProductUserMatchLibrary);
-        }
-        if(iPmsProductUserMatchLibraryService.saveOrUpdateBatch(pmsProductUserMatchLibraries)){
+
+        if(iPmsProductUserMatchLibraryService.saveProductUserMatch(matchIdParam,recommType)){
             return new CommonResult().success("操作成功");
         }
         return new CommonResult().failed("查询的用户搭配为空");

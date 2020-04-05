@@ -307,7 +307,11 @@ public class DateUtils {
     }
 
 
+
+
     public static void main(String[] args) throws Exception {
         System.out.println(format(delayDate(new Date(),30L),"yyyy-MM-dd HH:mm:ss"));
+        System.out.println(format(new Date(),"yyyy-MM-dd"));
+        System.out.println(format(new Date(),"HH:mm:ss"));
     }
 }

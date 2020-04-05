@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableField;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 
 /**
@@ -95,6 +97,18 @@ public class UmsMemberStatisticsInfo implements Serializable {
      */
     @TableField("recent_order_time")
     private Date recentOrderTime;
+
+    @ApiModelProperty("推荐日期")
+    private String recomendDate;
+
+    @ApiModelProperty("推荐时间")
+    private String recomendTime;
+
+    @ApiModelProperty("创建日期")
+    private String createDate;
+
+    @ApiModelProperty("创建时间")
+    private String createTime;
 
 
     public Long getId() {
@@ -225,25 +239,35 @@ public class UmsMemberStatisticsInfo implements Serializable {
         this.recentOrderTime = recentOrderTime;
     }
 
-    @Override
-    public String toString() {
-        return "UmsMemberStatisticsInfo{" +
-        ", id=" + id +
-        ", memberId=" + memberId +
-        ", consumeAmount=" + consumeAmount +
-        ", orderCount=" + orderCount +
-        ", couponCount=" + couponCount +
-        ", commentCount=" + commentCount +
-        ", returnOrderCount=" + returnOrderCount +
-        ", loginCount=" + loginCount +
-        ", attendCount=" + attendCount +
-        ", fansCount=" + fansCount +
-        ", collectProductCount=" + collectProductCount +
-        ", collectSubjectCount=" + collectSubjectCount +
-        ", collectTopicCount=" + collectTopicCount +
-        ", collectCommentCount=" + collectCommentCount +
-        ", inviteFriendCount=" + inviteFriendCount +
-        ", recentOrderTime=" + recentOrderTime +
-        "}";
+    public String getRecomendDate() {
+        return recomendDate;
+    }
+
+    public void setRecomendDate(String recomendDate) {
+        this.recomendDate = recomendDate;
+    }
+
+    public String getRecomendTime() {
+        return recomendTime;
+    }
+
+    public void setRecomendTime(String recomendTime) {
+        this.recomendTime = recomendTime;
+    }
+
+    public String getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(String createDate) {
+        this.createDate = createDate;
+    }
+
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
     }
 }

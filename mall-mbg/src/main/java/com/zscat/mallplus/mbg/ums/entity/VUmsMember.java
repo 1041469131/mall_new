@@ -40,7 +40,7 @@ public class VUmsMember implements Serializable {
 
     /**参数名称*/
     @TableField("dress_freq_name")
-    @ApiModelProperty(value = "参数名称")
+    @ApiModelProperty(value = "需求频次")
     private String dressFreqName;
 
     /**属性名对应的code*/
@@ -53,6 +53,7 @@ public class VUmsMember implements Serializable {
     @ApiModelProperty(value = "手机号码")
     private String phone;
 
+    @ApiModelProperty(value = "订单数")
     private BigDecimal orderCount;
 
     private String tagname;

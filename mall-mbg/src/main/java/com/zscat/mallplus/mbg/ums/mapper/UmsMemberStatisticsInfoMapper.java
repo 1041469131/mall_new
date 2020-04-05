@@ -1,4 +1,4 @@
-package com.zscat.mallplus.mbg.ums.mapper;
+ package com.zscat.mallplus.mbg.ums.mapper;
 
 import com.zscat.mallplus.mbg.ums.entity.UmsMemberStatisticsInfo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
