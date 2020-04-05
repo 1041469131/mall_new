@@ -9,22 +9,11 @@ import java.util.Date;
 @ApiModel("粉丝和平台管理扩展对象")
 public class VUmsMemberVo extends VUmsMember {
 
-    @ApiModelProperty("推荐时间")
-    private Date recomendTime;
-
     @ApiModelProperty("推荐数量")
     private Integer recomendCount;
 
     @ApiModelProperty("处理的状态 0-待处理 1-急需处理 2-已处理")
     private String status;
-
-    public Date getRecomendTime() {
-        return recomendTime;
-    }
-
-    public void setRecomendTime(Date recomendTime) {
-        this.recomendTime = recomendTime;
-    }
 
     public Integer getRecomendCount() {
         return recomendCount;

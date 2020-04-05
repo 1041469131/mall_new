@@ -71,6 +71,9 @@
         <result column="dress_freq_code" jdbcType="VARCHAR" property="dressFreqCode" />
         <result column="phone" jdbcType="VARCHAR" property="phone" />
         <result column="order_count" jdbcType="DECIMAL" property="orderCount" />
+        <result column="icon" jdbcType="VARCHAR" property="icon" />
+        <result column="recomend_date" jdbcType="VARCHAR" property="recomendDate" />
+        <result column="recomend_time" jdbcType="VARCHAR" property="recomendTime" />
     </resultMap>
     
 
@@ -88,7 +91,7 @@
 
     <sql id="vums_column_list">
         id,match_user_id,fan_name,create_time,match_user_name,invite_name,tagname,ifnull(total_amount,0) as total_amount,ifnull(ava_amount,0) as ava_amount,
-        dress_freq_name,dress_freq_code,phone,ifnull(order_count,0) as order_count
+        dress_freq_name,dress_freq_code,phone,ifnull(order_count,0) as order_count,icon,recomend_date,recomend_time
     </sql>
 
     <sql id="alias_column_list">

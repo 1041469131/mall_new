@@ -509,7 +509,6 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
                 List<PmsProductUserMatchLibrary> pmsProductUserMatchLibraries = pmsProductUserMatchLibraryMapper.selectList(new QueryWrapper<PmsProductUserMatchLibrary>().
                         eq("user_id",vUmsMember.getId()).eq("recommend_type","1").orderByDesc("update_time"));
                 if(!CollectionUtils.isEmpty(pmsProductUserMatchLibraries)){
-                    vUmsMemberVo.setRecomendTime(pmsProductUserMatchLibraries.get(0).getUpdateTime());
                     Map<String,Object> skuMap = new HashMap<>();
                     for(PmsProductUserMatchLibrary pmsProductUserMatchLibrary : pmsProductUserMatchLibraries){
                         String[] skus = pmsProductUserMatchLibrary.getSkuIds().split(",");
@@ -518,7 +517,7 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
                         }
                     }
                     vUmsMemberVo.setRecomendCount(skuMap.keySet().size());
-                    String status = getStatus(vUmsMemberVo.getRecomendTime(),vUmsMemberVo.getDressFreqCode());
+                    String status = getStatus(null,vUmsMemberVo.getDressFreqCode());
                 }
                 vUmsMemberVos.add(vUmsMemberVo);
             }

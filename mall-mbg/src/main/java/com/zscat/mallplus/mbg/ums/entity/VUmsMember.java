@@ -58,6 +58,15 @@ public class VUmsMember implements Serializable {
 
     private String tagname;
 
+    @ApiModelProperty(value = "推荐的日期")
+    private String recomendDate;
+
+    @ApiModelProperty(value = "推荐的时间")
+    private String recomendTime;
+
+    @ApiModelProperty(value = "头像地址")
+    private String icon;
+
     private static final long serialVersionUID = 1L;
 
     public Long getId() {
@@ -164,4 +173,27 @@ public class VUmsMember implements Serializable {
         this.tagname = tagname;
     }
 
+    public String getRecomendDate() {
+        return recomendDate;
+    }
+
+    public void setRecomendDate(String recomendDate) {
+        this.recomendDate = recomendDate;
+    }
+
+    public String getRecomendTime() {
+        return recomendTime;
+    }
+
+    public void setRecomendTime(String recomendTime) {
+        this.recomendTime = recomendTime;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
 }
