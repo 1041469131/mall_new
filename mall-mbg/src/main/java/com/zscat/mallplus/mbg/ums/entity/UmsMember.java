@@ -212,6 +212,9 @@ public class UmsMember implements Serializable {
     @ApiModelProperty(value = "推荐的搭配数量")
     private String matchCount;
 
+    @ApiModelProperty(value = "创建时间，时间戳")
+    private Long createDate;
+
     private static final long serialVersionUID = 1L;
 
     public Long getId() {
@@ -636,5 +639,13 @@ public class UmsMember implements Serializable {
 
     public void setCareClothes(String careClothes) {
         this.careClothes = careClothes;
+    }
+
+    public Long getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Long createDate) {
+        this.createDate = createDate;
     }
 }
