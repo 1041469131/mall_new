@@ -57,7 +57,7 @@
         <result column="match_count" jdbcType="VARCHAR" property="matchCount" />
     </resultMap>
 
-    <resultMap id="vUmsMemberMap" type="com.zscat.mallplus.mbg.ums.entity.VUmsMember">
+    <resultMap id="vUmsMemberMap" type="com.zscat.mallplus.mbg.ums.vo.VUmsMemberVo">
         <result column="id" jdbcType="BIGINT" property="id" />
         <result column="match_user_id" jdbcType="BIGINT" property="matchUserId" />
         <result column="fan_name" jdbcType="VARCHAR" property="fanName" />
@@ -74,6 +74,8 @@
         <result column="icon" jdbcType="VARCHAR" property="icon" />
         <result column="recomend_time" jdbcType="BIGINT" property="recomendTime" />
         <result column="recomend_date" jdbcType="TIMESTAMP" property="recomendDate" />
+        <result column="RECOMMEND_STATUS" jdbcType="VARCHAR" property="recommendStatus" />
+        <result column="RECOMMEND_COUNT" jdbcType="INTEGER" property="recomendCount" />
     </resultMap>
     
 
@@ -115,12 +117,58 @@
         where urr.recommend_id = #{recommendedId} and urr.status = '1'
     </select>
     
-    <!--<select id="pageUmsMembers" resultMap="">
-        
-    </select>-->
-
-    <select id="listVUmsMembers" resultMap="vUmsMemberMap">
-        SELECT <include refid="vums_column_list"/> FROM V_UMS_MEMBER WHERE MATCH_USER_ID = #{matchUserId}
+    <select id="pageVUmsMembers" resultMap="vUmsMemberMap">
+        SELECT T.ID,T.MATCH_USER_ID,T.FAN_NAME,T.CREATE_TIME,T.MATCH_USER_NAME,
+        T.INVITE_NAME,IFNULL(T.TOTAL_AMOUNT,0) AS TOTAL_AMOUNT,
+        IFNULL(T.AVA_AMOUNT,0) AS AVA_AMOUNT,T.DRESS_FREQ_NAME,T.DRESS_FREQ_CODE,
+        T.PHONE,IFNULL(T.ORDER_COUNT,0) AS ORDER_COUNT,T.ICON,T1.RECOMEND_DATE,T1.RECOMEND_TIME,T1.RECOMMEND_STATUS,
+        T1.RECOMMEND_COUNT,T1.TAG_NAME
+        FROM V_UMS_MEMBER T
+        LEFT JOIN UMS_MEMBER_STATISTICS_INFO T1 ON T.ID = T1.MEMBER_ID
+        <where>
+            <if test="paramMap.phone != null">
+                AND T.phone = #{paramMap.phone}
+            </if>
+            <if test="paramMap.matchUserId != null">
+                AND T.MATCH_USER_ID = #{paramMap.matchUserId}
+            </if>
+            <if test="paramMap.recommendStatus != null">
+                AND T1.RECOMMEND_STATUS = #{paramMap.recommendStatus}
+            </if>
+            <if test="paramMap.fanName != null">
+                AND T.NICKNAME LIKE #{paramMap.fanName}
+            </if>
+            <if test="paramMap.matchUserame != null">
+                AND T.MATCH_USER_NAME LIKE #{paramMap.fanName}
+            </if>
+            <if test="paramMap.inviteName != null">
+                AND T.INVITE_NAME LIKE #{paramMap.inviteName}
+            </if>
+            <if test="paramMap.startCreateDate != null">
+                AND T.CREATE_TIME > #{paramMap.startCreateDate}
+            </if>
+            <if test="paramMap.endCreateDate != null">
+                AND T.CREATE_TIME &lt; #{paramMap.endCreateDate}
+            </if>
+            <if test="paramMap.startRecommendDate != null">
+                AND T1.RECOMEND_DATE > #{paramMap.startRecommendDate}
+            </if>
+            <if test="paramMap.endRecommendDate != null">
+                AND T1.RECOMEND_DATE &lt; #{paramMap.endRecommendDate}
+            </if>
+            <if test="paramMap.startTotalAmount != null">
+                AND IFNULL(T.TOTAL_AMOUNT,0) > #{paramMap.startTotalAmount}
+            </if>
+            <if test="paramMap.endTotalAmount != null">
+                AND IFNULL(T.TOTAL_AMOUNT,0) &lt; #{paramMap.endTotalAmount}
+            </if>
+            <if test="paramMap.startAvaAmount != null">
+                AND IFNULL(T.AVA_AMOUNT,0) > #{paramMap.startAvaAmount}
+            </if>
+            <if test="paramMap.endAvaAmount != null">
+                AND IFNULL(T.AVA_AMOUNT,0) &lt; #{paramMap.endAvaAmount}
+            </if>
+        </where>
     </select>
 
 </mapper>

@@ -281,7 +281,7 @@ public class PayController extends ApiBaseAction {
                     Double.valueOf(totalFee),Double.valueOf(refundMoney));
             omsOrderTrade.setResponseMsg(JSON.toJSONString(result));
             if (result.getResult_code().equals("SUCCESS")) {
-                omsOrder.setStatus(MagicConstant.ORDER_STATUS_YET_DONE);
+                omsOrder.setStatus(MagicConstant.ORDER_STATUS_YET_SHUTDOWN);
                 omsOrderReturnSale.setStatus(MagicConstant.RETURN_STATUS_FINISHED);
                 omsOrderTrade.setStatus(MagicConstant.OMS_TRADE_STATUS_SUCCESS);
                 commonResult.success("退款成功");

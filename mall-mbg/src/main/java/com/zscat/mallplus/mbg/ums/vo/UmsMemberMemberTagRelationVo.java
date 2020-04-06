@@ -15,11 +15,22 @@ public class UmsMemberMemberTagRelationVo extends UmsMemberMemberTagRelation {
     @ApiModelProperty("给用户打标签的id，多个用户用逗号隔开")
     private String tagIds;
 
+    @ApiModelProperty("用户标签的名称，多个名称用逗号隔开")
+    private String tagNames;
+
     public String getTagIds() {
         return tagIds;
     }
 
     public void setTagIds(String tagIds) {
         this.tagIds = tagIds;
+    }
+
+    public String getTagNames() {
+        return tagNames;
+    }
+
+    public void setTagNames(String tagNames) {
+        this.tagNames = tagNames;
     }
 }

@@ -108,6 +108,15 @@ public class UmsMemberStatisticsInfo implements Serializable {
     @ApiModelProperty("创建日期")
     private Date createDate;
 
+    @ApiModelProperty("推荐状态")
+    private String recommendStatus;
+
+    @ApiModelProperty("推荐数量")
+    private Integer recommendCount;
+
+    @ApiModelProperty("用户标签")
+    private String tagName;
+
     public Long getId() {
         return id;
     }
@@ -258,5 +267,29 @@ public class UmsMemberStatisticsInfo implements Serializable {
 
     public void setRecomendTime(Long recomendTime) {
         this.recomendTime = recomendTime;
+    }
+
+    public String getRecommendStatus() {
+        return recommendStatus;
+    }
+
+    public void setRecommendStatus(String recommendStatus) {
+        this.recommendStatus = recommendStatus;
+    }
+
+    public Integer getRecommendCount() {
+        return recommendCount;
+    }
+
+    public void setRecommendCount(Integer recommendCount) {
+        this.recommendCount = recommendCount;
+    }
+
+    public String getTagName() {
+        return tagName;
+    }
+
+    public void setTagName(String tagName) {
+        this.tagName = tagName;
     }
 }

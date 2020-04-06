@@ -35,7 +35,9 @@ import com.zscat.mallplus.mbg.pms.mapper.PmsSkuStockMapper;
 import com.zscat.mallplus.mbg.ums.entity.UmsIntegrationConsumeSetting;
 import com.zscat.mallplus.mbg.ums.entity.UmsMember;
 import com.zscat.mallplus.mbg.ums.entity.UmsMemberReceiveAddress;
+import com.zscat.mallplus.mbg.ums.entity.UmsMemberStatisticsInfo;
 import com.zscat.mallplus.mbg.ums.mapper.UmsIntegrationConsumeSettingMapper;
+import com.zscat.mallplus.mbg.ums.mapper.UmsMemberStatisticsInfoMapper;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.IdGeneratorUtil;
 import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
@@ -112,6 +114,9 @@ public class OmsOrderServiceImpl extends ServiceImpl<OmsOrderMapper, OmsOrder> i
     private IUmsMemberService memberService;
     @Resource
     private OmsOrderSettingMapper orderSettingMapper;
+
+    @Autowired
+    private UmsMemberStatisticsInfoMapper umsMemberStatisticsInfoMapper;
 
     @Override
     public int delivery(List<OmsOrderDeliveryParam> deliveryParamList) {
@@ -444,6 +449,7 @@ public class OmsOrderServiceImpl extends ServiceImpl<OmsOrderMapper, OmsOrder> i
     }
 
     @Override
+    @Transactional
     public CommonResult cancelTimeOutOrder() {
         OmsOrderSetting orderSetting = orderSettingMapper.selectById(1L);
         //查询超时、未支付的订单及订单详情

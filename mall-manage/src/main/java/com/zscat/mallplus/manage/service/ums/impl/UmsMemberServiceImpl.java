@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zscat.mallplus.manage.config.WxAppletProperties;
+import com.zscat.mallplus.manage.helper.CalcRecommendStatus;
 import com.zscat.mallplus.manage.service.marking.ISmsCouponService;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberService;
 import com.zscat.mallplus.manage.service.ums.RedisService;
@@ -498,52 +499,25 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
 
     @Override
     @Transactional
-    public List<VUmsMemberVo> listVUmsMembers(Long matchUserId) {
-        List<VUmsMemberVo> vUmsMemberVos = null;
-        List<VUmsMember> vUmsMembers = umsMemberMapper.listVUmsMembers(matchUserId);
-        if(!CollectionUtils.isEmpty(vUmsMembers)){
-            vUmsMemberVos = new ArrayList<>();
-            for (VUmsMember vUmsMember : vUmsMembers){
-                VUmsMemberVo vUmsMemberVo = new VUmsMemberVo();
-                BeanUtils.copyProperties(vUmsMember,vUmsMemberVo);
-                List<PmsProductUserMatchLibrary> pmsProductUserMatchLibraries = pmsProductUserMatchLibraryMapper.selectList(new QueryWrapper<PmsProductUserMatchLibrary>().
-                        eq("user_id",vUmsMember.getId()).eq("recommend_type","1").orderByDesc("update_time"));
-                if(!CollectionUtils.isEmpty(pmsProductUserMatchLibraries)){
-                    Map<String,Object> skuMap = new HashMap<>();
-                    for(PmsProductUserMatchLibrary pmsProductUserMatchLibrary : pmsProductUserMatchLibraries){
-                        String[] skus = pmsProductUserMatchLibrary.getSkuIds().split(",");
-                        for(String sku:skus){
-                            skuMap.put(sku,sku);
-                        }
-                    }
-                    vUmsMemberVo.setRecomendCount(skuMap.keySet().size());
-                    String status = getStatus(vUmsMember.getRecomendDate(),vUmsMemberVo.getDressFreqCode());
-                }
-                vUmsMemberVos.add(vUmsMemberVo);
-            }
-        }
-        return vUmsMemberVos;
+    public Page<VUmsMemberVo> listVUmsMembers(VUmsMemberVo vUmsMemberVo) {
+        Page<VUmsMemberVo> pmsProductPage = new Page<>(vUmsMemberVo.getPageNum(),vUmsMemberVo.getPageSize());
+        Map<String,Object> paramMap = new HashMap<>();
+        paramMap.put("phone",vUmsMemberVo.getPhone());
+        paramMap.put("matchUserId",vUmsMemberVo.getMatchUserId());
+        paramMap.put("recommendStatus",vUmsMemberVo.getStatus());
+        paramMap.put("fanName",vUmsMemberVo.getFanName());
+        paramMap.put("matchUserame",vUmsMemberVo.getMatchUserName());
+        paramMap.put("inviteName",vUmsMemberVo.getInviteName());
+        paramMap.put("startCreateDate",vUmsMemberVo.getStartCreateDate());
+        paramMap.put("endCreateDate",vUmsMemberVo.getEndCreateDate());
+        paramMap.put("startRecommendDate",vUmsMemberVo.getStartRecommendDate());
+        paramMap.put("endRecommendDate",vUmsMemberVo.getEndRecommendDate());
+        paramMap.put("startTotalAmount",vUmsMemberVo.getStartTotalAmount());
+        paramMap.put("endTotalAmount",vUmsMemberVo.getEndTotalAmount());
+        paramMap.put("startAvaAmount",vUmsMemberVo.getStartAvaAmount());
+        paramMap.put("endAvaAmount",vUmsMemberVo.getEndTotalAmount());
+        Page<VUmsMemberVo> vUmsMemberVoPage = umsMemberMapper.pageVUmsMembers(pmsProductPage,paramMap);
+        return vUmsMemberVoPage;
     }
 
-    /**
-     * 获取粉丝的处理状态
-     * @param recomendTime
-     * @param dressFreqCode
-     * @return
-     */
-    private String getStatus(Date recomendTime, String dressFreqCode) {
-        Date nextRecomendTime = null;
-        if(recomendTime != null){
-            if("everymonth".equals(dressFreqCode)){
-                nextRecomendTime = DateUtils.adjustMonth(recomendTime,1 );
-            }else if("everytwomonth".equals(dressFreqCode)){
-                nextRecomendTime = DateUtils.adjustMonth(recomendTime,2 );
-            }else if("everyquarter".equals(dressFreqCode)){
-                nextRecomendTime = DateUtils.adjustMonth(recomendTime,3 );
-            }
-        }else{
-            return "0";
-        }
-        return "0";
-    }
 }

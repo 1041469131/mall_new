@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberMemberTagRelationService;
 import com.zscat.mallplus.mbg.ums.entity.UmsMemberMemberTagRelation;
+import com.zscat.mallplus.mbg.ums.entity.UmsMemberStatisticsInfo;
 import com.zscat.mallplus.mbg.ums.mapper.UmsMemberMemberTagRelationMapper;
+import com.zscat.mallplus.mbg.ums.mapper.UmsMemberStatisticsInfoMapper;
 import com.zscat.mallplus.mbg.ums.vo.UmsMemberMemberTagRelationVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,11 +32,20 @@ public class UmsMemberMemberTagRelationServiceImpl extends ServiceImpl<UmsMember
     @Autowired
     private UmsMemberMemberTagRelationMapper umsMemberMemberTagRelationMapper;
 
+    @Autowired
+    private UmsMemberStatisticsInfoMapper umsMemberStatisticsInfoMapper;
+
     @Override
     @Transactional
     public boolean saveTagRelation(UmsMemberMemberTagRelationVo entity) {
         String tagIds = entity.getTagIds();
         umsMemberMemberTagRelationMapper.delete(new QueryWrapper<UmsMemberMemberTagRelation>().eq("member_id", entity.getMemberId()));
+        UmsMemberStatisticsInfo umsMemberStatisticsInfo = umsMemberStatisticsInfoMapper.selectOne(new QueryWrapper<UmsMemberStatisticsInfo>().
+                eq("member_id",entity.getMemberId()));
+        if(umsMemberStatisticsInfo != null){
+            umsMemberStatisticsInfo.setTagName(entity.getTagNames());
+            umsMemberStatisticsInfoMapper.updateById(umsMemberStatisticsInfo);
+        }
         if(!StringUtils.isEmpty(tagIds)){
             List<UmsMemberMemberTagRelation> umsMemberMemberTagRelations = new ArrayList<>();
             String[] tagIdArr = tagIds.split(",");

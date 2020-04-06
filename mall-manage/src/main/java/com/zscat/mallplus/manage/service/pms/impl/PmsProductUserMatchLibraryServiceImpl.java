@@ -2,11 +2,14 @@ package com.zscat.mallplus.manage.service.pms.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zscat.mallplus.manage.helper.CalcRecommendStatus;
 import com.zscat.mallplus.manage.service.pms.IPmsProductUserMatchLibraryService;
 import com.zscat.mallplus.manage.utils.DateUtils;
 import com.zscat.mallplus.mbg.pms.entity.PmsProductUserMatchLibrary;
 import com.zscat.mallplus.mbg.pms.mapper.PmsProductUserMatchLibraryMapper;
+import com.zscat.mallplus.mbg.ums.entity.UmsMember;
 import com.zscat.mallplus.mbg.ums.entity.UmsMemberStatisticsInfo;
+import com.zscat.mallplus.mbg.ums.mapper.UmsMemberMapper;
 import com.zscat.mallplus.mbg.ums.mapper.UmsMemberStatisticsInfoMapper;
 import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * 用户搭配服务实现类
@@ -29,6 +29,12 @@ public class PmsProductUserMatchLibraryServiceImpl extends ServiceImpl<PmsProduc
 
     @Autowired
     private UmsMemberStatisticsInfoMapper umsMemberStatisticsInfoMapper;
+
+    @Autowired
+    private UmsMemberMapper umsMemberMapper;
+
+    @Autowired
+    private PmsProductUserMatchLibraryMapper pmsProductUserMatchLibraryMapper;
 
     @Override
     @Transactional
@@ -44,11 +50,19 @@ public class PmsProductUserMatchLibraryServiceImpl extends ServiceImpl<PmsProduc
             if(MagicConstant.RECOMMEND_TYPE_YES.equals(recommType)){
                 UmsMemberStatisticsInfo umsMemberStatisticsInfo = umsMemberStatisticsInfoMapper.selectOne(new QueryWrapper<UmsMemberStatisticsInfo>().
                         eq("member_id",pmsProductUserMatchLibrary.getUserId()));
+                UmsMember umsMember = umsMemberMapper.selectById(pmsProductUserMatchLibrary.getUserId());
+                Integer recommendCount = getRecommendCount(umsMember.getId());
+                String recommendStatus = CalcRecommendStatus.getRecommendStatus(new Date(),umsMember.getDressFreq());
                 if(umsMemberStatisticsInfo != null){
                     umsMemberStatisticsInfo.setRecomendDate(new Date());
+                    umsMemberStatisticsInfo.setRecommendStatus(recommendStatus);
+                    umsMemberStatisticsInfo.setRecommendCount(recommendCount);
                     umsMemberStatisticsInfoMapper.updateById(umsMemberStatisticsInfo);
                 }else{
+                    umsMemberStatisticsInfo = new UmsMemberStatisticsInfo();
                     umsMemberStatisticsInfo.setMemberId(pmsProductUserMatchLibrary.getUserId());
+                    umsMemberStatisticsInfo.setRecommendStatus(recommendStatus);
+                    umsMemberStatisticsInfo.setRecommendCount(recommendCount);
                     umsMemberStatisticsInfo.setRecomendDate(new Date());
                     umsMemberStatisticsInfo.setCreateDate(new Date());
                     umsMemberStatisticsInfoMapper.insert(umsMemberStatisticsInfo);
@@ -59,5 +73,22 @@ public class PmsProductUserMatchLibraryServiceImpl extends ServiceImpl<PmsProduc
             return this.saveBatch(pmsProductUserMatchLibraries);
         }
         return false;
+    }
+
+    private Integer getRecommendCount(Long memberId) {
+        List<PmsProductUserMatchLibrary> pmsProductUserMatchLibraries = pmsProductUserMatchLibraryMapper.selectList(new QueryWrapper<PmsProductUserMatchLibrary>().
+                eq("user_id", memberId).eq("recommend_type", "1").orderByDesc("update_time"));
+        if (!CollectionUtils.isEmpty(pmsProductUserMatchLibraries)) {
+            Map<String, Object> skuMap = new HashMap<>();
+            for (PmsProductUserMatchLibrary pmsProductUserMatchLibrary : pmsProductUserMatchLibraries) {
+                String[] skus = pmsProductUserMatchLibrary.getSkuIds().split(",");
+                for (String sku : skus) {
+                    skuMap.put(sku, sku);
+                }
+            }
+            return skuMap.keySet().size();
+        } else {
+            return 0;
+        }
     }
 }

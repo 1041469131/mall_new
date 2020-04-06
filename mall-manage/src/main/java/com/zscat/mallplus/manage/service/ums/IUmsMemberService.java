@@ -95,5 +95,5 @@ public interface IUmsMemberService extends IService<UmsMember> {
 
     Page<UmsMemberVo> pageUmsMembers(Page<UmsMemberVo> umsMemberPage, Map<String, Object> paramMap);
 
-    List<VUmsMemberVo> listVUmsMembers(Long matchUserId);
+    Page<VUmsMemberVo> listVUmsMembers(VUmsMemberVo vUmsMemberVo);
 }

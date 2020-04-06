@@ -309,7 +309,7 @@ public class DateUtils {
     /**
      * 根据当前的日期往前或者往后推算n个月
      * @param date
-     * @param day
+     * @param month
      * @return
      */
     public static Date adjustMonth(Date date,Integer month) {
@@ -343,5 +343,6 @@ public class DateUtils {
         System.out.println(format(new Date(),"HH:mm:ss"));
         System.out.println(adjustMonth(new Date(),-5 ));
         System.out.println(adjustDay(new Date(),27 ));
+        System.out.println(calculateDaysNew(new Date(),convertStringToDate("2020-03-06")));
     }
 }

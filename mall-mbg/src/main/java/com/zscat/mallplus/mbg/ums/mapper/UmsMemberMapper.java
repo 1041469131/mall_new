@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zscat.mallplus.mbg.ums.entity.UmsMember;
 import com.zscat.mallplus.mbg.ums.entity.VUmsMember;
 import com.zscat.mallplus.mbg.ums.vo.UmsMemberVo;
+import com.zscat.mallplus.mbg.ums.vo.VUmsMemberVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -26,5 +27,5 @@ public interface UmsMemberMapper extends BaseMapper<UmsMember> {
 
     Page<UmsMemberVo> pageUmsMembers(Page<UmsMemberVo> umsMemberPage, Map<String, Object> paramMap);
 
-    List<VUmsMember> listVUmsMembers(Long matchUserId);
+    Page<VUmsMemberVo> pageVUmsMembers(Page<VUmsMemberVo> pmsProductPage, @Param("paramMap") Map<String, Object> paramMap);
 }
