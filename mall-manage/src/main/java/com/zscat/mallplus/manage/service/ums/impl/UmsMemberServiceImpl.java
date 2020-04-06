@@ -508,10 +508,10 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
         paramMap.put("fanName",vUmsMemberVo.getFanName());
         paramMap.put("matchUserame",vUmsMemberVo.getMatchUserName());
         paramMap.put("inviteName",vUmsMemberVo.getInviteName());
-        paramMap.put("startCreateDate",vUmsMemberVo.getStartCreateDate());
-        paramMap.put("endCreateDate",vUmsMemberVo.getEndCreateDate());
-        paramMap.put("startRecommendDate",vUmsMemberVo.getStartRecommendDate());
-        paramMap.put("endRecommendDate",vUmsMemberVo.getEndRecommendDate());
+        paramMap.put("startCreateDate",DateUtils.convertStringToDate(vUmsMemberVo.getStartCreateDate()));
+        paramMap.put("endCreateDate",DateUtils.convertStringToDate(vUmsMemberVo.getEndCreateDate()));
+        paramMap.put("startRecommendDate",DateUtils.convertStringToDate(vUmsMemberVo.getStartRecommendDate()));
+        paramMap.put("endRecommendDate",DateUtils.convertStringToDate(vUmsMemberVo.getEndRecommendDate()));
         paramMap.put("startTotalAmount",vUmsMemberVo.getStartTotalAmount());
         paramMap.put("endTotalAmount",vUmsMemberVo.getEndTotalAmount());
         paramMap.put("startAvaAmount",vUmsMemberVo.getStartAvaAmount());

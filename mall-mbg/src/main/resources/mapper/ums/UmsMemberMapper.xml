@@ -76,6 +76,7 @@
         <result column="recomend_date" jdbcType="TIMESTAMP" property="recomendDate" />
         <result column="RECOMMEND_STATUS" jdbcType="VARCHAR" property="recommendStatus" />
         <result column="RECOMMEND_COUNT" jdbcType="INTEGER" property="recomendCount" />
+        <result column="PERSONALIZED_SIGNATURE" jdbcType="VARCHAR" property="personalizedSignature" />
     </resultMap>
     
 
@@ -119,7 +120,7 @@
     
     <select id="pageVUmsMembers" resultMap="vUmsMemberMap">
         SELECT T.ID,T.MATCH_USER_ID,T.FAN_NAME,T.CREATE_TIME,T.MATCH_USER_NAME,
-        T.INVITE_NAME,IFNULL(T.TOTAL_AMOUNT,0) AS TOTAL_AMOUNT,
+        T.INVITE_NAME,IFNULL(T.TOTAL_AMOUNT,0) AS TOTAL_AMOUNT,T.PERSONALIZED_SIGNATURE,
         IFNULL(T.AVA_AMOUNT,0) AS AVA_AMOUNT,T.DRESS_FREQ_NAME,T.DRESS_FREQ_CODE,
         T.PHONE,IFNULL(T.ORDER_COUNT,0) AS ORDER_COUNT,T.ICON,T1.RECOMEND_DATE,T1.RECOMEND_TIME,T1.RECOMMEND_STATUS,
         T1.RECOMMEND_COUNT,T1.TAG_NAME

@@ -2,6 +2,7 @@ package com.zscat.mallplus.manage.utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -241,6 +242,9 @@ public class DateUtils {
      * @throws ParseException
      */
     public static Date convertStringToDate(String dateStr) {
+        if(StringUtils.isEmpty(dateStr)){
+            return null;
+        }
         // 返回的日期
         Date resultDate = null;
         try {

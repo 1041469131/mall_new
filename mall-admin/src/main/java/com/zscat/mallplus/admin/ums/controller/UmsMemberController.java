@@ -106,9 +106,9 @@ public class UmsMemberController {
 
     @SysLog(MODULE = "ums", REMARK = "更新会员表")
     @ApiOperation("更新会员表")
-    @PostMapping(value = "/update/{id}")
+    @PostMapping(value = "/update")
     @PreAuthorize("hasAuthority('ums:UmsMember:update')")
-    public Object updateUmsMember(@RequestBody UmsMember entity) {
+    public CommonResult updateUmsMember(@RequestBody UmsMember entity) {
         try {
             if (IUmsMemberService.updateById(entity)) {
                 return new CommonResult().success();

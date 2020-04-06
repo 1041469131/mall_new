@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.models.auth.In;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @ApiModel("粉丝和平台管理扩展对象")
@@ -29,17 +30,19 @@ public class VUmsMemberVo extends VUmsMember {
     private String endRecommendDate;
 
     @ApiModelProperty("累计消费总起始金额")
-    private String startTotalAmount;
+    private BigDecimal startTotalAmount;
 
     @ApiModelProperty("累计消费总最后金额")
-    private String endTotalAmount;
+    private BigDecimal endTotalAmount;
 
     @ApiModelProperty("平均消费总起始金额")
-    private String startAvaAmount;
+    private BigDecimal startAvaAmount;
 
     @ApiModelProperty("平均消费总最后金额")
-    private String endAvaAmount;
+    private BigDecimal endAvaAmount;
 
+    @ApiModelProperty("粉丝备注姓名")
+    private String personalizedSignature;
 
     @ApiModelProperty("页码")
     private Integer pageNum;
@@ -111,35 +114,43 @@ public class VUmsMemberVo extends VUmsMember {
         this.endRecommendDate = endRecommendDate;
     }
 
-    public String getStartTotalAmount() {
+    public BigDecimal getStartTotalAmount() {
         return startTotalAmount;
     }
 
-    public void setStartTotalAmount(String startTotalAmount) {
+    public void setStartTotalAmount(BigDecimal startTotalAmount) {
         this.startTotalAmount = startTotalAmount;
     }
 
-    public String getEndTotalAmount() {
+    public BigDecimal getEndTotalAmount() {
         return endTotalAmount;
     }
 
-    public void setEndTotalAmount(String endTotalAmount) {
+    public void setEndTotalAmount(BigDecimal endTotalAmount) {
         this.endTotalAmount = endTotalAmount;
     }
 
-    public String getStartAvaAmount() {
+    public BigDecimal getStartAvaAmount() {
         return startAvaAmount;
     }
 
-    public void setStartAvaAmount(String startAvaAmount) {
+    public void setStartAvaAmount(BigDecimal startAvaAmount) {
         this.startAvaAmount = startAvaAmount;
     }
 
-    public String getEndAvaAmount() {
+    public BigDecimal getEndAvaAmount() {
         return endAvaAmount;
     }
 
-    public void setEndAvaAmount(String endAvaAmount) {
+    public void setEndAvaAmount(BigDecimal endAvaAmount) {
         this.endAvaAmount = endAvaAmount;
+    }
+
+    public String getPersonalizedSignature() {
+        return personalizedSignature;
+    }
+
+    public void setPersonalizedSignature(String personalizedSignature) {
+        this.personalizedSignature = personalizedSignature;
     }
 }
