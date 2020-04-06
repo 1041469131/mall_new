@@ -506,6 +506,7 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
         paramMap.put("matchUserId",vUmsMemberVo.getMatchUserId());
         paramMap.put("recommendStatus",vUmsMemberVo.getStatus());
         paramMap.put("fanName",vUmsMemberVo.getFanName());
+        paramMap.put("tagName",vUmsMemberVo.getTagname());
         paramMap.put("matchUserame",vUmsMemberVo.getMatchUserName());
         paramMap.put("inviteName",vUmsMemberVo.getInviteName());
         paramMap.put("startCreateDate",DateUtils.convertStringToDate(vUmsMemberVo.getStartCreateDate()));

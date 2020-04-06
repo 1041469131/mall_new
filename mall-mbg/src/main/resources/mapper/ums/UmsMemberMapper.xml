@@ -137,7 +137,7 @@
                 AND T1.RECOMMEND_STATUS = #{paramMap.recommendStatus}
             </if>
             <if test="paramMap.fanName != null">
-                AND T.NICKNAME LIKE #{paramMap.fanName}
+                AND (T.NICKNAME LIKE #{paramMap.fanName} OR T.personalized_signature LIKE #{paramMap.fanName})
             </if>
             <if test="paramMap.matchUserame != null">
                 AND T.MATCH_USER_NAME LIKE #{paramMap.fanName}
@@ -168,6 +168,9 @@
             </if>
             <if test="paramMap.endAvaAmount != null">
                 AND IFNULL(T.AVA_AMOUNT,0) &lt; #{paramMap.endAvaAmount}
+            </if>
+            <if test="paramMap.tagName != null">
+                AND T1.TAG_NAME LIKE #{paramMap.tagName}
             </if>
         </where>
     </select>
