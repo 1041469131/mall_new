@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zscat.mallplus.mbg.ums.mapper.UmsApplyMatcherMapper">
+  <resultMap id="BaseResultMap" type="com.zscat.mallplus.mbg.ums.entity.UmsApplyMatcher">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="member_id" jdbcType="BIGINT" property="memberId" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="wechat_no" jdbcType="VARCHAR" property="wechatNo" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="wechat_two_code" jdbcType="VARCHAR" property="wechatTwoCode" />
+    <result column="invite_phone" jdbcType="VARCHAR" property="invitePhone" />
+    <result column="introduce" jdbcType="VARCHAR" property="introduce" />
+    <result column="audit_status" jdbcType="VARCHAR" property="auditStatus" />
+    <result column="audit_reson" jdbcType="VARCHAR" property="auditReson" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_time" jdbcType="BIGINT" property="createTime" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_time" jdbcType="BIGINT" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, member_id, user_name, wechat_no, phone, wechat_two_code, invite_phone, introduce, 
+    audit_status, audit_reson, create_date, create_time,update_date,update_time
+  </sql>
+</mapper>

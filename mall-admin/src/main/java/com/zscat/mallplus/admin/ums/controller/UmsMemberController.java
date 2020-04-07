@@ -15,6 +15,7 @@ import com.zscat.mallplus.mbg.ums.vo.UmsMemberVo;
 import com.zscat.mallplus.mbg.ums.vo.VUmsMemberVo;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.ValidatorUtils;
+import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -254,6 +255,10 @@ public class UmsMemberController {
     @SysLog(MODULE = "ums", REMARK = "根据搭配师id查询搭配师下面的粉丝")
 //    @PreAuthorize("hasAuthority('ums:UmsMember:read')")
     public CommonResult<List<VUmsMemberVo>> listUmsMember4Matcher(@RequestBody VUmsMemberVo vUmsMemberVo){
+        //当为搭配师平台的时候，将登陆用户的id赋值给搭配师
+        if(MagicConstant.SYSTEM_TYPE_MATCH.equals(vUmsMemberVo.getSystemType())){
+            vUmsMemberVo.setMatchUserId(UserUtils.getCurrentMember().getId());
+        }
         Page<VUmsMemberVo> umsMembers = IUmsMemberService.listVUmsMembers(vUmsMemberVo);
         return new CommonResult<>().success(umsMembers);
     }

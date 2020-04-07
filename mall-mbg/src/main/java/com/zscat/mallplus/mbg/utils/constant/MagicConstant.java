@@ -217,5 +217,14 @@ public class MagicConstant {
     /*******0-系统输入 1-网络数据**/
     public final static String DATA_TYPE_SYSTEM = "0";
     public final static String DATA_TYPE_NET = "1";
+
+    /*******系统类型 0-搭配师后管 1-平台后管**/
+    public final static String SYSTEM_TYPE_MATCH = "0";
+    public final static String SYSTEM_TYPE_PLATFORM = "1";
+
+    /*******审核状态 0-待审核 1-审核通过 2-审核拒绝**/
+    public final static String AUDIT_STATUS_WAITING = "0";
+    public final static String AUDIT_STATUS_PASSED = "1";
+    public final static String AUDIT_STATUS_REFUSE = "2";
 }
 

@@ -3,10 +3,8 @@ package com.zscat.mallplus.mbg.ums.vo;
 import com.zscat.mallplus.mbg.ums.entity.VUmsMember;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.models.auth.In;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 @ApiModel("粉丝和平台管理扩展对象")
 public class VUmsMemberVo extends VUmsMember {
@@ -43,6 +41,12 @@ public class VUmsMemberVo extends VUmsMember {
 
     @ApiModelProperty("粉丝备注姓名")
     private String personalizedSignature;
+
+    @ApiModelProperty("创建时间的时间戳")
+    private Long createDate;
+
+    @ApiModelProperty("系统的类型 0-搭配师平台 1-平台后管")
+    private String systemType;
 
     @ApiModelProperty("页码")
     private Integer pageNum;
@@ -152,5 +156,21 @@ public class VUmsMemberVo extends VUmsMember {
 
     public void setPersonalizedSignature(String personalizedSignature) {
         this.personalizedSignature = personalizedSignature;
+    }
+
+    public Long getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Long createDate) {
+        this.createDate = createDate;
+    }
+
+    public String getSystemType() {
+        return systemType;
+    }
+
+    public void setSystemType(String systemType) {
+        this.systemType = systemType;
     }
 }

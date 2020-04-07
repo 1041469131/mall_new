@@ -16,10 +16,12 @@ import com.zscat.mallplus.mbg.pms.entity.PmsProductUserMatchLibrary;
 import com.zscat.mallplus.mbg.pms.mapper.PmsProductUserMatchLibraryMapper;
 import com.zscat.mallplus.mbg.sys.mapper.SysAreaMapper;
 import com.zscat.mallplus.mbg.ums.entity.UmsMember;
+import com.zscat.mallplus.mbg.ums.entity.UmsMemberStatisticsInfo;
 import com.zscat.mallplus.mbg.ums.entity.UmsRecommendRelation;
 import com.zscat.mallplus.mbg.ums.entity.VUmsMember;
 import com.zscat.mallplus.mbg.ums.mapper.UmsMemberMapper;
 import com.zscat.mallplus.mbg.ums.mapper.UmsMemberMemberTagRelationMapper;
+import com.zscat.mallplus.mbg.ums.mapper.UmsMemberStatisticsInfoMapper;
 import com.zscat.mallplus.mbg.ums.mapper.UmsRecommendRelationMapper;
 import com.zscat.mallplus.mbg.ums.vo.UmsMemberVo;
 import com.zscat.mallplus.mbg.ums.vo.VUmsMemberVo;
@@ -73,6 +75,9 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
 
     @Autowired
     private SmsCouponHistoryMapper smsCouponHistoryMapper;
+
+    @Autowired
+    private UmsMemberStatisticsInfoMapper umsMemberStatisticsInfoMapper;
 
     @Autowired
     private PmsProductUserMatchLibraryMapper pmsProductUserMatchLibraryMapper;
@@ -245,6 +250,7 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
     }
 
     @Override
+    @Transactional
     public Object loginByWeixin(HttpServletRequest req) {
         try {
             String code = req.getParameter("code");
@@ -296,8 +302,9 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
                 // umsMember.setGender(Integer.parseInt(me.get("gender")));
                 umsMember.setNickname(me.get("nickName").toString());
                 umsMember.setSessionKey(sessionData.getString("session_key"));
-
+                umsMember.setCreateDate(new Date().getTime());
                 umsMemberMapper.insert(umsMember);
+                saveUmsStatisticsInfo(umsMember);
                 token = jwtTokenUtil.generateToken(umsMember.getUsername());
                 resultObj.put("userId", umsMember.getId());
                 resultObj.put("is_complete", "0");
@@ -326,6 +333,16 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
             return new CommonResult<>().failed(e.getMessage());
         }
 
+    }
+
+    /**
+     * 新增会员统计信息
+     * @param umsMember
+     */
+    private void saveUmsStatisticsInfo(UmsMember umsMember) {
+        UmsMemberStatisticsInfo umsMemberStatisticsInfo = new UmsMemberStatisticsInfo();
+        umsMemberStatisticsInfo.setMemberId(umsMember.getId());
+        umsMemberStatisticsInfoMapper.insert(umsMemberStatisticsInfo);
     }
 
     @Override
