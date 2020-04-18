@@ -70,7 +70,7 @@ public class PmsProductUserMatchLibraryServiceImpl extends ServiceImpl<PmsProduc
             }
         }
         if(!CollectionUtils.isEmpty(pmsProductUserMatchLibraries)){
-            return this.saveBatch(pmsProductUserMatchLibraries);
+            return this.saveOrUpdateBatch(pmsProductUserMatchLibraries);
         }
         return false;
     }

@@ -16,9 +16,43 @@
     <result column="create_time" jdbcType="BIGINT" property="createTime" />
     <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
     <result column="update_time" jdbcType="BIGINT" property="updateTime" />
+    <result column="audit_id" jdbcType="BIGINT" property="auditId" />
+  </resultMap>
+
+  <resultMap id="umsApplyMatcherVoMap" type="com.zscat.mallplus.mbg.ums.vo.UmsApplyMatcherVo" extends="BaseResultMap">
+    <result column="nickname" jdbcType="VARCHAR" property="nickname" />
+    <result column="invitenickname" jdbcType="VARCHAR" property="invitenickname" />
+    <result column="inviteremarkname" jdbcType="VARCHAR" property="inviteremarkname" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, member_id, user_name, wechat_no, phone, wechat_two_code, invite_phone, introduce, 
-    audit_status, audit_reson, create_date, create_time,update_date,update_time
+    T.ID, T.MEMBER_ID, T.USER_NAME, T.WECHAT_NO, T.PHONE, T.WECHAT_TWO_CODE, T.INVITE_PHONE, T.INTRODUCE, T.AUDIT_STATUS, T.AUDIT_RESON, T.CREATE_DATE, T.CREATE_TIME,T.UPDATE_DATE,T.UPDATE_TIME,T.AUDIT_ID
   </sql>
+
+  <select id="pageMatcher" parameterType="com.zscat.mallplus.mbg.ums.vo.UmsApplyMatcherVo" resultMap="umsApplyMatcherVoMap">
+    SELECT T1.NICKNAME,T2.NICKNAME AS INVITENICKNAME,T2.PERSONALIZED_SIGNATURE AS INVITEREMARKNAME,<include refid="Base_Column_List"/>
+    FROM UMS_APPLY_MATCHER T
+    LEFT JOIN UMS_MEMBER T1 ON T.MEMBER_ID = T1.ID
+    LEFT JOIN UMS_MEMBER T2 ON T.INVITE_PHONE = T2.PHONE
+    <where>
+      <if test="umsApplyMatcherVo.startApplyDate != null">
+        AND T.create_date > #{umsApplyMatcherVo.startApplyDate}
+      </if>
+      <if test="umsApplyMatcherVo.endApplyDate != null">
+        AND T.create_date &lt; #{umsApplyMatcherVo.endApplyDate}
+      </if>
+      <if test="umsApplyMatcherVo.invitenickname != null">
+        AND (T2.NICKNAME LIKE #{umsApplyMatcherVo.invitenickname} OR T2.personalized_signature LIKE #{umsApplyMatcherVo.invitenickname})
+      </if>
+      <if test="umsApplyMatcherVo.auditStatus != null">
+        AND T.audit_status = #{umsApplyMatcherVo.auditStatus}
+      </if>
+      <if test="umsApplyMatcherVo.phone != null">
+        AND T.PHONE LIKE #{umsApplyMatcherVo.phone}
+      </if>
+      <if test="umsApplyMatcherVo.nickname != null">
+        AND (T1.NICKNAME LIKE #{umsApplyMatcherVo.nickname} OR T.USER_NAME LIKE #{umsApplyMatcherVo.nickname})
+      </if>
+    </where>
+  </select>
+
 </mapper>

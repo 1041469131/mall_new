@@ -59,7 +59,7 @@ public class UmsApplyMatcher implements Serializable {
 
     /**审核原因*/
     @TableField("audit_reson")
-    @ApiModelProperty(value = "审核原因，后管，小程序可以不用传")
+    @ApiModelProperty(value = "审核备注，后管，小程序可以不用传")
     private String auditReson;
 
     @TableField("update_date")
@@ -79,6 +79,10 @@ public class UmsApplyMatcher implements Serializable {
     @TableField("create_time")
     @ApiModelProperty(value = "创建时间戳，不传")
     private Long createTime;
+
+    @TableField("audit_id")
+    @ApiModelProperty(value = "审核人id")
+    private Long auditId;
 
     private static final long serialVersionUID = 1L;
 
@@ -192,5 +196,13 @@ public class UmsApplyMatcher implements Serializable {
 
     public void setUpdateTime(Long updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public Long getAuditId() {
+        return auditId;
+    }
+
+    public void setAuditId(Long auditId) {
+        this.auditId = auditId;
     }
 }

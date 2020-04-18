@@ -1,5 +1,10 @@
 package com.zscat.mallplus.leecode;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 /**
  *
  * 环形公交路线上有 n 个站，按次序从 0 到 n - 1 进行编号。我们已知每一对相邻公交站之间的距离，distance[i] 表示编号为 i 的车站和编号为 (i + 1) % n 的车站之间的距离。
@@ -14,6 +19,17 @@ package com.zscat.mallplus.leecode;
  * @Description
  */
 public class LeeCode1 {
+
+
+    public static void main(String[] args) {
+        Set<String> strs = new HashSet<>();
+        strs.add("1");
+        strs.add("1");
+        System.out.println(strs);
+
+        System.out.println(strs.size());
+    }
+
 
     public int distanceBetweenBusStops(int[] distance, int start, int destination) {
         int min = start;

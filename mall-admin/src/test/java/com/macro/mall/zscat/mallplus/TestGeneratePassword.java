@@ -15,6 +15,6 @@ public class TestGeneratePassword {
     @Test
     public void testGeneratePassword(){
         PasswordEncoder passwordEncoder = SpringContextHolder.getBean(PasswordEncoder.class);
-        System.out.println(passwordEncoder.encode("admin"));
+        System.out.println(passwordEncoder.encode("123456"));
     }
 }

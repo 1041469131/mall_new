@@ -31,9 +31,9 @@ public class UmsApplyMatcherController {
     @RequestMapping(value = "/saveOrUpdate", method = RequestMethod.POST)
     @ResponseBody
     public CommonResult create(@RequestBody UmsApplyMatcher umsApplyMatcher) {
-        Long memberId = 123L;
+        Long memberId = UserUtils.getCurrentUmsMember().getId();
         UmsApplyMatcher oldUmsApplyMatcher = iUmsApplyMatcherService.getOne(new QueryWrapper<UmsApplyMatcher>().eq("member_id",memberId));
-        if(umsApplyMatcher == null){
+        if(oldUmsApplyMatcher == null){
             umsApplyMatcher.setMemberId(memberId);
             umsApplyMatcher.setCreateDate(new Date());
             umsApplyMatcher.setCreateTime(new Date().getTime());
@@ -54,7 +54,7 @@ public class UmsApplyMatcherController {
     @RequestMapping(value = "/queryUmsApplyMatcher", method = RequestMethod.GET)
     @ResponseBody
     public CommonResult queryUmsApplyMatcher() {
-        Long memberId = 123L;
+        Long memberId = UserUtils.getCurrentUmsMember().getId();
         UmsApplyMatcher umsApplyMatcher = iUmsApplyMatcherService.getOne(new QueryWrapper<UmsApplyMatcher>().eq("member_id",memberId));
         return new CommonResult().success(umsApplyMatcher);
     }

@@ -18,11 +18,12 @@
         <result column="wechat_name" property="wechatName" />
         <result column="wechat_qrcode_url" property="wechatQrcodeUrl" />
         <result column="introduction" property="introduction" />
+        <result column="phone" property="phone" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, username, password, icon, email, nick_name, note, create_time, login_time, status, supply_id,wechat_name,wechat_qrcode_url,introduction
+        id, username, password, icon, email, nick_name, note, create_time, login_time, status, supply_id,wechat_name,wechat_qrcode_url,introduction,phone
     </sql>
 
     <select id="getRandomSysUser" resultMap="BaseResultMap">

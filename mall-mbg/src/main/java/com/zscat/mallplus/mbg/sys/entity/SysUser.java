@@ -88,5 +88,8 @@ public class SysUser implements Serializable {
     @ApiModelProperty(value = "简介")
     private String introduction;
 
+    @ApiModelProperty(value = "手机号")
+    private String phone;
+
 
 }
