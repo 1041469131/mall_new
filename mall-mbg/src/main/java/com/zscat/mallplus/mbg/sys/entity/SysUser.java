@@ -100,4 +100,13 @@ public class SysUser implements Serializable {
     @ApiModelProperty(value = "姓名")
     private String name;
 
+    @ApiModelProperty(value = "更新日期")
+    private Date updateDate;
+
+    @ApiModelProperty(value = "更新日期（时间戳）")
+    private Long updateTime;
+
+    @ApiModelProperty(value = "创建日期（时间戳）")
+    private Long createDate;
+
 }

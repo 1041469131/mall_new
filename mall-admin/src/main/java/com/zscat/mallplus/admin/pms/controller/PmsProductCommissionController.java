@@ -28,7 +28,7 @@ public class PmsProductCommissionController {
 
     @SysLog(MODULE = "pms", REMARK = "保存分佣比例")
     @ApiOperation("保存分佣比例")
-    @GetMapping(value = "/saveOrUpdateCommisssion")
+    @PostMapping(value = "/saveOrUpdateCommisssion")
 //    @PreAuthorize("hasAuthority('pms:PmsProductConsult:read')")
     public Object saveOrUpdateCommisssion(@RequestBody PmsProductCommission pmsProductCommission) {
         if(pmsProductCommission.getId() == null){

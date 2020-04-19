@@ -28,7 +28,9 @@
     </resultMap>
 
     <resultMap id="sysUserVoMap" type="com.zscat.mallplus.mbg.sys.vo.SysUserVO" extends="BaseResultMap">
-
+        <result column="MATCHER_COUNT" property="matcherCount"/>
+        <result column="FAN_COUNT" property="fanCount"/>
+        <result column="INVITE_NAME" property="inviteName"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -41,8 +43,8 @@
         SELECT <include refid="Base_Column_List" /> FROM sys_user ORDER BY RAND() LIMIT 1
     </select>
 
-    <select id="pageMatcherUsers" resultMap="sysUserVoMap">
-        SELECT T4.MATCHER_COUNT,COUNT(1) AS FAN_COUNT,T2.`NAME` AS INVITE_NAME,<include refid="BASE_COLUMN_LIST"/> FROM SYS_USER T
+    <select id="pageMatcherUsers" parameterType="com.zscat.mallplus.mbg.sys.vo.SysUserVO" resultMap="sysUserVoMap">
+        SELECT T4.MATCHER_COUNT,COUNT(1) AS FAN_COUNT,T2.`NAME` AS INVITE_NAME,<include refid="Base_Column_List"/> FROM SYS_USER T
         LEFT JOIN UMS_APPLY_MATCHER T1 ON T.PHONE = T1.PHONE
         LEFT JOIN SYS_USER T2 ON T2.PHONE = T1.INVITE_PHONE
         LEFT JOIN UMS_MEMBER T3 ON T3.MATCH_USER_ID = T.ID

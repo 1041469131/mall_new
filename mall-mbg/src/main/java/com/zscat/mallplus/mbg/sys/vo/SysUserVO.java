@@ -19,6 +19,12 @@ public class SysUserVO extends SysUser{
     @ApiModelProperty("邀请人的昵称和备注名")
     private String inviteName;
 
+    @ApiModelProperty("累计邀请的搭配师树")
+    private Integer matcherCount;
+
+    @ApiModelProperty("粉丝数量")
+    private Integer fanCount;
+
     @ApiModelProperty("页码")
     private Integer pageNum;
 
@@ -71,5 +77,21 @@ public class SysUserVO extends SysUser{
 
     public void setInviteName(String inviteName) {
         this.inviteName = inviteName;
+    }
+
+    public Integer getMatcherCount() {
+        return matcherCount;
+    }
+
+    public void setMatcherCount(Integer matcherCount) {
+        this.matcherCount = matcherCount;
+    }
+
+    public Integer getFanCount() {
+        return fanCount;
+    }
+
+    public void setFanCount(Integer fanCount) {
+        this.fanCount = fanCount;
     }
 }

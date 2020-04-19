@@ -44,7 +44,7 @@ import java.util.Map;
  * @since 2019-04-14
  */
 @Slf4j
-@Api(value = "用户管理", description = "", tags = {"用户管理"})
+@Api(description = "用户管理", tags = "SysUserController")
 @RestController
 @RequestMapping("/sys/sysUser")
 public class SysUserController extends ApiController {
