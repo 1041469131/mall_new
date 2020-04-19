@@ -7,6 +7,7 @@ import com.zscat.mallplus.mbg.pms.entity.PmsProductVertifyRecord;
 import com.zscat.mallplus.mbg.pms.vo.PmsProductAndGroup;
 import com.zscat.mallplus.mbg.pms.vo.PmsProductParam;
 import com.zscat.mallplus.mbg.pms.vo.PmsProductResult;
+import com.zscat.mallplus.mbg.pms.vo.PmsProductVo;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -79,5 +80,5 @@ public interface IPmsProductService extends IService<PmsProduct> {
 
     PmsProductAndGroup getProductAndGroup(Long id);
 
-    Page<PmsProduct> listPmsProductByPage(Page<PmsProduct> pmsProductPage, Map<String, Object> paramMap);
+    Page<PmsProduct> listPmsProductByPage(PmsProductVo pmsProductVo);
 }

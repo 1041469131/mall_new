@@ -17,6 +17,7 @@ import com.zscat.mallplus.mbg.pms.mapper.*;
 import com.zscat.mallplus.mbg.pms.vo.PmsProductAndGroup;
 import com.zscat.mallplus.mbg.pms.vo.PmsProductParam;
 import com.zscat.mallplus.mbg.pms.vo.PmsProductResult;
+import com.zscat.mallplus.mbg.pms.vo.PmsProductVo;
 import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -348,8 +349,9 @@ public class PmsProductServiceImpl extends ServiceImpl<PmsProductMapper, PmsProd
     }
 
     @Override
-    public Page<PmsProduct> listPmsProductByPage(Page<PmsProduct> pmsProductPage, Map<String, Object> paramMap) {
-        return pmsProductMapper.listPmsProductByPage(pmsProductPage,paramMap);
+    public Page<PmsProduct> listPmsProductByPage(PmsProductVo pmsProductVo) {
+        Page<PmsProductVo> page = new Page<>(pmsProductVo.getPageNum(),pmsProductVo.getPageSize());
+        return pmsProductMapper.listPmsProductByPage(page,pmsProductVo);
     }
 }
 

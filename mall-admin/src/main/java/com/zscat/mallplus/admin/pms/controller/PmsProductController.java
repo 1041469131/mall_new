@@ -10,6 +10,7 @@ import com.zscat.mallplus.mbg.pms.entity.PmsProduct;
 import com.zscat.mallplus.mbg.pms.entity.PmsProductVertifyRecord;
 import com.zscat.mallplus.mbg.pms.vo.PmsProductParam;
 import com.zscat.mallplus.mbg.pms.vo.PmsProductResult;
+import com.zscat.mallplus.mbg.pms.vo.PmsProductVo;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.ValidatorUtils;
 import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
@@ -68,17 +69,8 @@ public class PmsProductController {
     @ApiOperation("根据条件查询所有商品信息列表")
     @GetMapping(value = "/listPmsProductByPage")
     @IgnoreAuth
-    public Object listPmsProductByPage(@RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
-                                      @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize
-    ) {
-        Page<PmsProduct> pmsProductPage = new Page<>(pageNum,pageSize);
-        List<Long> productAttributeIds = new ArrayList<>();
-        productAttributeIds.add(431L);
-        productAttributeIds.add(414L);
-        productAttributeIds.add(415L);
-        Map<String,Object> paramMap = new HashMap<>();
-        paramMap.put("deleteStatus","0");
-        Page<PmsProduct> pmsProductList = iPmsProductService.listPmsProductByPage(pmsProductPage,paramMap);
+    public Object listPmsProductByPage(@RequestBody PmsProductVo pmsProductVo) {
+        Page<PmsProductVo> pmsProductList = iPmsProductService.listPmsProductByPage(pmsProductVo);
         return pmsProductList;
     }
 

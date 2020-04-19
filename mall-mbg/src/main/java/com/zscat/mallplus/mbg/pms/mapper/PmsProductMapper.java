@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zscat.mallplus.mbg.oms.vo.CartProduct;
 import com.zscat.mallplus.mbg.pms.vo.PmsProductResult;
+import com.zscat.mallplus.mbg.pms.vo.PmsProductVo;
 import com.zscat.mallplus.mbg.pms.vo.PromotionProduct;
 import com.zscat.mallplus.mbg.pms.entity.PmsProduct;
 import org.apache.ibatis.annotations.Param;
@@ -27,5 +28,5 @@ public interface PmsProductMapper extends BaseMapper<PmsProduct> {
 
     PmsProductResult getUpdateInfo(Long id);
 
-    Page<PmsProduct> listPmsProductByPage(Page<PmsProduct> pmsProductPage, @Param("paramMap") Map<String, Object> paramMap);
+    Page<PmsProduct> listPmsProductByPage(Page<PmsProductVo> pmsProductPage, @Param("pmsProductVo") PmsProductVo pmsProductVo);
 }
