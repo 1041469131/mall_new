@@ -91,5 +91,13 @@ public class SysUser implements Serializable {
     @ApiModelProperty(value = "手机号")
     private String phone;
 
+    @ApiModelProperty(value = "类型 0-搭配师")
+    private String type;
+
+    @ApiModelProperty(value = "等级 common:普通搭配师，advanced：高级搭配师")
+    private String level;
+
+    @ApiModelProperty(value = "姓名")
+    private String name;
 
 }

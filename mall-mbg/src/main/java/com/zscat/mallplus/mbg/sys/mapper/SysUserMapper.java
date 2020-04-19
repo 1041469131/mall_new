@@ -1,8 +1,11 @@
 package com.zscat.mallplus.mbg.sys.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zscat.mallplus.mbg.sys.entity.SysUser;
+import com.zscat.mallplus.mbg.sys.vo.SysUserVO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
@@ -17,4 +20,5 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
 
     SysUser getRandomSysUser();
 
+    Page<SysUserVO> pageMatcherUsers(Page<SysUserVO> page, @Param("sysUser") SysUserVO sysUser);
 }

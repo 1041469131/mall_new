@@ -17,12 +17,15 @@ public class SysUserAssemble {
     public static SysUser assembleSysUser(UmsApplyMatcherVo umsApplyMatcherVo) {
         SysUser sysUser = new SysUser();
         sysUser.setUsername(umsApplyMatcherVo.getUserName());
+        sysUser.setName(umsApplyMatcherVo.getUserName());
         sysUser.setCreateTime(new Date());
         sysUser.setNickName(umsApplyMatcherVo.getNickname());
         sysUser.setWechatName(umsApplyMatcherVo.getWechatNo());
         sysUser.setWechatQrcodeUrl(umsApplyMatcherVo.getWechatTwoCode());
         sysUser.setPhone(umsApplyMatcherVo.getPhone());
         sysUser.setIcon(umsApplyMatcherVo.getIcon());
+        sysUser.setType("0");
+        sysUser.setLevel("common");
         sysUser.setRoleIds("10");
         return sysUser;
     }

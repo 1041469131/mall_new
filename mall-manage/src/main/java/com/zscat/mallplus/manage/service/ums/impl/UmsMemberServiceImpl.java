@@ -521,7 +521,7 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
         Map<String,Object> paramMap = new HashMap<>();
         paramMap.put("phone",vUmsMemberVo.getPhone());
         paramMap.put("matchUserId",vUmsMemberVo.getMatchUserId());
-        paramMap.put("recommendStatus",vUmsMemberVo.getStatus());
+        paramMap.put("recommendStatus",vUmsMemberVo.getRecommendStatus());
         paramMap.put("fanName",vUmsMemberVo.getFanName());
         paramMap.put("tagName",vUmsMemberVo.getTagname());
         paramMap.put("matchUserame",vUmsMemberVo.getMatchUserName());

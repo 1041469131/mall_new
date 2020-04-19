@@ -19,15 +19,59 @@
         <result column="wechat_qrcode_url" property="wechatQrcodeUrl" />
         <result column="introduction" property="introduction" />
         <result column="phone" property="phone" />
+        <result column="type" property="type" />
+        <result column="level" property="level" />
+        <result column="update_date" property="updateDate" />
+        <result column="update_time" property="updateTime" />
+        <result column="create_date" property="createDate" />
+        <result column="name" property="name" />
+    </resultMap>
+
+    <resultMap id="sysUserVoMap" type="com.zscat.mallplus.mbg.sys.vo.SysUserVO" extends="BaseResultMap">
+
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, username, password, icon, email, nick_name, note, create_time, login_time, status, supply_id,wechat_name,wechat_qrcode_url,introduction,phone
+        t.id, t.username, t.password, t.icon, t.email, t.nick_name, t.note, t.create_time, t.login_time, t.status, t.supply_id,t.wechat_name,t.wechat_qrcode_url,
+        t.introduction,t.phone,t.type,t.level,t.name,t.update_date,t.update_time,t.create_date
     </sql>
 
     <select id="getRandomSysUser" resultMap="BaseResultMap">
         SELECT <include refid="Base_Column_List" /> FROM sys_user ORDER BY RAND() LIMIT 1
+    </select>
+
+    <select id="pageMatcherUsers" resultMap="sysUserVoMap">
+        SELECT T4.MATCHER_COUNT,COUNT(1) AS FAN_COUNT,T2.`NAME` AS INVITE_NAME,<include refid="BASE_COLUMN_LIST"/> FROM SYS_USER T
+        LEFT JOIN UMS_APPLY_MATCHER T1 ON T.PHONE = T1.PHONE
+        LEFT JOIN SYS_USER T2 ON T2.PHONE = T1.INVITE_PHONE
+        LEFT JOIN UMS_MEMBER T3 ON T3.MATCH_USER_ID = T.ID
+        LEFT JOIN (SELECT COUNT(1) AS MATCHER_COUNT,INVITE_PHONE FROM UMS_APPLY_MATCHER WHERE AUDIT_STATUS = '1' GROUP BY INVITE_PHONE) T4 ON T4.INVITE_PHONE = T.PHONE
+        <where>
+            T.TYPE = '0'
+            <if test="sysUser.startCreateDate != null">
+                AND T.create_time > #{sysUser.startCreateDate}
+            </if>
+            <if test="sysUser.endCreateDate != null">
+                AND T.create_time &lt; #{sysUser.endCreateDate}
+            </if>
+            <if test="sysUser.invitePhone != null">
+                AND T2.PHONE LIKE #{sysUser.invitePhone}
+            </if>
+            <if test="sysUser.inviteName != null">
+                AND (T2.NAME LIKE #{sysUser.inviteName} OR T2.nick_name LIKE #{sysUser.inviteName})
+            </if>
+            <if test="sysUser.level != null">
+                AND T.level = #{sysUser.level}
+            </if>
+            <if test="sysUser.phone != null">
+                AND T.phone LIKE #{sysUser.phone}
+            </if>
+            <if test="sysUser.name != null">
+                AND (T.NAME LIKE #{sysUser.name} OR T.NICK_NAME LIKE #{sysUser.name})
+            </if>
+        </where>
+        GROUP BY T.ID
     </select>
 
 </mapper>

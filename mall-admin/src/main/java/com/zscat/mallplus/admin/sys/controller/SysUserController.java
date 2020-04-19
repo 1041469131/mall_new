@@ -15,6 +15,7 @@ import com.zscat.mallplus.mbg.sys.entity.SysPermission;
 import com.zscat.mallplus.mbg.sys.entity.SysRole;
 import com.zscat.mallplus.mbg.sys.entity.SysUser;
 import com.zscat.mallplus.mbg.sys.entity.SysUserRole;
+import com.zscat.mallplus.mbg.sys.vo.SysUserVO;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.ValidatorUtils;
 import io.swagger.annotations.Api;
@@ -268,6 +269,17 @@ public class SysUserController extends ApiController {
     public Object getPermissionList(@PathVariable Long adminId) {
         List<SysPermission> permissionList = sysUserService.getPermissionListByUserId(adminId);
         return new CommonResult().success(permissionList);
+    }
+
+    /*****************************新增接口************************************************/
+
+    @SysLog(MODULE = "sys", REMARK = "获取搭配师列表")
+    @ApiOperation("分页获取获取搭配师列表")
+    @RequestMapping(value = "/pageMatcherUsers", method = RequestMethod.POST)
+    @ResponseBody
+    public Object pageMatcherUsers(@RequestBody SysUserVO sysUser) {
+        Page<SysUserVO> sysUserVOPage = sysUserService.pageMatcherUsers(sysUser);
+        return new CommonResult<>().success(sysUserVOPage);
     }
 }
 

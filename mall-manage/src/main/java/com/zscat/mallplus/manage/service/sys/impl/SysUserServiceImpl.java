@@ -1,6 +1,7 @@
 package com.zscat.mallplus.manage.service.sys.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zscat.mallplus.manage.bo.Rediskey;
 import com.zscat.mallplus.manage.service.sys.ISysRolePermissionService;
@@ -13,6 +14,7 @@ import com.zscat.mallplus.manage.utils.JwtTokenUtil;
 import com.zscat.mallplus.manage.utils.UserUtils;
 import com.zscat.mallplus.mbg.sys.entity.*;
 import com.zscat.mallplus.mbg.sys.mapper.*;
+import com.zscat.mallplus.mbg.sys.vo.SysUserVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,7 +32,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -59,7 +60,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Value("${jwt.tokenHead}")
     private String tokenHead;
     @Autowired
-    private SysUserMapper adminMapper;
+    private SysUserMapper sysUserMapper;
     @Autowired
     private SysUserRoleMapper adminRoleRelationMapper;
     @Autowired
@@ -178,7 +179,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         umsAdmin.setStatus(1);
         //查询是否有相同用户名的用户
 
-        List<SysUser> umsAdminList = adminMapper.selectList(new QueryWrapper<SysUser>().eq("username",umsAdmin.getUsername()));
+        List<SysUser> umsAdminList = sysUserMapper.selectList(new QueryWrapper<SysUser>().eq("username",umsAdmin.getUsername()));
         if (umsAdminList.size() > 0) {
             return false;
         }
@@ -188,7 +189,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         }
         String md5Password = passwordEncoder.encode(umsAdmin.getPassword());
         umsAdmin.setPassword(md5Password);
-        adminMapper.insert(umsAdmin);
+        sysUserMapper.insert(umsAdmin);
         updateRole(umsAdmin.getId(),umsAdmin.getRoleIds());
         return true;
     }
@@ -204,7 +205,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         String md5Password = passwordEncoder.encode(admin.getPassword());
         admin.setPassword(md5Password);
         updateRole(admin.getId(),admin.getRoleIds());
-         adminMapper.updateById(admin);
+         sysUserMapper.updateById(admin);
         return true;
     }
 
@@ -260,7 +261,13 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Override
     public SysUser getRandomSysUser() {
-        return adminMapper.getRandomSysUser();
+        return sysUserMapper.getRandomSysUser();
+    }
+
+    @Override
+    public Page<SysUserVO> pageMatcherUsers(SysUserVO sysUser) {
+        Page<SysUserVO> page = new Page<>(sysUser.getPageNum(),sysUser.getPageSize());
+        return sysUserMapper.pageMatcherUsers(page,sysUser);
     }
 
 

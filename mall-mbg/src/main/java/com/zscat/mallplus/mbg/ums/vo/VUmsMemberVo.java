@@ -13,7 +13,7 @@ public class VUmsMemberVo extends VUmsMember {
     private Integer recomendCount;
 
     @ApiModelProperty("处理的状态 0-待处理 1-急需处理 2-已处理")
-    private String status;
+    private String recommendStatus;
 
     @ApiModelProperty("粉丝的创建开始时间")
     private String startCreateDate;
@@ -60,14 +60,6 @@ public class VUmsMemberVo extends VUmsMember {
 
     public void setRecomendCount(Integer recomendCount) {
         this.recomendCount = recomendCount;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public Integer getPageNum() {
@@ -172,5 +164,13 @@ public class VUmsMemberVo extends VUmsMember {
 
     public void setSystemType(String systemType) {
         this.systemType = systemType;
+    }
+
+    public String getRecommendStatus() {
+        return recommendStatus;
+    }
+
+    public void setRecommendStatus(String recommendStatus) {
+        this.recommendStatus = recommendStatus;
     }
 }
