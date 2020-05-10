@@ -211,8 +211,9 @@ public class UmsMemberController extends ApiBaseAction {
     @ResponseBody
     public CommonResult<UmsMember> register4MiniProgram(UmsMemberVo umsMember) {
         Long matchUserId = null;
-        if(umsMember.getMatchUserId() != null){
-            matchUserId = umsMember.getMatchUserId();
+        if(!StringUtils.isEmpty(umsMember.getMatcherUserPhone())){
+            SysUser sysUser = iSysUserService.getOne(new QueryWrapper<SysUser>().eq("phone", umsMember.getMatcherUserPhone()));
+            matchUserId = sysUser.getId();
         }else{
             matchUserId = iSysUserService.getRandomSysUser().getId();
         }

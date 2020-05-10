@@ -7,6 +7,7 @@ import com.zscat.mallplus.manage.service.ums.IUmsApplyMatcherService;
 import com.zscat.mallplus.manage.utils.UserUtils;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.sys.entity.SysUser;
+import com.zscat.mallplus.mbg.ums.entity.UmsApplyMatcher;
 import com.zscat.mallplus.mbg.ums.vo.UmsApplyMatcherVo;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
@@ -14,6 +15,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,6 +49,7 @@ public class UmsApplyMatcherController {
     public CommonResult auditMatcher(@RequestBody UmsApplyMatcherVo umsApplyMatcherVo){
         Long matcherId = UserUtils.getCurrentMember().getId();
         umsApplyMatcherVo.setAuditId(matcherId);
+        UmsApplyMatcher umsApplyMatcher = iUmsApplyMatcherService.getById(umsApplyMatcherVo.getId());
         if(MagicConstant.AUDIT_STATUS_PASSED.equals(umsApplyMatcherVo.getAuditStatus())){
             if(StringUtils.isEmpty(umsApplyMatcherVo.getAuditReson())){
                 umsApplyMatcherVo.setAuditReson("审核通过");
@@ -55,6 +58,7 @@ public class UmsApplyMatcherController {
         }
         if(iUmsApplyMatcherService.updateById(umsApplyMatcherVo)){
             if(MagicConstant.AUDIT_STATUS_PASSED.equals(umsApplyMatcherVo.getAuditStatus())){
+                BeanUtils.copyProperties(umsApplyMatcher,umsApplyMatcherVo );
                 SysUser sysUser = SysUserAssemble.assembleSysUser(umsApplyMatcherVo);
                 iSysUserService.saves(sysUser);
             }

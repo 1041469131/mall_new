@@ -24,6 +24,7 @@ import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -289,6 +290,18 @@ public class SysUserController extends ApiController {
     public Object pageMyInviteMatcherUsers(@RequestBody SysUserVO sysUser) {
         Page<SysUserVO> sysUserVOPage = sysUserService.pageMyInviteMatcherUsers(sysUser);
         return new CommonResult<>().success(sysUserVOPage);
+    }
+
+    @SysLog(MODULE = "sys", REMARK = "根据手机号获取系统用户")
+    @ApiOperation("根据手机号获取系统用户")
+    @RequestMapping(value = "/getSysUserByPhone", method = RequestMethod.GET)
+    @ResponseBody
+    public Object getSysUserByPhone(String phone) {
+        if(StringUtils.isEmpty(phone)){
+            new CommonResult<>().failed("手机号不能为空");
+        }
+        SysUser sysUser = sysUserService.getOne(new QueryWrapper<SysUser>().eq("phone", phone));
+        return new CommonResult<>().success(sysUser);
     }
 }
 

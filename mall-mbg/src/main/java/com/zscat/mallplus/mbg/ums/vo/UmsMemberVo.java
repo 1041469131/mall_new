@@ -49,6 +49,9 @@ public class UmsMemberVo extends UmsMember {
     @ApiModelProperty("推荐人id")
     private String recommendId;
 
+    @ApiModelProperty("搭配师的手机号")
+    private String matcherUserPhone;
+
     public String getDressStyleName() {
         return dressStyleName;
     }
@@ -151,5 +154,13 @@ public class UmsMemberVo extends UmsMember {
 
     public void setRecommendId(String recommendId) {
         this.recommendId = recommendId;
+    }
+
+    public String getMatcherUserPhone() {
+        return matcherUserPhone;
+    }
+
+    public void setMatcherUserPhone(String matcherUserPhone) {
+        this.matcherUserPhone = matcherUserPhone;
     }
 }

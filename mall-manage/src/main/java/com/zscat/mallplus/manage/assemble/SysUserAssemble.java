@@ -24,8 +24,9 @@ public class SysUserAssemble {
         sysUser.setWechatQrcodeUrl(umsApplyMatcherVo.getWechatTwoCode());
         sysUser.setPhone(umsApplyMatcherVo.getPhone());
         sysUser.setIcon(umsApplyMatcherVo.getIcon());
+        sysUser.setIntroduction(umsApplyMatcherVo.getIntroduce());
         sysUser.setType("1");
-        sysUser.setLevel("common");
+        sysUser.setLevel("1");
         sysUser.setRoleIds("10");
         return sysUser;
     }
