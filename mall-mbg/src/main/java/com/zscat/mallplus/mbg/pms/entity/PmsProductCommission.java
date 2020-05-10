@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 @TableName("pms_product_commission")
@@ -32,13 +33,17 @@ public class PmsProductCommission implements Serializable {
 
     /**佣金比例组成的方式为{‘用户的等级’:'比例数字'}*/
     @TableField("commission_proportion")
-    @ApiModelProperty(value = "佣金比例组成的方式为{‘用户的等级’:'比例数字'}")
-    private String commissionProportion;
+    @ApiModelProperty(value = "佣金比例")
+    private BigDecimal commissionProportion;
 
     /**邀请比例组成的方式为{‘用户的等级’:'比例数字'}*/
     @TableField("invite_proportion")
-    @ApiModelProperty(value = "邀请比例组成的方式为{‘用户的等级’:'比例数字'}")
-    private String inviteProportion;
+    @ApiModelProperty(value = "邀请比例")
+    private BigDecimal inviteProportion;
+
+    @TableField("matcher_level")
+    @ApiModelProperty(value = "搭配师等级")
+    private String matcherLevel;
 
     /**更新日期*/
     @TableField("update_date")
@@ -94,22 +99,6 @@ public class PmsProductCommission implements Serializable {
         this.commissionType = commissionType;
     }
 
-    public String getCommissionProportion() {
-        return commissionProportion;
-    }
-
-    public void setCommissionProportion(String commissionProportion) {
-        this.commissionProportion = commissionProportion;
-    }
-
-    public String getInviteProportion() {
-        return inviteProportion;
-    }
-
-    public void setInviteProportion(String inviteProportion) {
-        this.inviteProportion = inviteProportion;
-    }
-
     public Date getUpdateDate() {
         return updateDate;
     }
@@ -142,24 +131,27 @@ public class PmsProductCommission implements Serializable {
         this.createTime = createTime;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
-        sb.append(", productId=").append(productId);
-        sb.append(", promoteType=").append(promoteType);
-        sb.append(", commissionType=").append(commissionType);
-        sb.append(", commissionProportion=").append(commissionProportion);
-        sb.append(", inviteProportion=").append(inviteProportion);
-        sb.append(", updateDate=").append(updateDate);
-        sb.append(", updateTime=").append(updateTime);
-        sb.append(", createDate=").append(createDate);
-        sb.append(", createTime=").append(createTime);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
-        sb.append("]");
-        return sb.toString();
+    public String getMatcherLevel() {
+        return matcherLevel;
+    }
+
+    public void setMatcherLevel(String matcherLevel) {
+        this.matcherLevel = matcherLevel;
+    }
+
+    public BigDecimal getCommissionProportion() {
+        return commissionProportion;
+    }
+
+    public void setCommissionProportion(BigDecimal commissionProportion) {
+        this.commissionProportion = commissionProportion;
+    }
+
+    public BigDecimal getInviteProportion() {
+        return inviteProportion;
+    }
+
+    public void setInviteProportion(BigDecimal inviteProportion) {
+        this.inviteProportion = inviteProportion;
     }
 }

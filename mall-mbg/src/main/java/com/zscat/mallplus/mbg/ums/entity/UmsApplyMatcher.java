@@ -84,6 +84,10 @@ public class UmsApplyMatcher implements Serializable {
     @ApiModelProperty(value = "审核人id")
     private Long auditId;
 
+    @TableField("relate_status")
+    @ApiModelProperty(value = "关联的状态 0-未绑定 1-已绑定 2-绑定解除")
+    private String relateStatus;
+
     private static final long serialVersionUID = 1L;
 
     public Long getId() {
@@ -204,5 +208,13 @@ public class UmsApplyMatcher implements Serializable {
 
     public void setAuditId(Long auditId) {
         this.auditId = auditId;
+    }
+
+    public String getRelateStatus() {
+        return relateStatus;
+    }
+
+    public void setRelateStatus(String relateStatus) {
+        this.relateStatus = relateStatus;
     }
 }

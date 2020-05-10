@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zscat.mallplus.mbg.sys.mapper.SysMatcherStatisticsMapper">
+  <resultMap id="BaseResultMap" type="com.zscat.mallplus.mbg.sys.entity.SysMatcherStatistics">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="matcher_id" jdbcType="BIGINT" property="matcherId" />
+    <result column="total_sale_amount" jdbcType="DECIMAL" property="totalSaleAmount" />
+    <result column="total_profit" jdbcType="DECIMAL" property="totalProfit" />
+    <result column="unsettle_profit" jdbcType="DECIMAL" property="unsettleProfit" />
+    <result column="product_commission" jdbcType="DECIMAL" property="productCommission" />
+    <result column="product_unsettle_commission" jdbcType="DECIMAL" property="productUnsettleCommission" />
+    <result column="product_settle_commission" jdbcType="DECIMAL" property="productSettleCommission" />
+    <result column="product_settle_amount" jdbcType="DECIMAL" property="productSettleAmount" />
+    <result column="product_unsettle_amount" jdbcType="DECIMAL" property="productUnsettleAmount" />
+    <result column="invite_commission" jdbcType="DECIMAL" property="inviteCommission" />
+    <result column="invite_unsettle_amount" jdbcType="DECIMAL" property="inviteUnsettleAmount" />
+    <result column="invite_settle_amount" jdbcType="DECIMAL" property="inviteSettleAmount" />
+    <result column="invite_unsettle_commission" jdbcType="DECIMAL" property="inviteUnsettleCommission" />
+    <result column="invite_settle_commission" jdbcType="DECIMAL" property="inviteSettleCommission" />
+    <result column="fan_count" jdbcType="INTEGER" property="fanCount" />
+    <result column="invite_count" jdbcType="INTEGER" property="inviteCount" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_time" jdbcType="BIGINT" property="updateTime" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_time" jdbcType="BIGINT" property="createTime" />
+    <result column="member_id" jdbcType="BIGINT" property="memberId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, matcher_id, total_sale_amount, total_profit, unsettle_profit, product_commission, 
+    product_unsettle_commission, product_settle_commission, product_settle_amount, product_unsettle_amount, 
+    invite_commission, invite_unsettle_amount, invite_settle_amount, invite_unsettle_commission, 
+    invite_settle_commission, fan_count, invite_count, update_date, update_time, create_date, 
+    create_time,member_id
+  </sql>
+
+  <resultMap id="matcherStatisticsMap" type="com.zscat.mallplus.mbg.sys.vo.SysMatcherStatisticsVo" extends="BaseResultMap">
+    <result column="icon" property="icon" />
+    <result column="nick_name" property="nickName" />
+    <result column="name" property="name" />
+    <result column="phone" property="phone" />
+    <result column="level" property="level" />
+    <result column="invite_name" property="inviteName" />
+    <result column="invite_icon" property="inviteIcon" />
+    <result column="invite_nick_name" property="inviteNickName" />
+  </resultMap>
+
+  <select id="pageMatherStatistics" parameterType="com.zscat.mallplus.mbg.sys.vo.SysMatcherStatisticsVo" resultMap="matcherStatisticsMap">
+    SELECT T.ICON,T.NICK_NAME,T.`NAME`,T.PHONE,T.`LEVEL`,T2.`NAME` AS INVITE_NAME,T2.ICON AS INVITE_ICON,T2.NICK_NAME AS INVITE_NICK_NAME, T3.TOTAL_SALE_AMOUNT,
+    T3.TOTAL_PROFIT,T3.UNSETTLE_PROFIT,T3.PRODUCT_COMMISSION,T3.INVITE_COMMISSION,T3.FAN_COUNT,T3.INVITE_COUNT,T3.PRODUCT_UNSETTLE_COMMISSION,
+    T3.PRODUCT_SETTLE_COMMISSION,T3.PRODUCT_SETTLE_AMOUNT,T3.PRODUCT_UNSETTLE_AMOUNT,T3.INVITE_UNSETTLE_AMOUNT,T3.INVITE_SETTLE_AMOUNT,
+    T3.INVITE_UNSETTLE_COMMISSION,T3.INVITE_SETTLE_COMMISSION,T.ID AS MATCHER_ID
+    FROM SYS_USER T
+    LEFT JOIN UMS_APPLY_MATCHER T1 ON T.PHONE = T1.PHONE
+    LEFT JOIN SYS_USER T2 ON T2.PHONE = T1.INVITE_PHONE
+    LEFT JOIN SYS_MATCHER_STATISTICS T3 ON T3.MATCHER_ID = T.ID
+    <where>
+      <if test="matcherStatics.level != null">
+        AND T.LEVEL = #{matcherStatics.level}
+      </if>
+      <if test="matcherStatics.level != null">
+        AND (T2.NICK_NAME LIKE CONCAT('%',#{matcherStatics.inviteName},'%') OR T2.NAME LIKE LIKE CONCAT('%',#{matcherStatics.inviteName},'%'))
+      </if>
+      <if test="matcherStatics.phone != null">
+        AND T.PHONE LIKE CONCAT('%',#{matcherStatics.phone},'%')
+      </if>
+      <if test="matcherStatics.name != null">
+        AND (T.NICK_NAME LIKE CONCAT('%',#{matcherStatics.name},'%') OR T.NAME LIKE LIKE CONCAT('%',#{matcherStatics.name},'%'))
+      </if>
+    </where>
+  </select>
+
+  <select id="getAmount" resultType="java.util.HashMap">
+    SELECT SUM(T2.PAY_AMOUNT) AS ORDER_AMOUNT,SUM(T1.PROFIT) AS PROFIT
+    FROM SYS_USER T
+    LEFT JOIN OMS_MATCHER_COMMISSION T1 ON T.ID = T1.MATCHER_USER_ID
+    LEFT JOIN OMS_ORDER T2 ON T1.ORDER_ID = T2.ID
+    <where>
+      T2.status IN ('0','1','2','3')
+      <if test="profitType != null">
+        AND T1.PROFIT_TYPE = #{profitType}
+      </if>
+      <if test="matcherUserId != null">
+        AND t1.matcher_user_id = #{matcherUserId}
+      </if>
+      <if test="statusList != null">
+        AND T1.`STATUS` IN
+        <foreach collection="statusList" item="status" index="index"
+                 open="(" close=")" separator=",">
+          #{status}
+        </foreach>
+      </if>
+    </where>
+  </select>
+
+  <select id="getFanCount" resultType="java.lang.Integer">
+    SELECT COUNT(1) AS FAN_COUNT FROM UMS_MEMBER T WHERE T.MATCH_USER_ID = #{matcherUserId}
+  </select>
+
+  <select id="getInviteCount" resultType="java.lang.Integer">
+    SELECT COUNT(1) AS INVITE_COUNT FROM UMS_APPLY_MATCHER T WHERE T.INVITE_PHONE = #{invitePhone} AND T.AUDIT_STATUS = '1'
+  </select>
+
+  <select id="querySysMatcherStatistics" resultMap="matcherStatisticsMap">
+    SELECT T.ICON,T.NICK_NAME,T.`NAME`,T.PHONE,T.`LEVEL`,T2.`NAME` AS INVITE_NAME,T2.ICON AS INVITE_ICON,T2.NICK_NAME AS INVITE_NICK_NAME, T3.TOTAL_SALE_AMOUNT,
+    T3.TOTAL_PROFIT,T3.UNSETTLE_PROFIT,T3.PRODUCT_COMMISSION,T3.INVITE_COMMISSION,T3.FAN_COUNT,T3.INVITE_COUNT,T3.PRODUCT_UNSETTLE_COMMISSION,
+    T3.PRODUCT_SETTLE_COMMISSION,T3.PRODUCT_SETTLE_AMOUNT,T3.PRODUCT_UNSETTLE_AMOUNT,T3.INVITE_UNSETTLE_AMOUNT,T3.INVITE_SETTLE_AMOUNT,
+    T3.INVITE_UNSETTLE_COMMISSION,T3.INVITE_SETTLE_COMMISSION,T.ID AS MATCHER_ID
+    FROM SYS_USER T
+    LEFT JOIN UMS_APPLY_MATCHER T1 ON T.PHONE = T1.PHONE
+    LEFT JOIN SYS_USER T2 ON T2.PHONE = T1.INVITE_PHONE
+    LEFT JOIN SYS_MATCHER_STATISTICS T3 ON T3.MATCHER_ID = T.ID
+    WHERE T.ID = #{matcherUserId}
+  </select>
+</mapper>

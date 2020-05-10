@@ -17,6 +17,7 @@
     <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
     <result column="update_time" jdbcType="BIGINT" property="updateTime" />
     <result column="audit_id" jdbcType="BIGINT" property="auditId" />
+    <result column="relate_status" jdbcType="VARCHAR" property="relateStatus" />
   </resultMap>
 
   <resultMap id="umsApplyMatcherVoMap" type="com.zscat.mallplus.mbg.ums.vo.UmsApplyMatcherVo" extends="BaseResultMap">
@@ -25,7 +26,7 @@
     <result column="inviteremarkname" jdbcType="VARCHAR" property="inviteremarkname" />
   </resultMap>
   <sql id="Base_Column_List">
-    T.ID, T.MEMBER_ID, T.USER_NAME, T.WECHAT_NO, T.PHONE, T.WECHAT_TWO_CODE, T.INVITE_PHONE, T.INTRODUCE, T.AUDIT_STATUS, T.AUDIT_RESON, T.CREATE_DATE, T.CREATE_TIME,T.UPDATE_DATE,T.UPDATE_TIME,T.AUDIT_ID
+    T.ID, T.MEMBER_ID, T.USER_NAME, T.WECHAT_NO, T.PHONE, T.WECHAT_TWO_CODE, T.INVITE_PHONE, T.INTRODUCE, T.AUDIT_STATUS, T.AUDIT_RESON, T.CREATE_DATE, T.CREATE_TIME,T.UPDATE_DATE,T.UPDATE_TIME,T.AUDIT_ID,T.RELATE_STATUS
   </sql>
 
   <select id="pageMatcher" parameterType="com.zscat.mallplus.mbg.ums.vo.UmsApplyMatcherVo" resultMap="umsApplyMatcherVoMap">
@@ -41,16 +42,16 @@
         AND T.create_date &lt; #{umsApplyMatcherVo.endApplyDate}
       </if>
       <if test="umsApplyMatcherVo.invitenickname != null">
-        AND (T2.NICKNAME LIKE #{umsApplyMatcherVo.invitenickname} OR T2.personalized_signature LIKE #{umsApplyMatcherVo.invitenickname})
+        AND (T2.NICKNAME LIKE CONCAT('%',#{umsApplyMatcherVo.invitenickname},'%') OR T2.personalized_signature LIKE CONCAT('%',#{umsApplyMatcherVo.invitenickname},'%'))
       </if>
       <if test="umsApplyMatcherVo.auditStatus != null">
         AND T.audit_status = #{umsApplyMatcherVo.auditStatus}
       </if>
       <if test="umsApplyMatcherVo.phone != null">
-        AND T.PHONE LIKE #{umsApplyMatcherVo.phone}
+        AND T.PHONE LIKE CONCAT('%',#{umsApplyMatcherVo.phone},'%')
       </if>
       <if test="umsApplyMatcherVo.nickname != null">
-        AND (T1.NICKNAME LIKE #{umsApplyMatcherVo.nickname} OR T.USER_NAME LIKE #{umsApplyMatcherVo.nickname})
+        AND (T1.NICKNAME LIKE CONCAT('%',#{umsApplyMatcherVo.nickname},'%') OR T.USER_NAME LIKE CONCAT('%',#{umsApplyMatcherVo.nickname},'%'))
       </if>
     </where>
   </select>

@@ -104,6 +104,9 @@
 
     </resultMap>
 
+    <resultMap id="pmsProductVoMap" type="com.zscat.mallplus.mbg.pms.vo.PmsProductVo" extends="BaseResultMap">
+    </resultMap>
+
     <select id="getUpdateInfo" resultMap="updateInfoMap">
         SELECT p.*,c.favor_type,
         pc.parent_id cateParentId,
@@ -194,25 +197,29 @@
     </select>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, brand_id, product_category_id, feight_template_id, product_attribute_category_id, name, pic, product_sn, delete_status,
-        publish_status, new_status, recommand_status, verify_status, sort, sale, price, market_price, gift_growth, gift_point, use_point_limit,
-        sub_title, description, commodity_price, stock, low_stock, unit, weight, preview_status, service_ids, keywords, note, album_pics, detail_title,
-        detail_desc, detail_html, detail_mobile_html, promotion_start_time, promotion_end_time, promotion_per_limit, promotion_type, brand_name,
-        product_category_name, supply_id, create_time, school_id,delivery_price,product_id_ext,type,url
+        P.id, P.brand_id, P.product_category_id, P.feight_template_id, P.product_attribute_category_id, P.name, P.pic, P.product_sn, P.delete_status,
+        P.publish_status, P.new_status, P.recommand_status, P.verify_status, P.sort, P.sale, P.price, P.market_price, P.gift_growth, P.gift_point, P.use_point_limit,
+        P.sub_title, P.description, P.commodity_price, P.stock, P.low_stock, P.unit, P.weight, P.preview_status, P.service_ids, P.keywords, P.note, P.album_pics, P.detail_title,
+        P.detail_desc, P.detail_html, P.detail_mobile_html, P.promotion_start_time, P.promotion_end_time, P.promotion_per_limit, P.promotion_type, P.brand_name,
+        P.product_category_name, P.supply_id, P.create_time, P.school_id,P.delivery_price,P.product_id_ext,P.type,P.url
     </sql>
 
-    <select id="listPmsProductByPage" resultMap="BaseResultMap">
-        SELECT P.* FROM PMS_PRODUCT P
-        LEFT JOIN PMS_PRODUCT_ATTRIBUTE_VALUE PV ON P.ID = PV.PRODUCT_ID
-        WHERE 1=1
-        <if test="paramMap.productAttributeIds != null and paramMap.productAttributeIds.length > 0">
-            AND PV.PRODUCT_ATTRIBUTE_ID IN
-            <foreach collection="paramMap.productAttributeIds" item="productAttributeId" index="index"
-                     open="(" close=")" separator=",">
-                #{productAttributeId}
-            </foreach>
-        </if>
-        GROUP BY PV.PRODUCT_ID
+    <sql id="commissionColumnList">
+        ppc.id as ppc_id,ppc.product_id as ppc_product_id,ppc.promote_type as ppc_promote_type,ppc.commission_type as ppc_commission_type,
+        ppc.commission_proportion as ppc_commission_proportion,ppc.invite_proportion as ppc_invite_proportion,ppc.update_time as ppc_update_time
+    </sql>
+
+    <select id="listPmsProductByPage" parameterType="com.zscat.mallplus.mbg.pms.vo.PmsProductVo" resultMap="pmsProductVoMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM PMS_PRODUCT P
+        <where>
+            <if test="pmsProductVo.brandId != null">
+                AND P.brand_id = #{pmsProductVo.brandId}
+            </if>
+            <if test="pmsProductVo.name != null">
+                AND P.name LIKE CONCAT('%',#{pmsProductVo.name},'%')
+            </if>
+        </where>
     </select>
 
 </mapper>

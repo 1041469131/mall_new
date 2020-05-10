@@ -270,5 +270,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         return sysUserMapper.pageMatcherUsers(page,sysUser);
     }
 
+    @Override
+    public Page<SysUserVO> pageMyInviteMatcherUsers(SysUserVO sysUser) {
+        Page<SysUserVO> page = new Page<>(sysUser.getPageNum(),sysUser.getPageSize());
+        return sysUserMapper.pageMyInviteMatcherUsers(page,sysUser);
+    }
+
 
 }

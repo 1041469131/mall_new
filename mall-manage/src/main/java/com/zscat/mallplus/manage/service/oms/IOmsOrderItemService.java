@@ -2,6 +2,9 @@ package com.zscat.mallplus.manage.service.oms;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrderItem;
+import com.zscat.mallplus.mbg.oms.vo.OmsOrderItemVo;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,5 @@ import com.zscat.mallplus.mbg.oms.entity.OmsOrderItem;
  */
 public interface IOmsOrderItemService extends IService<OmsOrderItem> {
 
+    List<OmsOrderItemVo> queryPrfitProportion(Long omsOrderId);
 }

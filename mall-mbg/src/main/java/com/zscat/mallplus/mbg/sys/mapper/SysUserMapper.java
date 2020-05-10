@@ -21,4 +21,6 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
     SysUser getRandomSysUser();
 
     Page<SysUserVO> pageMatcherUsers(Page<SysUserVO> page, @Param("sysUser") SysUserVO sysUser);
+
+    Page<SysUserVO> pageMyInviteMatcherUsers(Page<SysUserVO> page, @Param("sysUser")SysUserVO sysUser);
 }

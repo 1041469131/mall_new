@@ -5,6 +5,8 @@ import com.zscat.mallplus.mbg.pms.entity.PmsProductCommission;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.util.List;
+
 /**
  * @Date: 2020/4/19
  * @Description
@@ -13,7 +15,7 @@ import io.swagger.annotations.ApiModelProperty;
 public class PmsProductVo extends PmsProduct{
 
     @ApiModelProperty("产品佣金比例")
-    private PmsProductCommission pmsProductCommission;
+    private List<PmsProductCommission> pmsProductCommissions;
 
     @ApiModelProperty("页码")
     private Integer pageNum;
@@ -21,12 +23,12 @@ public class PmsProductVo extends PmsProduct{
     @ApiModelProperty("页的总数据")
     private Integer pageSize;
 
-    public PmsProductCommission getPmsProductCommission() {
-        return pmsProductCommission;
+    public List<PmsProductCommission> getPmsProductCommissions() {
+        return pmsProductCommissions;
     }
 
-    public void setPmsProductCommission(PmsProductCommission pmsProductCommission) {
-        this.pmsProductCommission = pmsProductCommission;
+    public void setPmsProductCommissions(List<PmsProductCommission> pmsProductCommissions) {
+        this.pmsProductCommissions = pmsProductCommissions;
     }
 
     public Integer getPageNum() {

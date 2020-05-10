@@ -2,8 +2,11 @@ package com.zscat.mallplus.admin.pms.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zscat.mallplus.manage.service.oms.IOmsOrderItemService;
 import com.zscat.mallplus.manage.service.pms.IPmsProductCommissionService;
 import com.zscat.mallplus.mbg.annotation.SysLog;
+import com.zscat.mallplus.mbg.oms.entity.OmsOrderItem;
+import com.zscat.mallplus.mbg.oms.vo.OmsOrderItemVo;
 import com.zscat.mallplus.mbg.pms.entity.PmsProduct;
 import com.zscat.mallplus.mbg.pms.entity.PmsProductCommission;
 import com.zscat.mallplus.mbg.pms.entity.PmsProductConsult;
@@ -30,6 +33,9 @@ public class PmsProductCommissionController {
 
     @Autowired
     private IPmsProductCommissionService iPmsProductCommissionService;
+
+    @Autowired
+    private IOmsOrderItemService iOmsOrderItemService;
 
     @SysLog(MODULE = "pms", REMARK = "保存分佣比例")
     @ApiOperation("保存分佣比例")
@@ -84,9 +90,18 @@ public class PmsProductCommissionController {
             pmsProductCommissions.add(pmsProductCommission);
         }
         if(!CollectionUtils.isEmpty(pmsProductCommissions)){
-            iPmsProductCommissionService.saveBatch(pmsProductCommissions);
+            iPmsProductCommissionService.saveOrUpdateBatch(pmsProductCommissions);
         }
 
+        return new CommonResult().success();
+    }
+
+    @SysLog(MODULE = "pms", REMARK = "查询收益比例")
+    @ApiOperation("查询收益比例")
+    @PostMapping(value = "/queryPrfitProportion")
+//    @PreAuthorize("hasAuthority('pms:PmsProductConsult:read')")
+    public Object queryPrfitProportion(Long omsOrderId) {
+        List<OmsOrderItemVo> omsOrderItemVos = iOmsOrderItemService.queryPrfitProportion(omsOrderId);
         return new CommonResult().success();
     }
 

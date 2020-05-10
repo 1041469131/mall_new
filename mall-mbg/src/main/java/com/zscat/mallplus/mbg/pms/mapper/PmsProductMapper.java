@@ -28,5 +28,5 @@ public interface PmsProductMapper extends BaseMapper<PmsProduct> {
 
     PmsProductResult getUpdateInfo(Long id);
 
-    Page<PmsProduct> listPmsProductByPage(Page<PmsProductVo> pmsProductPage, @Param("pmsProductVo") PmsProductVo pmsProductVo);
+    Page<PmsProductVo> listPmsProductByPage(Page<PmsProductVo> pmsProductPage, @Param("pmsProductVo") PmsProductVo pmsProductVo);
 }

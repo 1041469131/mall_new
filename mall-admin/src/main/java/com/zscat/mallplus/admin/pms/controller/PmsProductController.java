@@ -42,6 +42,7 @@ import java.util.Map;
 @Api(tags = "PmsProductController", description = "商品信息管理")
 @RequestMapping("/pms/PmsProduct")
 public class PmsProductController {
+
     @Autowired
     private IPmsProductService iPmsProductService;
 
@@ -63,15 +64,6 @@ public class PmsProductController {
             log.error("根据条件查询所有商品信息列表：%s", e.getMessage(), e);
         }
         return new CommonResult().failed();
-    }
-
-    @SysLog(MODULE = "pms", REMARK = "根据条件查询所有商品信息列表")
-    @ApiOperation("根据条件查询所有商品信息列表")
-    @GetMapping(value = "/listPmsProductByPage")
-    @IgnoreAuth
-    public Object listPmsProductByPage(@RequestBody PmsProductVo pmsProductVo) {
-        Page<PmsProductVo> pmsProductList = iPmsProductService.listPmsProductByPage(pmsProductVo);
-        return pmsProductList;
     }
 
     @SysLog(MODULE = "pms", REMARK = "保存商品信息")
@@ -276,6 +268,16 @@ public class PmsProductController {
     public Object importProduct(String productStr) {
         importUtil.importProduct(productStr);
         return new CommonResult<>().success();
+    }
+
+    /**********************************************新增接口*********************************************************************/
+    @SysLog(MODULE = "pms", REMARK = "根据条件查询所有商品信息列表")
+    @ApiOperation("根据条件查询所有商品信息列表")
+    @PostMapping(value = "/listPmsProductByPage")
+    @IgnoreAuth
+    public Object listPmsProductByPage(@RequestBody PmsProductVo pmsProductVo) {
+        Page<PmsProductVo> pmsProductList = iPmsProductService.listPmsProductByPage(pmsProductVo);
+        return new CommonResult<>().success(pmsProductList);
     }
 
 

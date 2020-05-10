@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zscat.mallplus.mbg.sys.mapper.SysMatcherAccountMapper">
+  <resultMap id="BaseResultMap" type="com.zscat.mallplus.mbg.sys.entity.SysMatcherAccount">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="matcher_id" jdbcType="BIGINT" property="matcherId" />
+    <result column="account_real_name" jdbcType="VARCHAR" property="accountRealName" />
+    <result column="bank_code" jdbcType="VARCHAR" property="bankCode" />
+    <result column="bind_phone" jdbcType="VARCHAR" property="bindPhone" />
+    <result column="bank" jdbcType="VARCHAR" property="bank" />
+    <result column="qr_code" jdbcType="VARCHAR" property="qrCode" />
+    <result column="account_type" jdbcType="VARCHAR" property="accountType" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_time" jdbcType="BIGINT" property="updateTime" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_time" jdbcType="BIGINT" property="createTime" />
+    <result column="member_id" jdbcType="VARCHAR" property="memberId" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, matcher_id, account_real_name, bank_code, bind_phone, bank, qr_code, account_type, 
+    update_date, update_time, create_date, create_time,member_id, status
+  </sql>
+</mapper>

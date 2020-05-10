@@ -45,4 +45,6 @@ public interface ISysUserService extends IService<SysUser> {
     SysUser getRandomSysUser();
 
     Page<SysUserVO> pageMatcherUsers(SysUserVO sysUser);
+
+    Page<SysUserVO> pageMyInviteMatcherUsers(SysUserVO sysUser);
 }

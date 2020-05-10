@@ -9,6 +9,7 @@ import com.zscat.mallplus.manage.service.oms.IOmsOrderReturnSaleService;
 import com.zscat.mallplus.manage.service.oms.IOmsOrderService;
 import com.zscat.mallplus.manage.service.oms.IOmsOrderTradeService;
 import com.zscat.mallplus.manage.service.pms.IPmsSkuStockService;
+import com.zscat.mallplus.manage.service.sys.ISysMatcherStatisticsService;
 import com.zscat.mallplus.manage.utils.*;
 import com.zscat.mallplus.manage.utils.applet.WechatRefundApiResult;
 import com.zscat.mallplus.manage.utils.applet.WechatUtil;
@@ -71,6 +72,9 @@ public class PayController extends ApiBaseAction {
 
     @Autowired
     private IPmsSkuStockService iPmsSkuStockService;
+
+    @Autowired
+    private ISysMatcherStatisticsService iSysMatcherStatisticsService;
 
 
 
@@ -248,6 +252,7 @@ public class PayController extends ApiBaseAction {
                         orderInfo.setPaymentTime(new Date());
                         orderInfo.setTransactionId(result.getTransaction_id());
                         omsOrderTrades.add(assemblyOmsTrade(orderInfo,MagicConstant.DIRECT_IN));
+                        iSysMatcherStatisticsService.refreshMatcherStatisticsByOrder(orderInfo);
                     }
                 }
                 if(!CollectionUtils.isEmpty(omsOrderTrades)){

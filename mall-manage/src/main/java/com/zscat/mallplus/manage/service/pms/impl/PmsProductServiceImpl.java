@@ -21,6 +21,7 @@ import com.zscat.mallplus.mbg.pms.vo.PmsProductVo;
 import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -73,15 +74,13 @@ public class PmsProductServiceImpl extends ServiceImpl<PmsProductMapper, PmsProd
     @Resource
     private CmsPrefrenceAreaProductRelationMapper prefrenceAreaProductRelationMapper;
     @Resource
-    private PmsProductVertifyRecordMapper productVertifyRecordDao;
-    @Resource
     private PmsProductVertifyRecordMapper productVertifyRecordMapper;
     @Resource
     private SmsGroupMapper groupMapper;
     @Resource
     private SmsGroupMemberMapper groupMemberMapper;
-    @Resource
-    private PmsSkuStockMapper pmsSkuStockMapper;
+    @Autowired
+    private PmsProductCommissionMapper pmsProductCommissionMapper;
 
     @Override
     public int create(PmsProductParam productParam) {
@@ -349,9 +348,18 @@ public class PmsProductServiceImpl extends ServiceImpl<PmsProductMapper, PmsProd
     }
 
     @Override
-    public Page<PmsProduct> listPmsProductByPage(PmsProductVo pmsProductVo) {
+    public Page<PmsProductVo> listPmsProductByPage(PmsProductVo pmsProductVo) {
         Page<PmsProductVo> page = new Page<>(pmsProductVo.getPageNum(),pmsProductVo.getPageSize());
-        return pmsProductMapper.listPmsProductByPage(page,pmsProductVo);
+        Page<PmsProductVo> pmsProductVoPage = pmsProductMapper.listPmsProductByPage(page,pmsProductVo);
+        List<PmsProductVo> pmsProductVos = pmsProductVoPage.getRecords();
+        if(!CollectionUtils.isEmpty(pmsProductVos)){
+            for(PmsProductVo productVo : pmsProductVos){
+                List<PmsProductCommission> pmsProductCommissions = pmsProductCommissionMapper.selectList(new QueryWrapper<PmsProductCommission>().eq("product_id",productVo.getId()));
+                productVo.setPmsProductCommissions(pmsProductCommissions);
+            }
+            pmsProductVoPage.setRecords(pmsProductVos);
+        }
+        return pmsProductVoPage;
     }
 }
 

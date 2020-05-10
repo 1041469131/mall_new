@@ -51,7 +51,7 @@ public class PmsProductUserMatchLibraryServiceImpl extends ServiceImpl<PmsProduc
                 UmsMemberStatisticsInfo umsMemberStatisticsInfo = umsMemberStatisticsInfoMapper.selectOne(new QueryWrapper<UmsMemberStatisticsInfo>().
                         eq("member_id",pmsProductUserMatchLibrary.getUserId()));
                 UmsMember umsMember = umsMemberMapper.selectById(pmsProductUserMatchLibrary.getUserId());
-                Integer recommendCount = getRecommendCount(umsMember.getId());
+                Integer recommendCount = getRecommendCount(umsMember.getId());//推荐搭配的数量
                 String recommendStatus = CalcRecommendStatus.getRecommendStatus(new Date(),umsMember.getDressFreq());
                 if(umsMemberStatisticsInfo != null){
                     umsMemberStatisticsInfo.setRecomendDate(new Date());
@@ -76,6 +76,7 @@ public class PmsProductUserMatchLibraryServiceImpl extends ServiceImpl<PmsProduc
     }
 
     private Integer getRecommendCount(Long memberId) {
+        //根据用户的id查询该用户推荐了多少sku的信息，然后把sku的量给返回
         List<PmsProductUserMatchLibrary> pmsProductUserMatchLibraries = pmsProductUserMatchLibraryMapper.selectList(new QueryWrapper<PmsProductUserMatchLibrary>().
                 eq("user_id", memberId).eq("recommend_type", "1").orderByDesc("update_time"));
         if (!CollectionUtils.isEmpty(pmsProductUserMatchLibraries)) {

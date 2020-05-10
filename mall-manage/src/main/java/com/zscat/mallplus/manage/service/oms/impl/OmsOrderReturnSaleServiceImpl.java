@@ -2,6 +2,7 @@ package com.zscat.mallplus.manage.service.oms.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zscat.mallplus.manage.service.oms.IOmsOrderReturnSaleService;
+import com.zscat.mallplus.manage.service.sys.ISysMatcherStatisticsService;
 import com.zscat.mallplus.manage.utils.UserUtils;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrder;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrderReturnSale;
@@ -26,6 +27,9 @@ public class OmsOrderReturnSaleServiceImpl extends ServiceImpl<OmsOrderReturnSal
 
     @Autowired
     private OmsOrderMapper omsOrderMapper;
+
+    @Autowired
+    private ISysMatcherStatisticsService iSysMatcherStatisticsService;
 
     @Override
     @Transactional
@@ -59,6 +63,7 @@ public class OmsOrderReturnSaleServiceImpl extends ServiceImpl<OmsOrderReturnSal
             omsOrderReturnSale.setHandleMan(UserUtils.getCurrentMember().getUsername());
             omsOrderReturnSale.setHandleNote((String)saleMap.get("note"));
         }
+        iSysMatcherStatisticsService.refreshMatcherStatisticsByOrder(omsOrder);
         return omsOrderReturnSaleMapper.updateById(omsOrderReturnSale);
     }
 }

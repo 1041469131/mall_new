@@ -80,5 +80,5 @@ public interface IPmsProductService extends IService<PmsProduct> {
 
     PmsProductAndGroup getProductAndGroup(Long id);
 
-    Page<PmsProduct> listPmsProductByPage(PmsProductVo pmsProductVo);
+    Page<PmsProductVo> listPmsProductByPage(PmsProductVo pmsProductVo);
 }

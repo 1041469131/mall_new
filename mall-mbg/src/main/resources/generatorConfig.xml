@@ -33,7 +33,7 @@
         <javaClientGenerator type="XMLMAPPER" targetPackage="com.zscat.mallplus.mbg.generator"
                              targetProject="mall-mbg\src\main\java"/>
         <!--生成全部表tableName设为%-->
-        <table tableName="sys_dict">
+        <table tableName="sys_matcher_statistics">
             <generatedKey column="id" sqlStatement="MySql" identity="true"/>
         </table>
     </context>

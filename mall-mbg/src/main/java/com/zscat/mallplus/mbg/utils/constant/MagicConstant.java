@@ -226,5 +226,12 @@ public class MagicConstant {
     public final static String AUDIT_STATUS_WAITING = "0";
     public final static String AUDIT_STATUS_PASSED = "1";
     public final static String AUDIT_STATUS_REFUSE = "2";
+
+    /*******结算状态 0-待结算 1-待结算（部分退款）2-已人工结算3-已人工结算（部分退款）4-不结算（全退款）**/
+    public final static String SETTLE_STAUTS_WAITE = "0";
+    public final static String SETTLE_STAUTS_WAITE_PARTREFUND = "1";
+    public final static String SETTLE_STAUTS_SETTLED = "2";
+    public final static String SETTLE_STAUTS_SETTLED_PARTREFUND = "3";
+    public final static String SETTLE_STAUTS_NOSETTLED = "4";
 }
 

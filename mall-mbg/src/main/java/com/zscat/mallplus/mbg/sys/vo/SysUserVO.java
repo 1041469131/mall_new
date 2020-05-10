@@ -4,6 +4,9 @@ import com.zscat.mallplus.mbg.sys.entity.SysUser;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.math.BigDecimal;
+import java.util.Date;
+
 @ApiModel("系统用户参数")
 public class SysUserVO extends SysUser{
 
@@ -24,6 +27,18 @@ public class SysUserVO extends SysUser{
 
     @ApiModelProperty("粉丝数量")
     private Integer fanCount;
+
+    @ApiModelProperty("总的收益")
+    private BigDecimal totalProfit;
+
+    @ApiModelProperty("关系绑定时间(时间戳)")
+    private Long relateUpdateTime;
+
+    @ApiModelProperty("关系绑定时间")
+    private Date relateUpdateDate;
+
+    @ApiModelProperty("关联的状态 0-未绑定 1-已绑定 2-绑定解除")
+    private String relateStatus;
 
     @ApiModelProperty("页码")
     private Integer pageNum;
@@ -93,5 +108,37 @@ public class SysUserVO extends SysUser{
 
     public void setFanCount(Integer fanCount) {
         this.fanCount = fanCount;
+    }
+
+    public BigDecimal getTotalProfit() {
+        return totalProfit;
+    }
+
+    public void setTotalProfit(BigDecimal totalProfit) {
+        this.totalProfit = totalProfit;
+    }
+
+    public Long getRelateUpdateTime() {
+        return relateUpdateTime;
+    }
+
+    public void setRelateUpdateTime(Long relateUpdateTime) {
+        this.relateUpdateTime = relateUpdateTime;
+    }
+
+    public Date getRelateUpdateDate() {
+        return relateUpdateDate;
+    }
+
+    public void setRelateUpdateDate(Date relateUpdateDate) {
+        this.relateUpdateDate = relateUpdateDate;
+    }
+
+    public String getRelateStatus() {
+        return relateStatus;
+    }
+
+    public void setRelateStatus(String relateStatus) {
+        this.relateStatus = relateStatus;
     }
 }

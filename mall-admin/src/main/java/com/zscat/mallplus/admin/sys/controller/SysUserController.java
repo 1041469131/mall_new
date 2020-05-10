@@ -281,5 +281,14 @@ public class SysUserController extends ApiController {
         Page<SysUserVO> sysUserVOPage = sysUserService.pageMatcherUsers(sysUser);
         return new CommonResult<>().success(sysUserVOPage);
     }
+
+    @SysLog(MODULE = "sys", REMARK = "获取我的邀请列表")
+    @ApiOperation("分页获取获取搭配师列表")
+    @RequestMapping(value = "/pageMyInviteMatcherUsers", method = RequestMethod.POST)
+    @ResponseBody
+    public Object pageMyInviteMatcherUsers(@RequestBody SysUserVO sysUser) {
+        Page<SysUserVO> sysUserVOPage = sysUserService.pageMyInviteMatcherUsers(sysUser);
+        return new CommonResult<>().success(sysUserVOPage);
+    }
 }
 

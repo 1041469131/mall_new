@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zscat.mallplus.mbg.oms.mapper.OmsMatcherCommissionMapper">
+  <resultMap id="BaseResultMap" type="com.zscat.mallplus.mbg.oms.entity.OmsMatcherCommission">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="matcher_user_id" jdbcType="BIGINT" property="matcherUserId" />
+    <result column="order_id" jdbcType="BIGINT" property="orderId" />
+    <result column="profit_type" jdbcType="VARCHAR" property="profitType" />
+    <result column="profit" jdbcType="DECIMAL" property="profit" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_time" jdbcType="BIGINT" property="updateTime" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_time" jdbcType="BIGINT" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, matcher_user_id, order_id, profit_type, profit, status, update_date, update_time, 
+    create_date, create_time
+  </sql>
+
+  <resultMap id="matcherCommissionMap" type="com.zscat.mallplus.mbg.oms.vo.OmsMatcherCommissionVo" extends="BaseResultMap">
+    <result column="order_status" property="orderStatus"/>
+    <result column="order_id" property="orderId"/>
+    <result column="icon" property="icon"/>
+    <result column="nickname" property="nickname"/>
+    <result column="personalized_signature" property="personalizedSignature"/>
+    <result column="phone" property="phone"/>
+    <result column="matcher_icon" property="matcherIcon"/>
+    <result column="matcher_nick_name" property="matcherNickName"/>
+    <result column="matcher_name" property="matcherName"/>
+    <result column="pay_amount" property="payAmount"/>
+    <result column="order_create_time" property="orderCreateTime"/>
+    <result column="invite_nick_name" property="inviteNickName"/>
+    <result column="invite_icon" property="inviteIcon"/>
+    <result column="invite_name" property="inviteName"/>
+  </resultMap>
+
+  <select id="pageOmsMathcerCommissions" parameterType="com.zscat.mallplus.mbg.oms.vo.OmsMatcherCommissionVo" resultMap="matcherCommissionMap">
+      SELECT T.`STATUS` AS ORDER_STATUS,T.ID AS ORDER_ID,T1.ICON,T1.NICKNAME,T1.PERSONALIZED_SIGNATURE,T1.PHONE,T2.ICON AS MATCHER_ICON,
+      T2.NICK_NAME AS MATCHER_NICK_NAME,T2.`NAME` AS MATCHER_NAME,T.PAY_AMOUNT,
+      T5.PROFIT_TYPE,T5.PROFIT,T.CREATE_TIME AS ORDER_CREATE_TIME,T4.NICK_NAME AS INVITE_NICK_NAME,T4.ICON AS INVITE_ICON,
+      T4.`NAME` AS INVITE_NAME,T5.`STATUS`,T5.ID
+      FROM OMS_ORDER T
+      LEFT JOIN UMS_MEMBER T1 ON T.MEMBER_ID = T1.ID
+      LEFT JOIN SYS_USER T2 ON T1.MATCH_USER_ID = T2.ID
+      LEFT JOIN UMS_APPLY_MATCHER T3 ON T3.PHONE = T2.PHONE AND T3.AUDIT_STATUS = '1'
+      LEFT JOIN SYS_USER T4 ON T4.PHONE = T3.INVITE_PHONE
+      LEFT JOIN OMS_MATCHER_COMMISSION T5 ON T5.ORDER_ID = T.ID
+      WHERE T.`STATUS` IN('1','2','3')
+      <if test="matcherCommission.orderId != null">
+          AND T.ID = #{matcherCommission.orderId}
+      </if>
+      <if test="matcherCommission.startOrderDate != null">
+         AND T.CREATE_TIME > #{matcherCommission.startOrderDate}
+      </if>
+      <if test="matcherCommission.endOrderDate != null">
+        AND T.CREATE_TIME &lt;= #{matcherCommission.endOrderDate}
+      </if>
+      <if test="matcherCommission.nickname != null">
+        AND (T1.NICKNAME LIKE CONCAT('%',#{matcherCommission.nickname},'%') OR
+          T1.PERSONALIZED_SIGNATURE LIKE CONCAT('%',#{matcherCommission.nickname},'%'))
+      </if>
+      <if test="matcherCommission.matcherName != null">
+        AND (T2.NICK_NAME LIKE CONCAT('%',#{matcherCommission.matcherName},'%') OR
+        T2.`NAME` LIKE CONCAT('%',#{matcherCommission.matcherName},'%') OR T4.NICK_NAME LIKE CONCAT('%',#{matcherCommission.matcherName},'%') OR
+        T4.`NAME` LIKE CONCAT('%',#{matcherCommission.matcherName},'%'))
+      </if>
+      <if test="matcherCommission.status != null">
+        AND T5.`STATUS` = #{matcherCommission.status}
+      </if>
+      <if test="matcherCommission.matcherUserId != null">
+          AND T5.MATCHER_USER_ID = #{matcherCommission.matcherUserId}
+      </if>
+  </select>
+
+    <select id="listOmsMathcerCommissions" parameterType="com.zscat.mallplus.mbg.oms.vo.OmsMatcherCommissionVo" resultMap="matcherCommissionMap">
+        SELECT T.`STATUS` AS ORDER_STATUS,T.ID AS ORDER_ID,T1.ICON,T1.NICKNAME,T1.PERSONALIZED_SIGNATURE,T1.PHONE,T2.ICON AS MATCHER_ICON,
+        T2.NICK_NAME AS MATCHER_NICK_NAME,T2.`NAME` AS MATCHER_NAME,T.PAY_AMOUNT,
+        T5.PROFIT_TYPE,T5.PROFIT,T.CREATE_TIME AS ORDER_CREATE_TIME,T4.NICK_NAME AS INVITE_NICK_NAME,T4.ICON AS INVITE_ICON,
+        T4.`NAME` AS INVITE_NAME,T5.`STATUS`,T5.ID
+        FROM OMS_ORDER T
+        LEFT JOIN UMS_MEMBER T1 ON T.MEMBER_ID = T1.ID
+        LEFT JOIN SYS_USER T2 ON T1.MATCH_USER_ID = T2.ID
+        LEFT JOIN UMS_APPLY_MATCHER T3 ON T3.PHONE = T2.PHONE AND T3.AUDIT_STATUS = '1'
+        LEFT JOIN SYS_USER T4 ON T4.PHONE = T3.INVITE_PHONE
+        LEFT JOIN OMS_MATCHER_COMMISSION T5 ON T5.ORDER_ID = T.ID
+        <where>
+            T.`STATUS` IN('1','2','3')
+            <if test="matcherCommission.orderId != null">
+                AND T.ID = #{matcherCommission.orderId}
+            </if>
+            <if test="matcherCommission.startOrderDate != null">
+                AND T.CREATE_TIME > #{matcherCommission.startOrderDate}
+            </if>
+            <if test="matcherCommission.endOrderDate != null">
+                AND T.CREATE_TIME &lt;= #{matcherCommission.endOrderDate}
+            </if>
+            <if test="matcherCommission.nickname != null">
+                AND (T1.NICKNAME LIKE CONCAT('%',#{matcherCommission.nickname},'%') OR
+                T1.PERSONALIZED_SIGNATURE LIKE CONCAT('%',#{matcherCommission.nickname},'%'))
+            </if>
+            <if test="matcherCommission.matcherName != null">
+                AND (T2.NICK_NAME LIKE CONCAT('%',#{matcherCommission.matcherName},'%') OR
+                T2.`NAME` LIKE CONCAT('%',#{matcherCommission.matcherName},'%') OR T4.NICK_NAME LIKE CONCAT('%',#{matcherCommission.matcherName},'%') OR
+                T4.`NAME` LIKE CONCAT('%',#{matcherCommission.matcherName},'%'))
+            </if>
+            <if test="matcherCommission.status != null">
+                AND T5.`STATUS` = #{matcherCommission.status}
+            </if>
+            <if test="matcherCommission.matcherUserId != null">
+                AND T5.MATCHER_USER_ID = #{matcherCommission.matcherUserId}
+            </if>
+            <if test="matcherCommission.statusList != null">
+                AND T5.`STATUS` IN
+                <foreach collection="matcherCommission.statusList" item="status" index="index"
+                         open="(" close=")" separator=",">
+                    #{status}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+
+</mapper>
