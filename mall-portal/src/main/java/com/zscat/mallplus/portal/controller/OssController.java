@@ -47,6 +47,7 @@ public class OssController {
     @Value("${logistics.appcode}")
     private String appcode;
 
+    @IgnoreAuth
     @ApiOperation(value = "oss上传签名生成")
     @RequestMapping(value = "/policy", method = RequestMethod.GET)
     @ResponseBody

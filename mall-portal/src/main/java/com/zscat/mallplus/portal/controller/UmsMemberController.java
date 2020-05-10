@@ -210,7 +210,12 @@ public class UmsMemberController extends ApiBaseAction {
     @RequestMapping(value = "/register4MiniProgram")
     @ResponseBody
     public CommonResult<UmsMember> register4MiniProgram(UmsMemberVo umsMember) {
-        Long matchUserId = iSysUserService.getRandomSysUser().getId();
+        Long matchUserId = null;
+        if(umsMember.getMatchUserId() != null){
+            matchUserId = umsMember.getMatchUserId();
+        }else{
+            matchUserId = iSysUserService.getRandomSysUser().getId();
+        }
         String msg = memberService.register4MiniProgram(umsMember,matchUserId);
         return new CommonResult<>().success(msg);
     }

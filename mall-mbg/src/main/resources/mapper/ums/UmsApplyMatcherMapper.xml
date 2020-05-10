@@ -18,21 +18,22 @@
     <result column="update_time" jdbcType="BIGINT" property="updateTime" />
     <result column="audit_id" jdbcType="BIGINT" property="auditId" />
     <result column="relate_status" jdbcType="VARCHAR" property="relateStatus" />
+    <result column="nickname" jdbcType="VARCHAR" property="nickname" />
+    <result column="icon" jdbcType="VARCHAR" property="icon" />
   </resultMap>
 
   <resultMap id="umsApplyMatcherVoMap" type="com.zscat.mallplus.mbg.ums.vo.UmsApplyMatcherVo" extends="BaseResultMap">
-    <result column="nickname" jdbcType="VARCHAR" property="nickname" />
     <result column="invitenickname" jdbcType="VARCHAR" property="invitenickname" />
     <result column="inviteremarkname" jdbcType="VARCHAR" property="inviteremarkname" />
   </resultMap>
   <sql id="Base_Column_List">
-    T.ID, T.MEMBER_ID, T.USER_NAME, T.WECHAT_NO, T.PHONE, T.WECHAT_TWO_CODE, T.INVITE_PHONE, T.INTRODUCE, T.AUDIT_STATUS, T.AUDIT_RESON, T.CREATE_DATE, T.CREATE_TIME,T.UPDATE_DATE,T.UPDATE_TIME,T.AUDIT_ID,T.RELATE_STATUS
+    T.ID, T.MEMBER_ID, T.USER_NAME, T.WECHAT_NO, T.PHONE, T.WECHAT_TWO_CODE, T.INVITE_PHONE, T.INTRODUCE, T.AUDIT_STATUS, T.AUDIT_RESON, T.CREATE_DATE, T.CREATE_TIME,T.UPDATE_DATE,T.UPDATE_TIME,T.AUDIT_ID,T.RELATE_STATUS,
+    T.ICON,T.NICKNAME
   </sql>
 
   <select id="pageMatcher" parameterType="com.zscat.mallplus.mbg.ums.vo.UmsApplyMatcherVo" resultMap="umsApplyMatcherVoMap">
-    SELECT T1.NICKNAME,T2.NICKNAME AS INVITENICKNAME,T2.PERSONALIZED_SIGNATURE AS INVITEREMARKNAME,<include refid="Base_Column_List"/>
+    SELECT T2.NICKNAME AS INVITENICKNAME,T2.PERSONALIZED_SIGNATURE AS INVITEREMARKNAME,<include refid="Base_Column_List"/>
     FROM UMS_APPLY_MATCHER T
-    LEFT JOIN UMS_MEMBER T1 ON T.MEMBER_ID = T1.ID
     LEFT JOIN UMS_MEMBER T2 ON T.INVITE_PHONE = T2.PHONE
     <where>
       <if test="umsApplyMatcherVo.startApplyDate != null">
@@ -51,7 +52,7 @@
         AND T.PHONE LIKE CONCAT('%',#{umsApplyMatcherVo.phone},'%')
       </if>
       <if test="umsApplyMatcherVo.nickname != null">
-        AND (T1.NICKNAME LIKE CONCAT('%',#{umsApplyMatcherVo.nickname},'%') OR T.USER_NAME LIKE CONCAT('%',#{umsApplyMatcherVo.nickname},'%'))
+        AND (T.NICKNAME LIKE CONCAT('%',#{umsApplyMatcherVo.nickname},'%') OR T.USER_NAME LIKE CONCAT('%',#{umsApplyMatcherVo.nickname},'%'))
       </if>
     </where>
   </select>

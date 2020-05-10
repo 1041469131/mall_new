@@ -43,7 +43,7 @@
     </sql>
 
     <select id="getRandomSysUser" resultMap="BaseResultMap">
-        SELECT <include refid="Base_Column_List" /> FROM sys_user t ORDER BY RAND() LIMIT 1
+        SELECT <include refid="Base_Column_List" /> FROM sys_user t WHERE t.type = '1' ORDER BY RAND() LIMIT 1
     </select>
 
     <select id="pageMatcherUsers" parameterType="com.zscat.mallplus.mbg.sys.vo.SysUserVO" resultMap="sysUserVoMap">
@@ -54,7 +54,7 @@
         LEFT JOIN UMS_MEMBER T3 ON T3.MATCH_USER_ID = T.ID
         LEFT JOIN (SELECT COUNT(1) AS MATCHER_COUNT,INVITE_PHONE FROM UMS_APPLY_MATCHER WHERE AUDIT_STATUS = '1' GROUP BY INVITE_PHONE) T4 ON T4.INVITE_PHONE = T.PHONE
         <where>
-            T.TYPE = '0'
+            T.TYPE = '1'
             <if test="sysUser.startCreateDate != null">
                 AND T.create_time > #{sysUser.startCreateDate}
             </if>
@@ -88,6 +88,7 @@
         LEFT JOIN SYS_USER T2 ON T2.PHONE = T1.PHONE
         LEFT JOIN SYS_MATCHER_STATISTICS T3 ON T3.MATCHER_ID = T2.ID
         <where>
+            T.TYPE = '1'
             <if test="sysUser.id != null">
                 AND T.ID = #{sysUser.id}
             </if>

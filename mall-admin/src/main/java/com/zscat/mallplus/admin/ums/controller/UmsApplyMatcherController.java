@@ -50,6 +50,7 @@ public class UmsApplyMatcherController {
         if(MagicConstant.AUDIT_STATUS_PASSED.equals(umsApplyMatcherVo.getAuditStatus())){
             if(StringUtils.isEmpty(umsApplyMatcherVo.getAuditReson())){
                 umsApplyMatcherVo.setAuditReson("审核通过");
+                umsApplyMatcherVo.setRelateStatus("1");
             }
         }
         if(iUmsApplyMatcherService.updateById(umsApplyMatcherVo)){

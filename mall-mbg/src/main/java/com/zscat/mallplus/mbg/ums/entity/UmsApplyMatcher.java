@@ -88,6 +88,14 @@ public class UmsApplyMatcher implements Serializable {
     @ApiModelProperty(value = "关联的状态 0-未绑定 1-已绑定 2-绑定解除")
     private String relateStatus;
 
+    @TableField("nickname")
+    @ApiModelProperty(value = "昵称")
+    private String nickname;
+
+    @TableField("icon")
+    @ApiModelProperty(value = "头像")
+    private String icon;
+
     private static final long serialVersionUID = 1L;
 
     public Long getId() {
@@ -216,5 +224,21 @@ public class UmsApplyMatcher implements Serializable {
 
     public void setRelateStatus(String relateStatus) {
         this.relateStatus = relateStatus;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 }
