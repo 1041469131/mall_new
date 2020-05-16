@@ -31,12 +31,12 @@ public class PmsProductCommission implements Serializable {
     @ApiModelProperty(value = "佣金类型 0-默认佣金比例 1-自定义佣金比例")
     private String commissionType;
 
-    /**佣金比例组成的方式为{‘用户的等级’:'比例数字'}*/
+    /**佣金比例组成的方式为*/
     @TableField("commission_proportion")
     @ApiModelProperty(value = "佣金比例")
     private BigDecimal commissionProportion;
 
-    /**邀请比例组成的方式为{‘用户的等级’:'比例数字'}*/
+    /**邀请比例组成的方式为*/
     @TableField("invite_proportion")
     @ApiModelProperty(value = "邀请比例")
     private BigDecimal inviteProportion;

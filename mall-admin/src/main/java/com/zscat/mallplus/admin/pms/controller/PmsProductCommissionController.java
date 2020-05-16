@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zscat.mallplus.manage.service.oms.IOmsOrderItemService;
 import com.zscat.mallplus.manage.service.pms.IPmsProductCommissionService;
+import com.zscat.mallplus.manage.utils.JsonUtil;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrderItem;
 import com.zscat.mallplus.mbg.oms.vo.OmsOrderItemVo;
@@ -21,6 +22,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -41,14 +43,18 @@ public class PmsProductCommissionController {
     @ApiOperation("保存分佣比例")
     @PostMapping(value = "/saveOrUpdateCommisssion")
 //    @PreAuthorize("hasAuthority('pms:PmsProductConsult:read')")
-    public Object saveOrUpdateCommisssion(@RequestBody PmsProductCommission pmsProductCommission) {
-        if(pmsProductCommission.getId() == null){
-            pmsProductCommission.setCreateDate(new Date());
-            pmsProductCommission.setCreateTime(new Date().getTime());
+    public Object saveOrUpdateCommisssion(@RequestBody List<PmsProductCommission> pmsProductCommissions) {
+        if(!CollectionUtils.isEmpty(pmsProductCommissions)){
+            for(PmsProductCommission pmsProductCommission : pmsProductCommissions){
+                if(pmsProductCommission.getId() == null){
+                    pmsProductCommission.setCreateDate(new Date());
+                    pmsProductCommission.setCreateTime(new Date().getTime());
+                }
+                pmsProductCommission.setUpdateDate(new Date());
+                pmsProductCommission.setUpdateTime(new Date().getTime());
+            }
+            iPmsProductCommissionService.saveBatch(pmsProductCommissions);
         }
-        pmsProductCommission.setUpdateDate(new Date());
-        pmsProductCommission.setUpdateTime(new Date().getTime());
-        iPmsProductCommissionService.saveOrUpdate(pmsProductCommission);
         return new CommonResult().success();
     }
 
@@ -60,7 +66,7 @@ public class PmsProductCommissionController {
         if(productId == null){
             return new CommonResult<>().failed("商品id为空");
         }
-        PmsProductCommission pmsProductCommission = iPmsProductCommissionService.getOne(new QueryWrapper<PmsProductCommission>().eq("product_id",productId));
+        List<PmsProductCommission> pmsProductCommission = iPmsProductCommissionService.list(new QueryWrapper<PmsProductCommission>().eq("product_id",productId));
         return new CommonResult().success(pmsProductCommission);
     }
 
@@ -74,20 +80,21 @@ public class PmsProductCommissionController {
             return new CommonResult<>().failed("批量数据的商品id不能为空");
         }
 
-        List<PmsProductCommission> pmsProductCommissions = new ArrayList<>();
+        List<PmsProductCommission> pmsProductCommissions = null;
 
         String[] productIds = pmsProductCommissionVo.getProductIds().split(",");
         for (String productId : productIds){
-            PmsProductCommission pmsProductCommission = iPmsProductCommissionService.getOne(new QueryWrapper<PmsProductCommission>().eq("product_id",Long.valueOf(productId)));
-            if(pmsProductCommission != null){
-                assemblyProductCommission(productId,pmsProductCommissionVo,pmsProductCommission);
-            }else{
-                pmsProductCommission = new PmsProductCommission();
-                pmsProductCommission.setCreateDate(new Date());
-                pmsProductCommission.setCreateTime(new Date().getTime());
-                assemblyProductCommission(productId,pmsProductCommissionVo,pmsProductCommission);
+            pmsProductCommissions = pmsProductCommissionVo.getPmsProductCommissions();
+            if(!CollectionUtils.isEmpty(pmsProductCommissions)){
+                for(PmsProductCommission pmsProductCommission: pmsProductCommissions){
+                    pmsProductCommission.setProductId(Long.valueOf(productId));
+                    pmsProductCommission.setCreateTime(new Date().getTime());
+                    pmsProductCommission.setCreateDate(new Date());
+                    pmsProductCommission.setUpdateTime(new Date().getTime());
+                    pmsProductCommission.setUpdateDate(new Date());
+                }
+                iPmsProductCommissionService.remove(new QueryWrapper<PmsProductCommission>().eq("product_id",Long.valueOf(productId)));
             }
-            pmsProductCommissions.add(pmsProductCommission);
         }
         if(!CollectionUtils.isEmpty(pmsProductCommissions)){
             iPmsProductCommissionService.saveOrUpdateBatch(pmsProductCommissions);
@@ -103,15 +110,5 @@ public class PmsProductCommissionController {
     public Object queryPrfitProportion(Long omsOrderId) {
         List<OmsOrderItemVo> omsOrderItemVos = iOmsOrderItemService.queryPrfitProportion(omsOrderId);
         return new CommonResult().success();
-    }
-
-    private void assemblyProductCommission(String productId, PmsProductCommissionVo pmsProductCommissionVo, PmsProductCommission pmsProductCommission) {
-        pmsProductCommission.setCommissionProportion(pmsProductCommissionVo.getCommissionProportion());
-        pmsProductCommission.setCommissionType(pmsProductCommissionVo.getCommissionType());
-        pmsProductCommission.setInviteProportion(pmsProductCommissionVo.getInviteProportion());
-        pmsProductCommission.setPromoteType(pmsProductCommissionVo.getPromoteType());
-        pmsProductCommission.setUpdateDate(new Date());
-        pmsProductCommission.setUpdateTime(new Date().getTime());
-        pmsProductCommission.setProductId(Long.valueOf(productId));
     }
 }
