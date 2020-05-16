@@ -12,9 +12,10 @@
     <result column="update_time" property="updateTime" />
     <result column="create_date" property="createDate" />
     <result column="create_time" property="createTime" />
+    <result column="matcher_level" property="matcherLevel" />
   </resultMap>
   <sql id="Base_Column_List">
     id, product_id, promote_type, commission_type, commission_proportion, invite_proportion, 
-    update_date, update_time, create_date, create_time
+    update_date, update_time, create_date, create_time,matcher_level
   </sql>
 </mapper>

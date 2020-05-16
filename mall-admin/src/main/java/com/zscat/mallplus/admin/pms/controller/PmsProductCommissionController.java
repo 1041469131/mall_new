@@ -11,6 +11,7 @@ import com.zscat.mallplus.mbg.oms.vo.OmsOrderItemVo;
 import com.zscat.mallplus.mbg.pms.entity.PmsProduct;
 import com.zscat.mallplus.mbg.pms.entity.PmsProductCommission;
 import com.zscat.mallplus.mbg.pms.entity.PmsProductConsult;
+import com.zscat.mallplus.mbg.pms.mapper.PmsProductCommissionMapper;
 import com.zscat.mallplus.mbg.pms.vo.PmsProductCommissionVo;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import io.swagger.annotations.Api;
@@ -38,6 +39,9 @@ public class PmsProductCommissionController {
 
     @Autowired
     private IOmsOrderItemService iOmsOrderItemService;
+
+    @Autowired
+    private PmsProductCommissionMapper pmsProductCommissionMapper;
 
     @SysLog(MODULE = "pms", REMARK = "保存分佣比例")
     @ApiOperation("保存分佣比例")
@@ -80,25 +84,7 @@ public class PmsProductCommissionController {
             return new CommonResult<>().failed("批量数据的商品id不能为空");
         }
 
-        List<PmsProductCommission> pmsProductCommissions = null;
-
-        String[] productIds = pmsProductCommissionVo.getProductIds().split(",");
-        for (String productId : productIds){
-            pmsProductCommissions = pmsProductCommissionVo.getPmsProductCommissions();
-            if(!CollectionUtils.isEmpty(pmsProductCommissions)){
-                for(PmsProductCommission pmsProductCommission: pmsProductCommissions){
-                    pmsProductCommission.setProductId(Long.valueOf(productId));
-                    pmsProductCommission.setCreateTime(new Date().getTime());
-                    pmsProductCommission.setCreateDate(new Date());
-                    pmsProductCommission.setUpdateTime(new Date().getTime());
-                    pmsProductCommission.setUpdateDate(new Date());
-                }
-                iPmsProductCommissionService.remove(new QueryWrapper<PmsProductCommission>().eq("product_id",Long.valueOf(productId)));
-            }
-        }
-        if(!CollectionUtils.isEmpty(pmsProductCommissions)){
-            iPmsProductCommissionService.saveOrUpdateBatch(pmsProductCommissions);
-        }
+        iPmsProductCommissionService.batchUpdateCommission(pmsProductCommissionVo);
 
         return new CommonResult().success();
     }
