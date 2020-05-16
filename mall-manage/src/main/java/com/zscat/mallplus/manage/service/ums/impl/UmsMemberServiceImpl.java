@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zscat.mallplus.manage.config.WxAppletProperties;
 import com.zscat.mallplus.manage.helper.CalcRecommendStatus;
 import com.zscat.mallplus.manage.service.marking.ISmsCouponService;
+import com.zscat.mallplus.manage.service.sys.ISysUserService;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberService;
 import com.zscat.mallplus.manage.service.ums.RedisService;
 import com.zscat.mallplus.manage.utils.*;
@@ -14,6 +15,7 @@ import com.zscat.mallplus.mbg.exception.ApiMallPlusException;
 import com.zscat.mallplus.mbg.marking.mapper.SmsCouponHistoryMapper;
 import com.zscat.mallplus.mbg.pms.entity.PmsProductUserMatchLibrary;
 import com.zscat.mallplus.mbg.pms.mapper.PmsProductUserMatchLibraryMapper;
+import com.zscat.mallplus.mbg.sys.entity.SysUser;
 import com.zscat.mallplus.mbg.sys.mapper.SysAreaMapper;
 import com.zscat.mallplus.mbg.ums.entity.UmsMember;
 import com.zscat.mallplus.mbg.ums.entity.UmsMemberStatisticsInfo;
@@ -94,6 +96,9 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
 
     @Autowired
     private UmsRecommendRelationMapper umsRecommendRelationMapper;
+
+    @Autowired
+    private ISysUserService iSysUserService;
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
@@ -471,10 +476,17 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
 
     @Override
     @Transactional
-    public String register4MiniProgram(UmsMemberVo umsMember, Long matchUserId) {
+    public String register4MiniProgram(UmsMemberVo umsMember) {
         umsMember.setId(UserUtils.getCurrentUmsMember().getId());
         umsMember.setUpdateTime(new Date());
         if(MagicConstant.UMS_IS_COMPLETE_DONE.equals(umsMember.getIsRegister())){
+            Long matchUserId = null;
+            if(!org.apache.commons.lang.StringUtils.isEmpty(umsMember.getMatcherUserPhone())){
+                SysUser sysUser = iSysUserService.getOne(new QueryWrapper<SysUser>().eq("phone", umsMember.getMatcherUserPhone()));
+                matchUserId = sysUser.getId();
+            }else{
+                matchUserId = iSysUserService.getRandomSysUser().getId();
+            }
             umsMember.setMatchUserId(matchUserId);
         }
         if(updateById(umsMember)){

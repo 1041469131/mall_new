@@ -91,7 +91,7 @@ public interface IUmsMemberService extends IService<UmsMember> {
      * @param matchUserId
      * @return
      */
-    String register4MiniProgram(UmsMemberVo umsMember, Long matchUserId);
+    String register4MiniProgram(UmsMemberVo umsMember);
 
     Page<UmsMemberVo> pageUmsMembers(Page<UmsMemberVo> umsMemberPage, Map<String, Object> paramMap);
 
