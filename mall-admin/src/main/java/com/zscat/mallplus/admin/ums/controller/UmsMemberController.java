@@ -180,7 +180,7 @@ public class UmsMemberController {
     @RequestMapping(value = "/query/detail", method = RequestMethod.POST)
     @ResponseBody
     @SysLog(MODULE = "ums", REMARK = "根据用户昵称查询用户详情")
-    @PreAuthorize("hasAuthority('ums:UmsMember:read')")
+//    @PreAuthorize("hasAuthority('ums:UmsMember:read')")
     public CommonResult<List<UmsMemberVo>> queryUserByNickName(@ApiParam("用户昵称") String nickName) {
         List<UmsMember> umsMembers = IUmsMemberService.list(new QueryWrapper<UmsMember>().like("nickname", nickName));
         List<UmsMemberVo> umsMemberVos = null;

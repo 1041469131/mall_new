@@ -96,4 +96,6 @@ public interface IUmsMemberService extends IService<UmsMember> {
     Page<UmsMemberVo> pageUmsMembers(Page<UmsMemberVo> umsMemberPage, Map<String, Object> paramMap);
 
     Page<VUmsMemberVo> listVUmsMembers(VUmsMemberVo vUmsMemberVo);
+
+    String getWebAccess(String CODE);
 }

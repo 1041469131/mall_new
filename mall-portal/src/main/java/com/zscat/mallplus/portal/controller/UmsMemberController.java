@@ -6,6 +6,7 @@ import com.zscat.mallplus.manage.service.marking.ISmsCouponService;
 import com.zscat.mallplus.manage.service.sys.ISysUserService;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberRegisterParamService;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberService;
+import com.zscat.mallplus.manage.utils.CommonUtil;
 import com.zscat.mallplus.manage.utils.UserUtils;
 import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
 import com.zscat.mallplus.mbg.marking.entity.UserFormId;
@@ -23,6 +24,7 @@ import com.zscat.mallplus.portal.util.WechatDecryptDataUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -306,5 +308,16 @@ public class UmsMemberController extends ApiBaseAction {
     public Object getRecommedInfos() {
         Map<String,Object> paramMap = memberService.getRecommedInfos(UserUtils.getCurrentUmsMember().getId());
         return new CommonResult<>().success(paramMap);
+    }
+
+    @IgnoreAuth
+    @ApiOperation("获取手机号")
+    @RequestMapping(value = "/getPhoneNo")
+    @ResponseBody
+    public Object getPhoneNo(String encryptedData,String iv,String code) {
+        String requestUrl = memberService.getWebAccess(code);
+        JSONObject sessionData = CommonUtil.httpsRequest(requestUrl, "GET", null);
+        String phoneNo = WechatDecryptDataUtil.getPhoneNo(encryptedData, sessionData.getString("session_key"), iv);
+        return new CommonResult<>().success(phoneNo);
     }
 }

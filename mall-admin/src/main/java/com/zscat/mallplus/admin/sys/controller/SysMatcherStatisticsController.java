@@ -3,6 +3,7 @@ package com.zscat.mallplus.admin.sys.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zscat.mallplus.manage.service.sys.ISysMatcherStatisticsService;
+import com.zscat.mallplus.manage.utils.UserUtils;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.sys.mapper.SysMatcherStatisticsMapper;
 import com.zscat.mallplus.mbg.sys.vo.SysMatcherStatisticsVo;
@@ -12,6 +13,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -34,7 +36,7 @@ public class SysMatcherStatisticsController {
     @SysLog(MODULE = "sys", REMARK = "分页查询搭配师业绩报酬")
     @ApiOperation("分页查询搭配师业绩报酬")
     @PostMapping(value = "/pageMatherStatistics")
-//    @PreAuthorize("hasAuthority('sys:SysMemberArea:read')")
+    @PreAuthorize("hasAuthority('sys:SysMatcherStatistics:read')")
     public Object pageMatherStatistics(@RequestBody SysMatcherStatisticsVo sysMatcherStatisticsVo) {
         try {
             Page<SysMatcherStatisticsVo> sysMatcherStatisticsVos = iSysMatcherStatisticsService.pageMatherStatistics(sysMatcherStatisticsVo);
@@ -48,9 +50,12 @@ public class SysMatcherStatisticsController {
     @SysLog(MODULE = "sys", REMARK = "查询单个搭配师业绩报酬")
     @ApiOperation("查询单个搭配师业绩报酬")
     @PostMapping(value = "/querySysMatcherStatistics")
-//    @PreAuthorize("hasAuthority('sys:SysMemberArea:read')")
+    @PreAuthorize("hasAuthority('sys:SysMatcherStatistics:read')")
     public Object querySysMatcherStatistics(Long matcherUserId) {
         try {
+            if(matcherUserId == null){
+                matcherUserId = UserUtils.getCurrentMember().getId();
+            }
             SysMatcherStatisticsVo sysMatcherStatisticsVo = iSysMatcherStatisticsService.querySysMatcherStatistics(matcherUserId);
             return new CommonResult().success(sysMatcherStatisticsVo);
         } catch (Exception e) {
@@ -58,23 +63,4 @@ public class SysMatcherStatisticsController {
         }
         return new CommonResult().failed();
     }
-
-    @SysLog(MODULE = "sys", REMARK = "分页查询搭配师业绩报酬")
-    @ApiOperation("分页查询搭配师业绩报酬")
-    @PostMapping(value = "/aaa")
-
-//    @PreAuthorize("hasAuthority('sys:SysMemberArea:read')")
-    public Object aaa() {
-        Map<String,Object> paramMap = new HashMap<>();
-        List<Integer> orderStatus = new ArrayList<>();
-        orderStatus.add(MagicConstant.ORDER_STATUS_WAIT_PAY);
-        orderStatus.add(MagicConstant.ORDER_STATUS_WAIT_SEND);
-        orderStatus.add(MagicConstant.ORDER_STATUS_YET_SEND);
-        orderStatus.add(MagicConstant.ORDER_STATUS_YET_DONE);
-        paramMap.put("statusList",orderStatus);
-        HashMap<String, Object> allOrder = sysMatcherStatisticsMapper.getAmount(paramMap);
-        return new CommonResult().success(allOrder);
-    }
-
-
 }
