@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrder;
 import com.zscat.mallplus.mbg.sys.entity.SysMatcherStatistics;
+import com.zscat.mallplus.mbg.sys.entity.SysUser;
 import com.zscat.mallplus.mbg.sys.vo.SysMatcherStatisticsVo;
 
 import java.util.List;
@@ -19,4 +20,6 @@ public interface ISysMatcherStatisticsService extends IService<SysMatcherStatist
     void updateMatcherStaticsByMatcherId(Long matcherId);
 
     SysMatcherStatisticsVo querySysMatcherStatistics(Long matcherUserId);
+
+    void accountMatcherStatics(SysUser matcherUser);
 }

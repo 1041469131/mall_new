@@ -188,7 +188,7 @@ public class UmsMemberController {
             umsMemberVos = new ArrayList<>();
             dealUmsMembers(umsMembers,umsMemberVos);
         }
-        return new CommonResult<>().success(umsMemberVos);
+        return new CommonResult().success(umsMemberVos);
     }
 
     /**
@@ -260,7 +260,7 @@ public class UmsMemberController {
             vUmsMemberVo.setMatchUserId(UserUtils.getCurrentMember().getId());
         }
         Page<VUmsMemberVo> umsMembers = IUmsMemberService.listVUmsMembers(vUmsMemberVo);
-        return new CommonResult<>().success(umsMembers);
+        return new CommonResult().success(umsMembers);
     }
 
 }

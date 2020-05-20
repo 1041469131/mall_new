@@ -147,7 +147,7 @@ public class PmsProductMatchController {
                 }
             }
         }
-        return  new CommonResult<>().success(pmsProductMatchLibraryVos);
+        return  new CommonResult().success(pmsProductMatchLibraryVos);
     }
 
     @IgnoreAuth
@@ -199,7 +199,7 @@ public class PmsProductMatchController {
         List<PmsProductUserMatchLibrary> pmsProductUserMatchLibraries = iPmsProductUserMatchLibraryService.list(new QueryWrapper<PmsProductUserMatchLibrary>().
                 eq("match_user_id", userId).eq("user_id", memberId).orderByDesc("update_time"));
         List<PmsProductMatchLibraryVo> pmsProductMatchLibraryVos = MatchLibraryAssemble.assembleUserMatchLibrary(pmsProductUserMatchLibraries);
-        return  new CommonResult<>().success(pmsProductMatchLibraryVos);
+        return  new CommonResult().success(pmsProductMatchLibraryVos);
     }
 
 

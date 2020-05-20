@@ -80,7 +80,7 @@ public class SysMatcherStatisticsServiceImpl extends ServiceImpl<SysMatcherStati
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void refreshMatcherStatisticsByOrder(OmsOrder omsOrder) {
         Long memberId = omsOrder.getMemberId();
         UmsMember umsMember = umsMemberMapper.selectById(memberId);
@@ -108,47 +108,68 @@ public class SysMatcherStatisticsServiceImpl extends ServiceImpl<SysMatcherStati
      * 统计搭配师的统计数据
      * @param matcherUser
      */
-    private void accountMatcherStatics(SysUser matcherUser) {
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void accountMatcherStatics(SysUser matcherUser) {
         SysMatcherStatistics sysMatcherStatistics = sysMatcherStatisticsMapper.selectOne(new QueryWrapper<SysMatcherStatistics>().eq("matcher_id",matcherUser.getId()));
         if(sysMatcherStatistics == null){
             sysMatcherStatistics = new SysMatcherStatistics();
-            UmsMember umsMember = umsMemberMapper.selectOne(new QueryWrapper<UmsMember>().eq("phone",matcherUser.getPhone()));
+            SysUser umsMember = sysUserMapper.selectOne(new QueryWrapper<SysUser>().eq("phone",matcherUser.getPhone()));
             sysMatcherStatistics.setMatcherId(matcherUser.getId());
             sysMatcherStatistics.setMemberId(umsMember.getId());
             sysMatcherStatistics.setCreateDate(new Date());
-            sysMatcherStatistics.setCreateTime(new Date().getTime());
+            sysMatcherStatistics.setCreateTime(System.currentTimeMillis());
         }
-        BigDecimal totalSaleAmount = BigDecimal.ZERO;//总销售额
-        BigDecimal totalProfit = BigDecimal.ZERO;//总收益
-        BigDecimal unSettleTotalProfit = BigDecimal.ZERO;//未结算的总收益
-        BigDecimal productCommission = BigDecimal.ZERO;//商品佣金
-        BigDecimal inviteCommission = BigDecimal.ZERO;//邀请佣金
+        //总销售额
+        BigDecimal totalSaleAmount = BigDecimal.ZERO;
+        //总收益
+        BigDecimal totalProfit = BigDecimal.ZERO;
+        //未结算的总收益
+        BigDecimal unSettleTotalProfit = BigDecimal.ZERO;
+        //商品佣金
+        BigDecimal productCommission = BigDecimal.ZERO;
+
         //计算未结算的订单
-        Map<String,Object> paramMap = new HashMap<>();
+        Map<String,Object> paramMap = new HashMap<>(4);
         paramMap.put("matcherUserId",matcherUser.getId());
         List<String> settleStatus = new ArrayList<>();
         settleStatus.add(MagicConstant.SETTLE_STAUTS_WAITE);
         settleStatus.add(MagicConstant.SETTLE_STAUTS_WAITE_PARTREFUND);
         paramMap.put("statusList",settleStatus);
+        //分佣
         paramMap.put("profitType","0");
-        HashMap<String, Object> unSettledomsResultMap = sysMatcherStatisticsMapper.getAmount(paramMap);//未结算
-        BigDecimal pmsOrderAmount =  unSettledomsResultMap.get("ORDER_AMOUNT") == null ? BigDecimal.ZERO:(BigDecimal)unSettledomsResultMap.get("ORDER_AMOUNT");
+        //未结算
+        HashMap<String, Object> unSettledomsResultMap = sysMatcherStatisticsMapper.getAmount(paramMap);
+        unSettledomsResultMap=unSettledomsResultMap==null?new HashMap<>():unSettledomsResultMap;
+        BigDecimal pmsOrderAmount = unSettledomsResultMap.get("ORDER_AMOUNT") == null? BigDecimal.ZERO:(BigDecimal)unSettledomsResultMap.get("ORDER_AMOUNT");
         BigDecimal pmsProfit =  unSettledomsResultMap.get("PROFIT") == null ? BigDecimal.ZERO:(BigDecimal)unSettledomsResultMap.get("PROFIT");
         totalSaleAmount = totalSaleAmount.add(pmsOrderAmount);
         totalProfit = totalProfit.add(pmsProfit);
         productCommission = productCommission.add(pmsProfit);
         unSettleTotalProfit = unSettleTotalProfit.add(pmsProfit);
+        //未结算订单金额
         sysMatcherStatistics.setProductUnsettleAmount(pmsOrderAmount);
+        //未结算商品分佣
         sysMatcherStatistics.setProductUnsettleCommission(pmsProfit);
 
+
+        //邀请状态
         paramMap.put("profitType","1");
-        HashMap<String, Object> unSettledomsInviteResultMap = sysMatcherStatisticsMapper.getAmount(paramMap);//未结算
-        BigDecimal unSettleInviteOrderAmount =  unSettledomsInviteResultMap.get("ORDER_AMOUNT") == null ? BigDecimal.ZERO:(BigDecimal)unSettledomsInviteResultMap.get("ORDER_AMOUNT");
-        BigDecimal unSettleInvitePmsProfit =  unSettledomsInviteResultMap.get("PROFIT") == null ? BigDecimal.ZERO:(BigDecimal)unSettledomsInviteResultMap.get("PROFIT");
-        totalSaleAmount = totalSaleAmount.add(unSettleInviteOrderAmount);
+        BigDecimal inviteCommission = BigDecimal.ZERO;//邀请佣金
+        //未结算
+        HashMap<String, Object> unSettledomsInviteResultMap = sysMatcherStatisticsMapper.getAmount(paramMap);
+        unSettledomsInviteResultMap=unSettledomsInviteResultMap==null?new HashMap<>():unSettledomsInviteResultMap;
+        //
+        BigDecimal unSettleInviteOrderAmount = unSettledomsInviteResultMap.get("ORDER_AMOUNT") == null ? BigDecimal.ZERO:(BigDecimal)unSettledomsInviteResultMap.get("ORDER_AMOUNT");
+        //未结算邀请奖励
+        BigDecimal unSettleInvitePmsProfit = unSettledomsInviteResultMap.get("PROFIT") == null? BigDecimal.ZERO:(BigDecimal)unSettledomsInviteResultMap.get("PROFIT");
+        //totalSaleAmount = totalSaleAmount.add(unSettleInviteOrderAmount);
         inviteCommission = inviteCommission.add(unSettleInvitePmsProfit);
         totalProfit = totalProfit.add(unSettleInvitePmsProfit);
+        unSettleTotalProfit = unSettleTotalProfit.add(unSettleInvitePmsProfit);
+        //未结算订单金额
         sysMatcherStatistics.setInviteUnsettleAmount(unSettleInviteOrderAmount);
+        //未结算邀请奖励
         sysMatcherStatistics.setInviteUnsettleCommission(unSettleInvitePmsProfit);
 
         //计算已结算的订单
@@ -158,36 +179,47 @@ public class SysMatcherStatisticsServiceImpl extends ServiceImpl<SysMatcherStati
         paramMap.put("statusList",settledStatus);
         paramMap.put("profitType","0");
         HashMap<String, Object> settledomsResultMap = sysMatcherStatisticsMapper.getAmount(paramMap);//未结算
+        settledomsResultMap=settledomsResultMap==null?new HashMap<>():settledomsResultMap;
+        //已结算订单金额
         BigDecimal settledOmsOrderAmount =  settledomsResultMap.get("ORDER_AMOUNT") == null ? BigDecimal.ZERO:(BigDecimal)settledomsResultMap.get("ORDER_AMOUNT");
+        //已结算分佣金额
         BigDecimal settledPmsProfit =  settledomsResultMap.get("PROFIT") == null ? BigDecimal.ZERO:(BigDecimal)settledomsResultMap.get("PROFIT");
         totalSaleAmount = totalSaleAmount.add(settledOmsOrderAmount);
         totalProfit = totalProfit.add(settledPmsProfit);
         productCommission = productCommission.add(settledPmsProfit);
-        unSettleTotalProfit = unSettleTotalProfit.add(settledPmsProfit);
+        //unSettleTotalProfit = unSettleTotalProfit.add(settledPmsProfit);
+        //已结算的订单金额（商品分佣部分）
         sysMatcherStatistics.setProductSettleAmount(settledOmsOrderAmount);
+        //已结算的商品分佣
         sysMatcherStatistics.setProductSettleCommission(settledPmsProfit);
 
+        //邀请状态 以结算
         paramMap.put("profitType","1");
         HashMap<String, Object> settledomsInviteResultMap = sysMatcherStatisticsMapper.getAmount(paramMap);//未结算
+        settledomsInviteResultMap=settledomsInviteResultMap==null?new HashMap<>():settledomsInviteResultMap;
         BigDecimal settleInviteOrderAmount =  settledomsInviteResultMap.get("ORDER_AMOUNT") == null ? BigDecimal.ZERO:(BigDecimal)settledomsInviteResultMap.get("ORDER_AMOUNT");
         BigDecimal settleInvitePmsProfit =  settledomsInviteResultMap.get("PROFIT") == null ? BigDecimal.ZERO:(BigDecimal)settledomsInviteResultMap.get("PROFIT");
-        totalSaleAmount = totalSaleAmount.add(settleInviteOrderAmount);
+      //  totalSaleAmount = totalSaleAmount.add(settleInviteOrderAmount);
         totalProfit = totalProfit.add(settleInvitePmsProfit);
         inviteCommission = inviteCommission.add(settleInvitePmsProfit);
         sysMatcherStatistics.setInviteSettleAmount(settleInviteOrderAmount);
         sysMatcherStatistics.setInviteSettleCommission(settleInvitePmsProfit);
-
-        sysMatcherStatistics.setTotalSaleAmount(totalSaleAmount);//总得销售额
-        sysMatcherStatistics.setTotalProfit(totalProfit);//总得收益
-        sysMatcherStatistics.setUnsettleProfit(unSettleTotalProfit);//未结算金额
-        sysMatcherStatistics.setProductCommission(productCommission);//商品佣金
-        sysMatcherStatistics.setInviteCommission(inviteCommission);//邀请奖励
+        //总得销售额
+        sysMatcherStatistics.setTotalSaleAmount(totalSaleAmount);
+        //总得收益
+        sysMatcherStatistics.setTotalProfit(totalProfit);
+        //未结算金额
+        sysMatcherStatistics.setUnsettleProfit(unSettleTotalProfit);
+        //商品佣金
+        sysMatcherStatistics.setProductCommission(productCommission);
+        //邀请奖励
+        sysMatcherStatistics.setInviteCommission(inviteCommission);
         int fanCount = sysMatcherStatisticsMapper.getFanCount(matcherUser.getId());
         int inviteCount = sysMatcherStatisticsMapper.getInviteCount(matcherUser.getPhone());
         sysMatcherStatistics.setFanCount(fanCount);
         sysMatcherStatistics.setInviteCount(inviteCount);
         sysMatcherStatistics.setUpdateDate(new Date());
-        sysMatcherStatistics.setUpdateTime(new Date().getTime());
+        sysMatcherStatistics.setUpdateTime(System.currentTimeMillis());
         if(sysMatcherStatistics.getId() == null){
             sysMatcherStatisticsMapper.insert(sysMatcherStatistics);
         }else {
@@ -207,7 +239,7 @@ public class SysMatcherStatisticsServiceImpl extends ServiceImpl<SysMatcherStati
             omsMatcherCommission = new OmsMatcherCommission();
             omsMatcherCommission.setProfitType(profitType);
             omsMatcherCommission.setCreateDate(new Date());
-            omsMatcherCommission.setCreateTime(new Date().getTime());
+            omsMatcherCommission.setCreateTime(System.currentTimeMillis());
             omsMatcherCommission.setOrderId(omsOrder.getId());
             omsMatcherCommission.setMatcherUserId(sysUser.getId());
         }
@@ -222,7 +254,7 @@ public class SysMatcherStatisticsServiceImpl extends ServiceImpl<SysMatcherStati
             }
         }
         omsMatcherCommission.setUpdateDate(new Date());
-        omsMatcherCommission.setUpdateTime(new Date().getTime());
+        omsMatcherCommission.setUpdateTime(System.currentTimeMillis());
         BigDecimal profit = calcProfit(omsOrder,omsMatcherCommission.getProfitType(),sysUser);
         omsMatcherCommission.setProfit(profit);
         if(omsMatcherCommission.getId() == null){
@@ -230,7 +262,6 @@ public class SysMatcherStatisticsServiceImpl extends ServiceImpl<SysMatcherStati
         }else{
             omsMatcherCommissionMapper.updateById(omsMatcherCommission);
         }
-
         return omsMatcherCommission;
     }
 
@@ -251,7 +282,7 @@ public class SysMatcherStatisticsServiceImpl extends ServiceImpl<SysMatcherStati
                 PmsProductCommission pmsProductCommission = pmsProductCommissionMapper.selectOne(new QueryWrapper<PmsProductCommission>().eq("product_id",productId).
                         eq("matcher_level",matcherUser.getLevel()));
                 //商品的分佣查询为空或者不为空但是商品的分佣类型是不分佣
-                if(pmsProductCommission == null ||(pmsProductCommission != null && "1".equals(pmsProductCommission.getCommissionType())) ){
+                if(pmsProductCommission == null ||(pmsProductCommission != null && "1".equals(pmsProductCommission.getPromoteType())) ){
                     return BigDecimal.ZERO;
                 }
                 BigDecimal proportion = BigDecimal.ZERO;

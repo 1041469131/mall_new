@@ -16,8 +16,6 @@ import java.util.List;
  * 首页内容返回信息封装
  * https://github.com/shenzhuan/mallplus on 2019/1/28.
  */
-@Getter
-@Setter
 public class HomeContentResult {
     //轮播广告
     private List<SmsHomeAdvertise> advertiseList;
@@ -33,4 +31,67 @@ public class HomeContentResult {
     private List<CmsSubject> subjectList;
 
     private List<PmsProductAttributeCategory> cat_list;
+
+    public List<SmsHomeAdvertise> getAdvertiseList() {
+        return advertiseList;
+    }
+
+    public HomeContentResult setAdvertiseList(List<SmsHomeAdvertise> advertiseList) {
+        this.advertiseList = advertiseList;
+        return this;
+    }
+
+    public List<PmsBrand> getBrandList() {
+        return brandList;
+    }
+
+    public HomeContentResult setBrandList(List<PmsBrand> brandList) {
+        this.brandList = brandList;
+        return this;
+    }
+
+    public SmsFlashPromotion getHomeFlashPromotion() {
+        return homeFlashPromotion;
+    }
+
+    public HomeContentResult setHomeFlashPromotion(SmsFlashPromotion homeFlashPromotion) {
+        this.homeFlashPromotion = homeFlashPromotion;
+        return this;
+    }
+
+    public List<PmsProduct> getNewProductList() {
+        return newProductList;
+    }
+
+    public HomeContentResult setNewProductList(List<PmsProduct> newProductList) {
+        this.newProductList = newProductList;
+        return this;
+    }
+
+    public List<PmsProduct> getHotProductList() {
+        return hotProductList;
+    }
+
+    public HomeContentResult setHotProductList(List<PmsProduct> hotProductList) {
+        this.hotProductList = hotProductList;
+        return this;
+    }
+
+    public List<CmsSubject> getSubjectList() {
+        return subjectList;
+    }
+
+    public HomeContentResult setSubjectList(List<CmsSubject> subjectList) {
+        this.subjectList = subjectList;
+        return this;
+    }
+
+    public List<PmsProductAttributeCategory> getCat_list() {
+        return cat_list;
+    }
+
+    public HomeContentResult setCat_list(List<PmsProductAttributeCategory> cat_list) {
+        this.cat_list = cat_list;
+        return this;
+    }
 }

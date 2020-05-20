@@ -213,7 +213,7 @@ public class UmsMemberController extends ApiBaseAction {
     @ResponseBody
     public CommonResult<UmsMember> register4MiniProgram(UmsMemberVo umsMember) {
         String msg = memberService.register4MiniProgram(umsMember);
-        return new CommonResult<>().success(msg);
+        return new CommonResult().success(msg);
     }
 
 
@@ -223,7 +223,7 @@ public class UmsMemberController extends ApiBaseAction {
     public CommonResult<UmsMember> queryUmsMemberDetail(){
         Long userId = UserUtils.getCurrentUmsMember().getId();//会员用户id
         UmsMember umsMember = memberService.getById(userId);
-        return new CommonResult<>().success(umsMember);
+        return new CommonResult().success(umsMember);
     }
 
     @ApiOperation("查询搭配师详情")
@@ -234,7 +234,7 @@ public class UmsMemberController extends ApiBaseAction {
         UmsMember umsMember = memberService.getById(userId);
         Long userMatchId = umsMember.getMatchUserId();
         SysUser sysUser = iSysUserService.getById(userMatchId);
-        return new CommonResult<>().success(sysUser);
+        return new CommonResult().success(sysUser);
     }
 
     @ApiOperation("查询注册参数接口")
@@ -242,7 +242,7 @@ public class UmsMemberController extends ApiBaseAction {
     @ResponseBody
     public CommonResult<List<UmsMemberRegisterParam>> queryRegisterParam(@ApiParam("类别,aspect-体貌特征;dressStyle-穿衣风格;dressColour-穿搭色系;neverDressStyle-永远都不会穿的款式;neverDressIcon-永远都不会穿的图案;rightLining-合适面料;enjoy_model-喜欢的版型;skuBudget-单品预算;neverDressStyle-永远都不会穿的款式;careClothes-您更在意衣服的;balanceBody-平衡身材问题") String category) {
         List<UmsMemberRegisterParam> umsMemberRegisterParams = iUmsMemberRegisterParamService.list(new QueryWrapper<UmsMemberRegisterParam>().eq("category",category ));
-        return new CommonResult<>().success(umsMemberRegisterParams);
+        return new CommonResult().success(umsMemberRegisterParams);
     }
 
     @IgnoreAuth
@@ -251,7 +251,7 @@ public class UmsMemberController extends ApiBaseAction {
     @ResponseBody
     public CommonResult<List<UmsMemberRegisterParam>> listIndustry() {
         List<UmsMemberRegisterParam> umsMemberRegisterParams = iUmsMemberRegisterParamService.list(new QueryWrapper<UmsMemberRegisterParam>().eq("category","industry" ));
-        return new CommonResult<>().success(umsMemberRegisterParams);
+        return new CommonResult().success(umsMemberRegisterParams);
     }
 
     @IgnoreAuth
@@ -260,7 +260,7 @@ public class UmsMemberController extends ApiBaseAction {
     @ResponseBody
     public CommonResult<List<UmsMemberRegisterParam>> listProfession(Long parentId) {
         List<UmsMemberRegisterParam> umsMemberRegisterParams = iUmsMemberRegisterParamService.list(new QueryWrapper<UmsMemberRegisterParam>().eq("parent_id",parentId ));
-        return new CommonResult<>().success(umsMemberRegisterParams);
+        return new CommonResult().success(umsMemberRegisterParams);
     }
 
     @ApiOperation("判断手机号是否存在")
@@ -272,9 +272,9 @@ public class UmsMemberController extends ApiBaseAction {
         }
         int count = memberService.count(new QueryWrapper<UmsMember>().eq("phone", phoneNo));
         if(count > 0){
-            return new CommonResult<>().success(true);
+            return new CommonResult().success(true);
         }else{
-            return new CommonResult<>().success(false);
+            return new CommonResult().success(false);
         }
     }
 

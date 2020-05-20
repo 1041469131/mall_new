@@ -28,6 +28,6 @@ public class PmsSkuStockController {
     @GetMapping(value = "/queryPmsSkuStocksByProductId")
     public CommonResult<List<PmsSkuStock>> queryPmsSkuStocksByProductId(Long productId) {
         List<PmsSkuStock> pmsSkuStocks = iPmsSkuStockService.list(new QueryWrapper<PmsSkuStock>().eq("product_id",productId).gt("stock",0));
-        return new CommonResult<>().success(pmsSkuStocks);
+        return new CommonResult().success(pmsSkuStocks);
     }
 }

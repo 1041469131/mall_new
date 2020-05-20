@@ -35,6 +35,6 @@ public class OmsExpressCompanyController {
             omsExpressCompanies = iOmsExpressCompanyService.list(new QueryWrapper<OmsExpressCompany>().
                     eq("STATUS","0"));
         }
-        return new CommonResult<>().success(omsExpressCompanies);
+        return new CommonResult().success(omsExpressCompanies);
     }
 }

@@ -150,7 +150,7 @@ public class UmsMemberTagController {
 //    @PreAuthorize("hasAuthority('ums:UmsMemberTag:delete')")
     public CommonResult<List<UmsMemberTag>> listTagsByMemberId(Long memberId) {
         List<UmsMemberTag> umsMemberTags = IUmsMemberTagService.listTagsByMemberId(memberId);
-        return new CommonResult<>().success(umsMemberTags);
+        return new CommonResult().success(umsMemberTags);
     }
 
 }

@@ -32,7 +32,7 @@ public class OmsMatcherCommissionController {
     @ResponseBody
     public CommonResult<Page<OmsMatcherCommissionVo>> pageOmsMathcerCommissions(@RequestBody OmsMatcherCommissionVo omsMatcherCommissionVo){
         Page<OmsMatcherCommissionVo> omsMatcherCommissionVoPage = iOmsMatcherCommissionService.pageOmsMathcerCommissions(omsMatcherCommissionVo);
-        return new CommonResult<>().success(omsMatcherCommissionVoPage);
+        return new CommonResult().success(omsMatcherCommissionVoPage);
     }
 
     @ApiOperation("查询佣金订单列表")
@@ -40,7 +40,7 @@ public class OmsMatcherCommissionController {
     @ResponseBody
     public CommonResult<List<OmsMatcherCommissionVo>> listOmsMathcerCommissions(@RequestBody OmsMatcherCommissionVo omsMatcherCommissionVo){
         List<OmsMatcherCommissionVo> omsMatcherCommissionVoList = iOmsMatcherCommissionService.listOmsMathcerCommissions(omsMatcherCommissionVo);
-        return new CommonResult<>().success(omsMatcherCommissionVoList);
+        return new CommonResult().success(omsMatcherCommissionVoList);
     }
 
     @ApiOperation("结算")

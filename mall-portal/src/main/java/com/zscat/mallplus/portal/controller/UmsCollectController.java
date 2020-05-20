@@ -78,7 +78,7 @@ public class UmsCollectController extends ApiBaseAction {
         }
 
         if(iUmsCollectService.saveOrUpdate(umsCollect)){
-            return new CommonResult<>().success("操作成功");
+            return new CommonResult().success("操作成功");
         }
         return new CommonResult().failed("操作失败");
     }

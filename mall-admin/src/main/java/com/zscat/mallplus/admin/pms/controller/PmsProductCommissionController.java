@@ -46,18 +46,17 @@ public class PmsProductCommissionController {
     @SysLog(MODULE = "pms", REMARK = "保存分佣比例")
     @ApiOperation("保存分佣比例")
     @PostMapping(value = "/saveOrUpdateCommisssion")
-//    @PreAuthorize("hasAuthority('pms:PmsProductConsult:read')")
     public Object saveOrUpdateCommisssion(@RequestBody List<PmsProductCommission> pmsProductCommissions) {
         if(!CollectionUtils.isEmpty(pmsProductCommissions)){
-            for(PmsProductCommission pmsProductCommission : pmsProductCommissions){
-                if(pmsProductCommission.getId() == null){
+            pmsProductCommissions.forEach(pmsProductCommission -> {
+                if (pmsProductCommission.getId() == null) {
                     pmsProductCommission.setCreateDate(new Date());
-                    pmsProductCommission.setCreateTime(new Date().getTime());
+                    pmsProductCommission.setCreateTime(System.currentTimeMillis());
                 }
                 pmsProductCommission.setUpdateDate(new Date());
-                pmsProductCommission.setUpdateTime(new Date().getTime());
-            }
-            iPmsProductCommissionService.saveBatch(pmsProductCommissions);
+                pmsProductCommission.setUpdateTime(System.currentTimeMillis());
+            });
+            iPmsProductCommissionService.saveOrUpdateBatch(pmsProductCommissions);
         }
         return new CommonResult().success();
     }

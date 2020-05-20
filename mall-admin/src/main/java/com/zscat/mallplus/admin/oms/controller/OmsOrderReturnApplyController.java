@@ -181,9 +181,9 @@ public class OmsOrderReturnApplyController {
             OmsOrder omsOrder = iOmsOrderService.getById(omsOrderReturnSale.getOrderId());
             if(omsOrder.getStatus() == MagicConstant.ORDER_STATUS_YET_SEND &&
                     omsOrderReturnSale.getType() == MagicConstant.RETURN_APPLY_TYPE_REFUND){//当售后是退款，并且订单状态是已发货的状态
-                return new CommonResult<>().success(true);
+                return new CommonResult().success(true);
             }else{
-                return new CommonResult<>().success(false);
+                return new CommonResult().success(false);
             }
         }
         return new CommonResult().failed();

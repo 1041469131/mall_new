@@ -38,7 +38,7 @@ public class UmsApplyMatcherController {
 //    @PreAuthorize("hasAuthority('ums:UmsMember:read')")
     public CommonResult<Page<UmsApplyMatcherVo>> pageMatcher(@RequestBody UmsApplyMatcherVo umsApplyMatcherVo){
         Page<UmsApplyMatcherVo> umsApplyMatcherVoPage = iUmsApplyMatcherService.pageMatcher(umsApplyMatcherVo);
-        return new CommonResult<>().success(umsApplyMatcherVoPage);
+        return new CommonResult().success(umsApplyMatcherVoPage);
     }
 
     @ApiOperation(value = "后管审核搭配师")

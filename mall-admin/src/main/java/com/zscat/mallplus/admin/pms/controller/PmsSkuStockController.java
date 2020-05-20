@@ -163,7 +163,7 @@ public class PmsSkuStockController {
     @ResponseBody
     public CommonResult<List<PmsSkuStock>> listByProductId(@ApiParam("商品id") String productId) {
         List<PmsSkuStock> pmsSkuStocks = IPmsSkuStockService.list(new QueryWrapper<PmsSkuStock>().eq("product_id", Long.valueOf(productId)));
-        return new CommonResult<>().success(pmsSkuStocks);
+        return new CommonResult().success(pmsSkuStocks);
     }
 
 

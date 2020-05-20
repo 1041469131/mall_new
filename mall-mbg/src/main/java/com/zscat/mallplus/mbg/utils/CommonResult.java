@@ -28,7 +28,7 @@ public class CommonResult<T> {
      *
      * @param data 获取的数据
      */
-    public CommonResult success(T data) {
+    public CommonResult<T> success(T data) {
         this.code = SUCCESS;
         this.msg = "操作成功";
         this.data = data;
