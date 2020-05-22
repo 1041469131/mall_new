@@ -57,15 +57,6 @@ public class UmsMemberController extends ApiBaseAction {
     @Value("${jwt.tokenHead}")
     private String tokenHead;
 
-    @Value("${send.sms.accessKeyId}")
-    private String accessKeyId;
-
-    @Value("${send.sms.accessSecret}")
-    private String accessSecret;
-
-    @Value("${send.sms.authCode.templateCode}")
-    private String authTempCode;
-
     @Autowired
     private ISysUserService iSysUserService;
 
@@ -108,7 +99,7 @@ public class UmsMemberController extends ApiBaseAction {
     @RequestMapping(value = "/getAuthCode", method = RequestMethod.GET)
     @ResponseBody
     public Object getAuthCode(@RequestParam String telephone) {
-        return memberService.generateAuthCode(telephone,accessKeyId, accessSecret,authTempCode);
+        return memberService.generateAuthCode(telephone);
     }
 
     @ApiOperation("根据手机号和验证码进行登录")
@@ -268,7 +259,7 @@ public class UmsMemberController extends ApiBaseAction {
     @ResponseBody
     public CommonResult<Boolean> isExist4Phone(String phoneNo) {
         if(StringUtils.isEmpty(phoneNo)){
-            return new CommonResult<>().failed("手机号不能为空");
+            return new CommonResult<Boolean>().failed("手机号不能为空");
         }
         int count = memberService.count(new QueryWrapper<UmsMember>().eq("phone", phoneNo));
         if(count > 0){
@@ -290,7 +281,7 @@ public class UmsMemberController extends ApiBaseAction {
             umsMember.setPhone(phoneNo);
         }
         memberService.updateById(umsMember);
-        return new CommonResult<>().success();
+        return new CommonResult<Boolean>().success();
     }
 
     @ApiOperation("修改手机号")

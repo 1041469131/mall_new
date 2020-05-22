@@ -195,15 +195,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public boolean updates(SysUser admin) {
-//        admin.setUsername(null);
-//        admin.setId(id);
-        if(StringUtils.isEmpty(admin.getPassword())){
-            admin.setPassword("123456");
+        if(!StringUtils.isEmpty(admin.getPassword())){
+            String md5Password = passwordEncoder.encode(admin.getPassword());
+            admin.setPassword(md5Password);
         }
-        String md5Password = passwordEncoder.encode(admin.getPassword());
-        admin.setPassword(md5Password);
         updateRole(admin.getId(),admin.getRoleIds());
          sysUserMapper.updateById(admin);
         return true;

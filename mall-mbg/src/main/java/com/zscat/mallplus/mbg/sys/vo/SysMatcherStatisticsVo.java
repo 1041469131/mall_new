@@ -36,6 +36,8 @@ public class SysMatcherStatisticsVo extends SysMatcherStatistics{
 
     @ApiModelProperty("邀请人昵称")
     private String inviteNickName;
+    @ApiModelProperty("微信昵称")
+    private String  wechatNo;
 
     @ApiModelProperty("搭配师的账号信息")
     private List<SysMatcherAccount> sysMatcherAccounts;
@@ -132,5 +134,13 @@ public class SysMatcherStatisticsVo extends SysMatcherStatistics{
 
     public void setSysMatcherAccounts(List<SysMatcherAccount> sysMatcherAccounts) {
         this.sysMatcherAccounts = sysMatcherAccounts;
+    }
+
+    public String getWechatNo() {
+        return wechatNo;
+    }
+
+    public void setWechatNo(String wechatNo) {
+        this.wechatNo = wechatNo;
     }
 }

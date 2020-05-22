@@ -48,9 +48,9 @@ public class OmsMatcherCommissionController {
     @ResponseBody
     public CommonResult<Void> updateSettleStatus(@RequestBody ArrayList<OmsMatcherCommission> omsMatcherCommissions){
         if(CollectionUtils.isEmpty(omsMatcherCommissions)){
-            return new CommonResult<>().failed("订单id为空");
+            return new CommonResult<Void>().failed("订单id为空");
         }
         iOmsMatcherCommissionService.updateSettleStatus(omsMatcherCommissions);
-        return new CommonResult<>().success();
+        return new CommonResult<Void>().success();
     }
 }

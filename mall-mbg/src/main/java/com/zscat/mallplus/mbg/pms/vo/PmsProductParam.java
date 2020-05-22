@@ -2,6 +2,7 @@ package com.zscat.mallplus.mbg.pms.vo;
 
 
 import com.zscat.mallplus.mbg.pms.entity.*;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
  * 创建和修改商品时使用的参数
  * https://github.com/shenzhuan/mallplus on 2018/4/26.
  */
+@ApiModel("商品创建修改使用的参数")
 public class PmsProductParam extends PmsProduct {
 
     @ApiModelProperty("商品阶梯价格设置")

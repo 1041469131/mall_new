@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -20,6 +21,7 @@ import java.util.Date;
  */
 @Data
 @TableName("sys_user")
+@ApiModel("用户")
 public class SysUser implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -34,22 +36,26 @@ public class SysUser implements Serializable {
     /**
      * 头像
      */
+    @ApiModelProperty(value = "头像")
     private String icon;
 
     /**
      * 邮箱
      */
+    @ApiModelProperty(value = "邮箱")
     private String email;
 
     /**
      * 昵称
      */
     @TableField("nick_name")
+    @ApiModelProperty(value = "昵称")
     private String nickName;
 
     /**
      * 备注信息
      */
+    @ApiModelProperty(value = "备注信息")
     private String note;
 
     /**
@@ -67,16 +73,19 @@ public class SysUser implements Serializable {
     /**
      * 帐号启用状态：0->禁用；1->启用
      */
+    @ApiModelProperty(value = "账号启用状态")
     private Integer status;
 
     /**
      * 供应商
      */
+    @ApiModelProperty(value = "供应商")
     @TableField("supply_id")
     private Long supplyId;
 
     //角色
     @TableField(exist = false)
+    @ApiModelProperty(value = "角色")
     private String roleIds;
 
     @ApiModelProperty(value = "微信名")

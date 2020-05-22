@@ -45,7 +45,7 @@ public interface IUmsMemberService extends IService<UmsMember> {
     /**
      * 生成验证码
      */
-    CommonResult generateAuthCode(String telephone, String accessKeyId, String accessSecret, String templateCode);
+    CommonResult generateAuthCode(String telephone);
 
     /**
      * 修改密码

@@ -11,6 +11,7 @@ import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -37,7 +38,7 @@ public class SysMatcherStatisticsController {
     @ApiOperation("分页查询搭配师业绩报酬")
     @PostMapping(value = "/pageMatherStatistics")
     @PreAuthorize("hasAuthority('sys:SysMatcherStatistics:read')")
-    public Object pageMatherStatistics(@RequestBody SysMatcherStatisticsVo sysMatcherStatisticsVo) {
+    public Object pageMatherStatistics(@ApiParam("搭配师业绩报酬报表实体类") @RequestBody SysMatcherStatisticsVo sysMatcherStatisticsVo) {
         try {
             Page<SysMatcherStatisticsVo> sysMatcherStatisticsVos = iSysMatcherStatisticsService.pageMatherStatistics(sysMatcherStatisticsVo);
             return new CommonResult().success(sysMatcherStatisticsVos);

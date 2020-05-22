@@ -86,6 +86,10 @@ public class PmsProductServiceImpl extends ServiceImpl<PmsProductMapper, PmsProd
     public int create(PmsProductParam productParam) {
         //创建商品
         PmsProduct product = productParam;
+        product.setDeleteStatus(0);
+        product.setUnit("件");
+        product.setNewStatus(0);
+        product.setVerifyStatus(0);
         product.setCreateTime(new Date());
         pmsProductMapper.insert(product);
         //根据促销类型设置价格：、阶梯价格、满减价格

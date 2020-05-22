@@ -1,12 +1,15 @@
 package com.zscat.mallplus.mbg.utils;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.validation.BindingResult;
 
 /**
  * 通用返回对象
  * Created by zscat on 2018/4/26.
  */
+@ApiModel(value="响应数据",description="响应信息")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CommonResult<T> {
     //操作成功
@@ -19,8 +22,12 @@ public class CommonResult<T> {
     public static final int UNAUTHORIZED = 401;
     //未授权
     public static final int FORBIDDEN = 403;
+
+    @ApiModelProperty(value="响应code 200 操作成功 500 操作失败 404 参数校验失败 401 未认证 403 未授权")
     private int code;
+    @ApiModelProperty(value="响应信息")
     private String msg;
+    @ApiModelProperty(value="响应数据")
     private T data;
 
     /**
@@ -38,7 +45,7 @@ public class CommonResult<T> {
      * 普通成功返回
      *
      */
-    public CommonResult success() {
+    public CommonResult<T> success() {
         this.code = SUCCESS;
         this.msg = "操作成功";
         return this;
@@ -63,7 +70,7 @@ public class CommonResult<T> {
         return this;
     }
 
-    public CommonResult failed(String msg) {
+    public CommonResult<T> failed(String msg) {
         this.code = FAILED;
         this.msg = msg;
         return this;

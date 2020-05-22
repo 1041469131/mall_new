@@ -17,17 +17,20 @@ import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
@@ -53,12 +56,12 @@ public class PmsProductController {
     @ApiOperation("根据条件查询所有商品信息列表")
     @GetMapping(value = "/list")
     @PreAuthorize("hasAuthority('pms:PmsProduct:read')")
-    public Object getPmsProductByPage(PmsProduct entity,
+    public CommonResult getPmsProductByPage(@ApiParam("商品") PmsProduct entity,
                                       @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
                                       @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize
     ) {
         try {
-            return new CommonResult().success(iPmsProductService.page(new Page<PmsProduct>(pageNum, pageSize), new QueryWrapper<>(entity).eq("delete_status","0")
+            return new CommonResult().success(iPmsProductService.page(new Page<>(pageNum, pageSize), new QueryWrapper<>(entity).eq("delete_status","0")
                     .orderByAsc("sort").orderByDesc("create_time")));
         } catch (Exception e) {
             log.error("根据条件查询所有商品信息列表：%s", e.getMessage(), e);
@@ -70,7 +73,7 @@ public class PmsProductController {
     @ApiOperation("保存商品信息")
     @PostMapping(value = "/create")
     @PreAuthorize("hasAuthority('pms:PmsProduct:create')")
-    public Object savePmsProduct(@RequestBody PmsProductParam productParam) {
+    public CommonResult<Integer> savePmsProduct(@ApiParam("商品创建修改使用的参数") @RequestBody PmsProductParam productParam) {
         try {
             int count = iPmsProductService.create(productParam);
             if (count > 0) {
@@ -89,12 +92,12 @@ public class PmsProductController {
     @ApiOperation("更新商品信息")
     @PostMapping(value = "/update/{id}")
     @PreAuthorize("hasAuthority('pms:PmsProduct:update')")
-    public Object updatePmsProduct(@PathVariable Long id, @RequestBody PmsProductParam productParam) {
+    public CommonResult updatePmsProduct(@ApiParam("商品id")@PathVariable Long id, @ApiParam("商品创建修改使用的参数") @RequestBody PmsProductParam productParam) {
         try {
             PmsProduct pmsProduct = iPmsProductService.getById(id);
             if(pmsProduct != null){
-                if(!(pmsProduct.getPublishStatus() == MagicConstant.PUBLISH_STATUS_UP || pmsProduct.getDeleteStatus() == MagicConstant.DELETE_YET ||
-                        pmsProduct.getVerifyStatus() == MagicConstant.VERIFY_STATUS_VERIFYED)){
+                if(!(pmsProduct.getPublishStatus().equals(MagicConstant.PUBLISH_STATUS_UP) || pmsProduct.getDeleteStatus() == MagicConstant.DELETE_YET ||
+                  pmsProduct.getVerifyStatus().equals(MagicConstant.VERIFY_STATUS_VERIFYED))){
                     int count = iPmsProductService.update(id, productParam);
                     if (count > 0) {
                         return new CommonResult().success(count);
@@ -118,7 +121,7 @@ public class PmsProductController {
     @ApiOperation("删除商品信息")
     @RequestMapping(value = "/delete/{id}")
     @PreAuthorize("hasAuthority('pms:PmsProduct:delete')")
-    public Object deletePmsProduct(@ApiParam("商品信息id") @PathVariable Long id) {
+    public CommonResult deletePmsProduct(@ApiParam("商品信息id") @PathVariable Long id) {
         try {
             if (ValidatorUtils.empty(id)) {
                 return new CommonResult().paramFailed("商品信息id");
@@ -138,13 +141,13 @@ public class PmsProductController {
     @ApiOperation("查询商品信息明细")
     @GetMapping(value = "/{id}")
     @PreAuthorize("hasAuthority('pms:PmsProduct:read')")
-    public Object getPmsProductById(@ApiParam("商品信息id") @PathVariable Long id) {
+    public CommonResult<PmsProduct> getPmsProductById(@ApiParam("商品信息id") @PathVariable Long id) {
         try {
             if (ValidatorUtils.empty(id)) {
-                return new CommonResult().paramFailed("商品信息id");
+                return new CommonResult().failed("商品信息id");
             }
             PmsProduct coupon = iPmsProductService.getById(id);
-            return new CommonResult().success(coupon);
+            return new CommonResult<PmsProduct>().success(coupon);
         } catch (Exception e) {
             log.error("查询商品信息明细：%s", e.getMessage(), e);
             return new CommonResult().failed();
@@ -157,7 +160,7 @@ public class PmsProductController {
     @ResponseBody
     @SysLog(MODULE = "pms", REMARK = "批量删除商品信息")
     @PreAuthorize("hasAuthority('pms:PmsProduct:delete')")
-    public Object deleteBatch(@RequestParam("ids") List<Long> ids) {
+    public CommonResult<Boolean> deleteBatch(@ApiParam("商品ids")@RequestParam("ids") List<Long> ids) {
         boolean count = iPmsProductService.removeByIds(ids);
         if (count) {
             return new CommonResult().success(count);
@@ -171,16 +174,16 @@ public class PmsProductController {
     @ResponseBody
     @SysLog(MODULE = "pms", REMARK = "根据商品id获取商品编辑信息")
     @PreAuthorize("hasAuthority('pms:PmsProduct:read')")
-    public Object getUpdateInfo(@PathVariable Long id) {
+    public CommonResult<PmsProductResult> getUpdateInfo(@ApiParam("商品id") @PathVariable Long id) {
         PmsProductResult productResult = iPmsProductService.getUpdateInfo(id);
-        return new CommonResult().success(productResult);
+        return new CommonResult<PmsProductResult>().success(productResult);
     }
 
     @ApiOperation("根据商品id获取审核信息")
     @RequestMapping(value = "/fetchVList/{id}", method = RequestMethod.GET)
     @ResponseBody
     @SysLog(MODULE = "pms", REMARK = "据商品id获取审核信息")
-    public Object fetchVList(@PathVariable Long id) {
+    public CommonResult<List<PmsProductVertifyRecord>> fetchVList(@ApiParam("商品id") @PathVariable Long id) {
         List<PmsProductVertifyRecord> list = iPmsProductService.getProductVertifyRecord(id);
         return new CommonResult().success(list);
     }
@@ -190,9 +193,9 @@ public class PmsProductController {
     @ResponseBody
     @SysLog(MODULE = "pms", REMARK = "批量修改审核状态")
     @PreAuthorize("hasAuthority('pms:PmsProduct:update')")
-    public Object updateVerifyStatus(@RequestParam("ids") Long ids,
-                                     @RequestParam("verifyStatus") Integer verifyStatus,
-                                     @RequestParam("detail") String detail) {
+    public CommonResult<Integer> updateVerifyStatus(@ApiParam("商品ids")@RequestParam("ids") Long ids,
+      @ApiParam("审核状态")@RequestParam("verifyStatus") Integer verifyStatus,
+      @ApiParam("审核详情") @RequestParam("detail") String detail) {
         int count = iPmsProductService.updateVerifyStatus(ids, verifyStatus, detail);
         if (count > 0) {
             return new CommonResult().success(count);
@@ -206,8 +209,8 @@ public class PmsProductController {
     @ResponseBody
     @SysLog(MODULE = "pms", REMARK = "批量上下架")
     @PreAuthorize("hasAuthority('pms:PmsProduct:update')")
-    public Object updatePublishStatus(@RequestParam("ids") List<Long> ids,
-                                      @RequestParam("publishStatus") Integer publishStatus) {
+    public CommonResult updatePublishStatus(@ApiParam("商品ids") @RequestParam("ids") List<Long> ids,
+      @ApiParam("上架状态")@RequestParam("publishStatus") Integer publishStatus) {
         int count = iPmsProductService.updatePublishStatus(ids, publishStatus);
         if (count > 0) {
             return new CommonResult().success(count);
@@ -221,8 +224,8 @@ public class PmsProductController {
     @ResponseBody
     @SysLog(MODULE = "pms", REMARK = "批量推荐商品")
     @PreAuthorize("hasAuthority('pms:PmsProduct:update')")
-    public Object updateRecommendStatus(@RequestParam("ids") List<Long> ids,
-                                        @RequestParam("recommendStatus") Integer recommendStatus) {
+    public CommonResult updateRecommendStatus(@ApiParam("商品ids")@RequestParam("ids") List<Long> ids,
+      @ApiParam("推荐状态")@RequestParam("recommendStatus") Integer recommendStatus) {
         int count = iPmsProductService.updateRecommendStatus(ids, recommendStatus);
         if (count > 0) {
             return new CommonResult().success(count);
@@ -236,8 +239,8 @@ public class PmsProductController {
     @ResponseBody
     @SysLog(MODULE = "pms", REMARK = "批量设为新品")
     @PreAuthorize("hasAuthority('pms:PmsProduct:update')")
-    public Object updateNewStatus(@RequestParam("ids") List<Long> ids,
-                                  @RequestParam("newStatus") Integer newStatus) {
+    public CommonResult updateNewStatus(@ApiParam("商品ids")@RequestParam("ids") List<Long> ids,
+      @ApiParam("新品状态") @RequestParam("newStatus") Integer newStatus) {
         int count = iPmsProductService.updateNewStatus(ids, newStatus);
         if (count > 0) {
             return new CommonResult().success(count);
@@ -251,8 +254,8 @@ public class PmsProductController {
     @ResponseBody
     @SysLog(MODULE = "pms", REMARK = "批量修改删除状态")
     @PreAuthorize("hasAuthority('pms:PmsProduct:delete')")
-    public Object updateDeleteStatus(@RequestParam("ids") List<Long> ids,
-                                     @RequestParam("deleteStatus") Integer deleteStatus) {
+    public CommonResult updateDeleteStatus(@ApiParam("商品ids")@RequestParam("ids") List<Long> ids,
+      @ApiParam("删除状态")@RequestParam("deleteStatus") Integer deleteStatus) {
         int count = iPmsProductService.updateDeleteStatus(ids, deleteStatus);
         if (count > 0) {
             return new CommonResult().success(count);
@@ -265,7 +268,7 @@ public class PmsProductController {
     @RequestMapping(value = "/importProduct", method = RequestMethod.POST)
     @ResponseBody
     @IgnoreAuth
-    public Object importProduct(String productStr) {
+    public CommonResult importProduct(String productStr) {
         importUtil.importProduct(productStr);
         return new CommonResult<>().success();
     }
@@ -275,9 +278,9 @@ public class PmsProductController {
     @ApiOperation("根据条件查询所有商品信息列表")
     @PostMapping(value = "/listPmsProductByPage")
     @IgnoreAuth
-    public Object listPmsProductByPage(@RequestBody PmsProductVo pmsProductVo) {
+    public CommonResult<Page<PmsProductVo>> listPmsProductByPage(@ApiParam("产品信息的扩展类") @RequestBody PmsProductVo pmsProductVo) {
         Page<PmsProductVo> pmsProductList = iPmsProductService.listPmsProductByPage(pmsProductVo);
-        return new CommonResult<>().success(pmsProductList);
+        return new CommonResult().success(pmsProductList);
     }
 
 

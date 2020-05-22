@@ -74,7 +74,7 @@ public class OmsCartItemController {
             Map<String,List<OmsCartItem>> cartMap = cartItemService.queryCartMap(umsMember.getId());
             return new CommonResult().success(cartMap);
         }
-        return new CommonResult<>().failed("查询商品购物车列表失败");
+        return new CommonResult<Map<String,List<OmsCartItem>>>().failed("查询商品购物车列表失败");
     }
 
     @ApiOperation("获取某个会员的购物车列表,包括促销信息")

@@ -1,19 +1,24 @@
 package com.zscat.mallplus.admin.sys.controller;
 
 
-import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zscat.mallplus.manage.dto.SysUserPassWordDto;
+import com.zscat.mallplus.manage.service.sms.ISmsService;
 import com.zscat.mallplus.manage.service.sys.ISysPermissionService;
 import com.zscat.mallplus.manage.service.sys.ISysRoleService;
+import com.zscat.mallplus.manage.service.sys.ISysUserAccountService;
 import com.zscat.mallplus.manage.service.sys.ISysUserRoleService;
 import com.zscat.mallplus.manage.service.sys.ISysUserService;
 import com.zscat.mallplus.manage.service.ums.RedisService;
+import com.zscat.mallplus.manage.vo.SmsResultVO;
+import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.sys.entity.SysPermission;
 import com.zscat.mallplus.mbg.sys.entity.SysRole;
 import com.zscat.mallplus.mbg.sys.entity.SysUser;
+import com.zscat.mallplus.mbg.sys.entity.SysUserAccount;
 import com.zscat.mallplus.mbg.sys.entity.SysUserRole;
 import com.zscat.mallplus.mbg.sys.vo.SysUserVO;
 import com.zscat.mallplus.mbg.utils.CommonResult;
@@ -22,7 +27,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
@@ -62,8 +70,14 @@ public class SysUserController extends ApiController {
     private ISysPermissionService permissionService;
     @Resource
     private RedisService redisService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @Resource
     private ISysUserRoleService iSysUserRoleService;
+    @Autowired
+    private ISmsService smsService;
+    @Autowired
+    private ISysUserAccountService sysUserAccountService;
 
     @SysLog(MODULE = "sys", REMARK = "根据条件查询所有用户列表")
     @ApiOperation("根据条件查询所有用户列表")
@@ -95,10 +109,33 @@ public class SysUserController extends ApiController {
         return new CommonResult().failed();
     }
 
+    @SysLog(MODULE = "sys", REMARK = "修改密码")
+    @ApiOperation("修改密码")
+    @PostMapping(value = "/setPassword")
+    public CommonResult<String> updatePassword(@RequestBody @ApiParam(value = "修改密码的入参", required = true) SysUserPassWordDto entity) {
+        try {
+            SysUser currentMember = sysUserService.getById(entity.getId());
+            if(!passwordEncoder.matches(entity.getOldPwd(),currentMember.getPassword())){
+                throw new BadCredentialsException("密码不正确");
+            }
+            currentMember.setPassword(entity.getNewPwd());
+            if (sysUserService.updates(currentMember)) {
+                return new CommonResult().success();
+            }
+        } catch (Exception e) {
+            log.error("修改密码失败：%s", e.getMessage(), e);
+            return new CommonResult().failed();
+        }
+        return new CommonResult().failed();
+    }
+
+
+
+
     @SysLog(MODULE = "sys", REMARK = "更新用户")
     @ApiOperation("更新用户")
     @PostMapping(value = "/update/{id}")
-    public Object updateUser(@RequestBody SysUser entity) {
+    public CommonResult updateUser(@ApiParam("用户") @RequestBody SysUser entity) {
         try {
             if (sysUserService.updates(entity)) {
                 return new CommonResult().success();
@@ -180,7 +217,7 @@ public class SysUserController extends ApiController {
     @ApiOperation(value = "获取当前登录用户信息")
     @RequestMapping(value = "/info", method = RequestMethod.GET)
     @ResponseBody
-    public Object getAdminInfo(Principal principal) {
+    public CommonResult<SysUser> getAdminInfo(Principal principal) {
         String username = principal.getName();
         SysUser queryU = new SysUser();
         queryU.setUsername(username);
@@ -193,13 +230,10 @@ public class SysUserController extends ApiController {
                for(SysUserRole sysUserRole:sysUserRoles){
                    roles.add(sysUserRole.getRoleId().toString());
                }
+               umsAdmin.setRoleIds(String.join(",",roles));
             }
         }
-        Map<String, Object> data = new HashMap<>();
-        data.put("username", umsAdmin.getUsername());
-        data.put("roles", roles);
-        data.put("icon", umsAdmin.getIcon());
-        return new CommonResult().success(data);
+        return new CommonResult<SysUser>().success(umsAdmin);
     }
 
     @SysLog(MODULE = "sys", REMARK = "登出功能")
@@ -228,7 +262,7 @@ public class SysUserController extends ApiController {
     @ApiOperation("获取指定用户的角色")
     @RequestMapping(value = "/role/{adminId}", method = RequestMethod.GET)
     @ResponseBody
-    public Object getRoleList(@PathVariable Long adminId) {
+    public CommonResult<List<SysRole>> getRoleList(@PathVariable Long adminId) {
         List<SysRole> roleList = sysUserService.getRoleListByUserId(adminId);
         return new CommonResult().success(roleList);
     }
@@ -287,9 +321,9 @@ public class SysUserController extends ApiController {
     @ApiOperation("分页获取获取搭配师列表")
     @RequestMapping(value = "/pageMyInviteMatcherUsers", method = RequestMethod.POST)
     @ResponseBody
-    public Object pageMyInviteMatcherUsers(@RequestBody SysUserVO sysUser) {
+    public CommonResult<Page<SysUserVO>> pageMyInviteMatcherUsers(@RequestBody SysUserVO sysUser) {
         Page<SysUserVO> sysUserVOPage = sysUserService.pageMyInviteMatcherUsers(sysUser);
-        return new CommonResult<>().success(sysUserVOPage);
+        return new CommonResult<Page<SysUserVO>>().success(sysUserVOPage);
     }
 
     @SysLog(MODULE = "sys", REMARK = "根据手机号获取系统用户")
@@ -302,6 +336,48 @@ public class SysUserController extends ApiController {
         }
         SysUser sysUser = sysUserService.getOne(new QueryWrapper<SysUser>().eq("phone", phone));
         return new CommonResult<>().success(sysUser);
+    }
+
+    @IgnoreAuth
+    @ApiOperation(value="获取验证码")
+    @RequestMapping(value = "/getAuthCode", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResult<Void> getAuthCode(@ApiParam(value = "电话号码") @RequestParam  String telephone) {
+       try {
+           smsService.generateAuthCode(telephone);
+       }catch (Exception e){
+           return new CommonResult().failed("发送验证码失败");
+       }
+
+        return new CommonResult().success();
+    }
+
+    @ApiOperation("根据手机号和验证码进行校验")
+    @RequestMapping(value = "/verifyAuthCode", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResult<Boolean> verifyAuthCode(@ApiParam(value = "电话号码") @RequestParam String telephone,@ApiParam(value = "验证码") @RequestParam String authCode) {
+        boolean verifyAuthCode = smsService.verifyAuthCode(telephone, authCode);
+        if(!verifyAuthCode){
+            return new CommonResult<Boolean>().failed("验证码填写不正确");
+        }
+        return new CommonResult<Boolean>().success();
+    }
+
+
+    @ApiOperation("获取收款账户")
+    @RequestMapping(value = "/account/get", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResult<SysUserAccount> getAccount(@ApiParam(value = "用户id") @RequestParam Long id) {
+        SysUserAccount sysUserAccount = sysUserAccountService.getOne(new QueryWrapper<SysUserAccount>().eq("sys_user_id", id));
+        return new CommonResult<SysUserAccount>().success(sysUserAccount);
+    }
+
+    @ApiOperation("保存收款账户")
+    @RequestMapping(value = "/account/save", method = RequestMethod.POST)
+    @ResponseBody
+    public CommonResult<SysUserAccount> saveAccount(@ApiParam(value = "用户id") @RequestBody  SysUserAccount sysUserAccount) {
+         sysUserAccountService.saveOrUpdate(sysUserAccount);
+        return new CommonResult<SysUserAccount>().success(sysUserAccount);
     }
 }
 

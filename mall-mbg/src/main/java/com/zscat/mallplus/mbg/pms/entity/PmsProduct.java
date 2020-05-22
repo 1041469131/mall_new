@@ -1,5 +1,6 @@
 package com.zscat.mallplus.mbg.pms.entity;
 
+import io.swagger.annotations.ApiModel;
 import java.math.BigDecimal;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
@@ -19,6 +20,7 @@ import java.io.Serializable;
  * @since 2019-04-19
  */
 @TableName("pms_product")
+@ApiModel("商品")
 public class PmsProduct implements Serializable {
 
     private static final long serialVersionUID = 1L;

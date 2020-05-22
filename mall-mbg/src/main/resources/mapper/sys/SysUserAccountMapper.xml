@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zscat.mallplus.mbg.sys.mapper.SysUserAccountMapper">
+  <resultMap id="BaseResultMap" type="com.zscat.mallplus.mbg.sys.entity.SysUserAccount">
+    <result column="id" jdbcType="BIGINT" property="id" />
+    <result column="sys_user_id" jdbcType="BIGINT" property="sysUserId" />
+    <result column="wechat_name" jdbcType="VARCHAR" property="wechatName" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="alipay_real_name" jdbcType="VARCHAR" property="alipayRealName" />
+    <result column="alipay_bind_phone" jdbcType="VARCHAR" property="alipayBindPhone" />
+    <result column="account_name" jdbcType="VARCHAR" property="accountName" />
+    <result column="bank_card" jdbcType="VARCHAR" property="bankCard" />
+    <result column="bank_name" jdbcType="VARCHAR" property="bankName" />
+    <result column="wechat_account_url" jdbcType="VARCHAR" property="wechatAccountUrl" />
+    <result column="alipay_account_url" jdbcType="VARCHAR" property="alipayAccountUrl" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, sys_user_id, wechat_name, phone, alipay_real_name, alipay_bind_phone, account_name, 
+    bank_card, bank_name, wechat_account_url, alipay_account_url
+  </sql>
+
+  <insert id="insert" parameterType="com.zscat.mallplus.mbg.sys.entity.SysUserAccount">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into sys_user_account (sys_user_id, wechat_name, phone, 
+      alipay_real_name, alipay_bind_phone, account_name, 
+      bank_card, bank_name, wechat_account_url, 
+      alipay_account_url)
+    values (#{sysUserId,jdbcType=BIGINT}, #{wechatName,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
+      #{alipayRealName,jdbcType=VARCHAR}, #{alipayBindPhone,jdbcType=VARCHAR}, #{accountName,jdbcType=VARCHAR}, 
+      #{bankCard,jdbcType=VARCHAR}, #{bankName,jdbcType=VARCHAR}, #{wechatAccountUrl,jdbcType=VARCHAR}, 
+      #{alipayAccountUrl,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.zscat.mallplus.mbg.sys.entity.SysUserAccount">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into sys_user_account
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="sysUserId != null">
+        sys_user_id,
+      </if>
+      <if test="wechatName != null">
+        wechat_name,
+      </if>
+      <if test="phone != null">
+        phone,
+      </if>
+      <if test="alipayRealName != null">
+        alipay_real_name,
+      </if>
+      <if test="alipayBindPhone != null">
+        alipay_bind_phone,
+      </if>
+      <if test="accountName != null">
+        account_name,
+      </if>
+      <if test="bankCard != null">
+        bank_card,
+      </if>
+      <if test="bankName != null">
+        bank_name,
+      </if>
+      <if test="wechatAccountUrl != null">
+        wechat_account_url,
+      </if>
+      <if test="alipayAccountUrl != null">
+        alipay_account_url,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="sysUserId != null">
+        #{sysUserId,jdbcType=BIGINT},
+      </if>
+      <if test="wechatName != null">
+        #{wechatName,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="alipayRealName != null">
+        #{alipayRealName,jdbcType=VARCHAR},
+      </if>
+      <if test="alipayBindPhone != null">
+        #{alipayBindPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="accountName != null">
+        #{accountName,jdbcType=VARCHAR},
+      </if>
+      <if test="bankCard != null">
+        #{bankCard,jdbcType=VARCHAR},
+      </if>
+      <if test="bankName != null">
+        #{bankName,jdbcType=VARCHAR},
+      </if>
+      <if test="wechatAccountUrl != null">
+        #{wechatAccountUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="alipayAccountUrl != null">
+        #{alipayAccountUrl,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+</mapper>

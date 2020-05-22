@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zscat.mallplus.manage.config.WxAppletProperties;
 import com.zscat.mallplus.manage.helper.CalcRecommendStatus;
 import com.zscat.mallplus.manage.service.marking.ISmsCouponService;
+import com.zscat.mallplus.manage.service.sms.ISmsService;
 import com.zscat.mallplus.manage.service.sys.ISysUserService;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberService;
 import com.zscat.mallplus.manage.service.ums.RedisService;
@@ -102,6 +103,8 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
+    @Autowired
+    private ISmsService smsService;
 
     @Value("${redis.key.prefix.authCode}")
     private String REDIS_KEY_PREFIX_AUTH_CODE;
@@ -172,31 +175,12 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
     }
 
     @Override
-    public CommonResult generateAuthCode(String telephone, String accessKeyId, String accessSecret, String templateCode) {
+    public CommonResult generateAuthCode(String telephone) {
         int count = this.count(new QueryWrapper<UmsMember>().eq("phone", telephone));
         if(count > 0){
             new CommonResult().failed("手机号存在");
         }
-        StringBuilder sb = new StringBuilder();
-        Random random = new Random();
-        String envir = SpringContextHolder.getActiveProfile();
-        if("dev".equals(envir)){
-            sb.append("123456");
-        }else{
-            for (int i = 0; i < 6; i++) {
-                sb.append(random.nextInt(10));
-            }
-            String tempParam = " { \"code\":"+sb.toString()+" }";
-            logger.info("发送验证码开始");
-            System.out.println("发送验证码开始");
-            SendSmsUtil.sendMessage(telephone, tempParam,accessKeyId, accessSecret, templateCode);
-            logger.info("发送验证码结束");
-            System.out.println("发送验证码结束");
-        }
-        //验证码绑定手机号并存储到redis
-        redisService.set(REDIS_KEY_PREFIX_AUTH_CODE + telephone, sb.toString());
-        redisService.expire(REDIS_KEY_PREFIX_AUTH_CODE + telephone, AUTH_CODE_EXPIRE_SECONDS);
-        return new CommonResult().success("获取验证码成功", sb.toString());
+        return new CommonResult().success("获取验证码成功", smsService.generateAuthCode(telephone));
     }
 
     @Override
@@ -208,7 +192,7 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
             return new CommonResult().failed("该账号不存在");
         }
         //验证验证码
-        if (!verifyAuthCode(authCode, telephone)) {
+        if (!smsService.verifyAuthCode(authCode, telephone)) {
             return new CommonResult().failed("验证码错误");
         }
 
@@ -235,16 +219,6 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
         record.setId(id);
         record.setIntegration(integration);
         umsMemberMapper.updateById(record);
-    }
-
-
-    //对输入的验证码进行校验
-    private boolean verifyAuthCode(String authCode, String telephone) {
-        if (StringUtils.isEmpty(authCode)) {
-            return false;
-        }
-        String realAuthCode = redisService.get(REDIS_KEY_PREFIX_AUTH_CODE + telephone);
-        return authCode.equals(realAuthCode);
     }
 
     @Override

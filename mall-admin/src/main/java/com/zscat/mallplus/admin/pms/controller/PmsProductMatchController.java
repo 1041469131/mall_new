@@ -77,9 +77,9 @@ public class PmsProductMatchController {
             pmsProductMatchLibrary.setMatchOwer(MagicConstant.MATCH_OWER_PERSON);
         }
         if(iPmsProductMatchLibraryService.saveOrUpdate(pmsProductMatchLibrary)){
-            return new CommonResult().success("操作成功");
+            return new CommonResult<PmsProductMatchLibrary>().success(pmsProductMatchLibrary);
         }
-        return  new CommonResult<>().failed("操作失败");
+        return  new CommonResult<PmsProductMatchLibrary>().failed("操作失败");
     }
 
 
@@ -94,11 +94,11 @@ public class PmsProductMatchController {
             pmsProductUserMatchLibrary.setCreateTime(new Date());
         }else{
             if(StringUtils.isEmpty(pmsProductUserMatchLibrary.getSkuIds())){
-                return new CommonResult<>().failed("该用户推荐没有选择规格");
+                return new CommonResult<PmsProductUserMatchLibrary>().failed("该用户推荐没有选择规格");
             }
             PmsProductUserMatchLibrary oldPmsProductUserMatchLibrary = iPmsProductUserMatchLibraryService.getById(pmsProductUserMatchLibrary.getId());
             if(MagicConstant.RECOMMEND_TYPE_YES.equals(oldPmsProductUserMatchLibrary.getRecommendType())){
-                return new CommonResult().failed("该用户是已推荐的状态不能修改");
+                return new CommonResult<PmsProductUserMatchLibrary>().failed("该用户是已推荐的状态不能修改");
             }
         }
         pmsProductUserMatchLibrary.setUpdateTime(new Date());
@@ -111,9 +111,9 @@ public class PmsProductMatchController {
         }
 
         if(iPmsProductUserMatchLibraryService.saveOrUpdate(pmsProductUserMatchLibrary)){
-            return new CommonResult().success("操作成功");
+            return new CommonResult<PmsProductUserMatchLibrary>().success(pmsProductUserMatchLibrary);
         }
-        return  new CommonResult<>().failed("操作失败");
+        return  new CommonResult<PmsProductUserMatchLibrary>().failed("操作失败");
     }
 
 
@@ -182,7 +182,6 @@ public class PmsProductMatchController {
     @PreAuthorize("hasAuthority('pms:PmsBrand:read')")
     public CommonResult<PmsProductUserMatchLibrary> updateUserMatchLibraryStatus(@ApiParam("用户搭配库id组合格式{1,2,3}") String matchIdParam,
                                                                                  @ApiParam("推荐用户状态 0-未推荐 1-推荐")String recommType) {
-
         if(iPmsProductUserMatchLibraryService.saveProductUserMatch(matchIdParam,recommType)){
             return new CommonResult().success("操作成功");
         }
@@ -202,7 +201,6 @@ public class PmsProductMatchController {
         return  new CommonResult().success(pmsProductMatchLibraryVos);
     }
 
-
     @IgnoreAuth
     @SysLog(MODULE = "pms", REMARK = "将用户的搭配收藏到搭配师")
     @ApiOperation("将用户的搭配收藏到搭配师")
@@ -212,10 +210,6 @@ public class PmsProductMatchController {
         PmsProductUserMatchLibrary pmsProductUserMatchLibrary = iPmsProductUserMatchLibraryService.getById(matchId);
         PmsProductMatchLibrary pmsProductMatchLibrary = MatchLibraryAssemble.assembleMatchLibrary(pmsProductUserMatchLibrary);
         iPmsProductMatchLibraryService.save(pmsProductMatchLibrary);
-        return  new CommonResult<>().success();
+        return  new CommonResult<PmsProductUserMatchLibrary>().success();
     }
-
-    private void removeUserMatchLibraryById(String matchId) {
-    }
-
 }
