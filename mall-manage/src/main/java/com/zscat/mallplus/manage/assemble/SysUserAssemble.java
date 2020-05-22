@@ -16,7 +16,7 @@ public class SysUserAssemble {
      */
     public static SysUser assembleSysUser(UmsApplyMatcherVo umsApplyMatcherVo) {
         SysUser sysUser = new SysUser();
-        sysUser.setUsername(umsApplyMatcherVo.getPhone());
+        sysUser.setUsername(umsApplyMatcherVo.getUserName());
         sysUser.setName(umsApplyMatcherVo.getUserName());
         sysUser.setCreateTime(new Date());
         sysUser.setNickName(umsApplyMatcherVo.getNickname());

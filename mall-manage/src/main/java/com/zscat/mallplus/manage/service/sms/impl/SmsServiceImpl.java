@@ -4,7 +4,9 @@ import com.zscat.mallplus.manage.service.sms.ISmsService;
 import com.zscat.mallplus.manage.service.ums.RedisService;
 import com.zscat.mallplus.manage.utils.SendSmsUtil;
 import com.zscat.mallplus.manage.utils.SpringContextHolder;
+import freemarker.template.utility.StringUtil;
 import java.util.Random;
+import javax.swing.Spring;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,16 +43,21 @@ public class SmsServiceImpl implements ISmsService {
   @Override
   public String generateAuthCode(String telephone) {
     StringBuilder sb = new StringBuilder();
-    Random random = new Random();
-    for (int i = 0; i < 6; i++) {
-      sb.append(random.nextInt(10));
+    String profile = SpringContextHolder.getActiveProfile();
+    if (profile != null && profile.equals("dev")) {
+      sb.append("123456");
+    } else {
+      Random random = new Random();
+      for (int i = 0; i < 6; i++) {
+        sb.append(random.nextInt(10));
+      }
+      String tempParam = " { \"code\":" + sb.toString() + " }";
+      logger.info("发送验证码开始");
+      System.out.println("发送验证码开始");
+      SendSmsUtil.sendMessage(telephone, tempParam, accessKeyId, accessSecret, templateCode);
+      logger.info("发送验证码结束");
+      System.out.println("发送验证码结束");
     }
-    String tempParam = " { \"code\":" + sb.toString() + " }";
-    logger.info("发送验证码开始");
-    System.out.println("发送验证码开始");
-    SendSmsUtil.sendMessage(telephone, tempParam, accessKeyId, accessSecret, templateCode);
-    logger.info("发送验证码结束");
-    System.out.println("发送验证码结束");
     //验证码绑定手机号并存储到redis
     redisService.set(REDIS_KEY_PREFIX_AUTH_CODE + telephone, sb.toString());
     redisService.expire(REDIS_KEY_PREFIX_AUTH_CODE + telephone, AUTH_CODE_EXPIRE_SECONDS);

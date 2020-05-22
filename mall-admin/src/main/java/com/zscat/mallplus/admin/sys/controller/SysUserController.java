@@ -356,7 +356,7 @@ public class SysUserController extends ApiController {
     @RequestMapping(value = "/verifyAuthCode", method = RequestMethod.GET)
     @ResponseBody
     public CommonResult<Boolean> verifyAuthCode(@ApiParam(value = "电话号码") @RequestParam String telephone,@ApiParam(value = "验证码") @RequestParam String authCode) {
-        boolean verifyAuthCode = smsService.verifyAuthCode(telephone, authCode);
+        boolean verifyAuthCode = smsService.verifyAuthCode( authCode,telephone);
         if(!verifyAuthCode){
             return new CommonResult<Boolean>().failed("验证码填写不正确");
         }
