@@ -83,7 +83,7 @@ public class PmsProductServiceImpl extends ServiceImpl<PmsProductMapper, PmsProd
     private PmsProductCommissionMapper pmsProductCommissionMapper;
 
     @Override
-    public int create(PmsProductParam productParam) {
+    public Long create(PmsProductParam productParam) {
         //创建商品
         PmsProduct product = productParam;
         product.setDeleteStatus(0);
@@ -110,7 +110,7 @@ public class PmsProductServiceImpl extends ServiceImpl<PmsProductMapper, PmsProd
         relateAndInsertList(subjectProductRelationDao, productParam.getSubjectProductRelationList(), productId);
         //关联优选
         relateAndInsertList(prefrenceAreaProductRelationDao, productParam.getPrefrenceAreaProductRelationList(), productId);
-        return 1;
+        return productId;
     }
 
     private void handleSkuStockCode(List<PmsSkuStock> skuStockList, Long productId) {
@@ -143,26 +143,26 @@ public class PmsProductServiceImpl extends ServiceImpl<PmsProductMapper, PmsProd
         product.setId(id);
         pmsProductMapper.updateById(product);
         //会员价格
-        memberPriceMapper.delete(new QueryWrapper<>(new PmsMemberPrice()).eq("product_id",id));
+        memberPriceMapper.delete(new QueryWrapper<PmsMemberPrice>().eq("product_id",id));
         relateAndInsertList(memberPriceDao, productParam.getMemberPriceList(), id);
         //阶梯价格
-        productLadderMapper.delete(new QueryWrapper<>(new PmsProductLadder()).eq("product_id",id));
+        productLadderMapper.delete(new QueryWrapper<PmsProductLadder>().eq("product_id",id));
         relateAndInsertList(productLadderDao, productParam.getProductLadderList(), id);
         //满减价格
-        productFullReductionMapper.delete(new QueryWrapper<>(new PmsProductFullReduction()).eq("product_id",id));
+        productFullReductionMapper.delete(new QueryWrapper<PmsProductFullReduction>().eq("product_id",id));
         relateAndInsertList(productFullReductionDao, productParam.getProductFullReductionList(), id);
         //修改sku库存信息
-        skuStockMapper.delete(new QueryWrapper<>(new PmsSkuStock()).eq("product_id",id));
+        skuStockMapper.delete(new QueryWrapper<PmsSkuStock>().eq("product_id",id));
         handleSkuStockCode(productParam.getSkuStockList(), id);
         relateAndInsertList(skuStockDao, productParam.getSkuStockList(), id);
         //修改商品参数,添加自定义商品规格
-        productAttributeValueMapper.delete(new QueryWrapper<>(new PmsProductAttributeValue()).eq("product_id",id));
+        productAttributeValueMapper.delete(new QueryWrapper<PmsProductAttributeValue>().eq("product_id",id));
         relateAndInsertList(productAttributeValueDao, productParam.getProductAttributeValueList(), id);
         //关联专题
-        subjectProductRelationMapper.delete(new QueryWrapper<>(new CmsSubjectProductRelation()).eq("product_id",id));
+        subjectProductRelationMapper.delete(new QueryWrapper<CmsSubjectProductRelation>().eq("product_id",id));
         relateAndInsertList(subjectProductRelationDao, productParam.getSubjectProductRelationList(), id);
         //关联优选
-        prefrenceAreaProductRelationMapper.delete(new QueryWrapper<>(new CmsPrefrenceAreaProductRelation()).eq("product_id",id));
+        prefrenceAreaProductRelationMapper.delete(new QueryWrapper<CmsPrefrenceAreaProductRelation>().eq("product_id",id));
         relateAndInsertList(prefrenceAreaProductRelationDao, productParam.getPrefrenceAreaProductRelationList(), id);
         return 1;
     }

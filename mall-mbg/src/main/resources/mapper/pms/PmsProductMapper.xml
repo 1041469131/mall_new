@@ -20,7 +20,7 @@
         <result column="sort" property="sort" />
         <result column="sale" property="sale" />
         <result column="price" property="price" />
-        <result column="market_price" property="market_price" />
+        <result column="market_price" property="marketPrice" />
         <result column="gift_growth" property="giftGrowth" />
         <result column="gift_point" property="giftPoint" />
         <result column="use_point_limit" property="usePointLimit" />

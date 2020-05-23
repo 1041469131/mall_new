@@ -73,11 +73,11 @@ public class PmsProductController {
     @ApiOperation("保存商品信息")
     @PostMapping(value = "/create")
     @PreAuthorize("hasAuthority('pms:PmsProduct:create')")
-    public CommonResult<Integer> savePmsProduct(@ApiParam("商品创建修改使用的参数") @RequestBody PmsProductParam productParam) {
+    public CommonResult<Long> savePmsProduct(@ApiParam("商品创建修改使用的参数") @RequestBody PmsProductParam productParam) {
         try {
-            int count = iPmsProductService.create(productParam);
-            if (count > 0) {
-                return new CommonResult().success(count);
+            Long productId = iPmsProductService.create(productParam);
+            if (productId > 0) {
+                return new CommonResult().success(productId);
             } else {
                 return new CommonResult().failed();
             }
@@ -96,7 +96,8 @@ public class PmsProductController {
         try {
             PmsProduct pmsProduct = iPmsProductService.getById(id);
             if(pmsProduct != null){
-                if(!(pmsProduct.getPublishStatus().equals(MagicConstant.PUBLISH_STATUS_UP) || pmsProduct.getDeleteStatus() == MagicConstant.DELETE_YET ||
+                if(!(pmsProduct.getPublishStatus().equals(MagicConstant.PUBLISH_STATUS_UP) || pmsProduct.getDeleteStatus()
+                  .equals(MagicConstant.DELETE_YET) ||
                   pmsProduct.getVerifyStatus().equals(MagicConstant.VERIFY_STATUS_VERIFYED))){
                     int count = iPmsProductService.update(id, productParam);
                     if (count > 0) {

@@ -73,10 +73,10 @@ public class PmsProductCategoryServiceImpl extends ServiceImpl<PmsProductCategor
         //同时更新筛选属性的信息
         if (!CollectionUtils.isEmpty(entity.getProductAttributeIdList())) {
 
-            productCategoryAttributeRelationMapper.delete(new QueryWrapper<>(new PmsProductCategoryAttributeRelation()).eq("product_category_id",entity.getId()));
+            productCategoryAttributeRelationMapper.delete(new QueryWrapper<PmsProductCategoryAttributeRelation>().eq("product_category_id",entity.getId()));
             insertRelationList(entity.getId(), entity.getProductAttributeIdList());
         } else {
-            productCategoryAttributeRelationMapper.delete(new QueryWrapper<>(new PmsProductCategoryAttributeRelation()).eq("product_category_id",entity.getId()));
+            productCategoryAttributeRelationMapper.delete(new QueryWrapper<PmsProductCategoryAttributeRelation>().eq("product_category_id",entity.getId()));
 
         }
          categoryMapper.updateById(productCategory);

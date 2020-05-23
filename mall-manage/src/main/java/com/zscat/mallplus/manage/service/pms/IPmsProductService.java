@@ -26,7 +26,7 @@ import java.util.Map;
 public interface IPmsProductService extends IService<PmsProduct> {
 
     @Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED)
-    int create(PmsProductParam productParam);
+    Long create(PmsProductParam productParam);
 
     /**
      * 根据商品编号获取更新信息

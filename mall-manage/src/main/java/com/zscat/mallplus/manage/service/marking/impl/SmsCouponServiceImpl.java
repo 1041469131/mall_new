@@ -133,11 +133,11 @@ public class SmsCouponServiceImpl extends ServiceImpl<SmsCouponMapper, SmsCoupon
     }
 
     private void deleteProductCategoryRelation(Long id) {
-        productCategoryRelationMapper.delete(new QueryWrapper<>(new SmsCouponProductCategoryRelation()).eq("coupon_id",id));
+        productCategoryRelationMapper.delete(new QueryWrapper<SmsCouponProductCategoryRelation>().eq("coupon_id",id));
     }
 
     private void deleteProductRelation(Long id) {
-        productRelationMapper.delete(new QueryWrapper<>(new SmsCouponProductRelation()).eq("coupon_id",id));
+        productRelationMapper.delete(new QueryWrapper<SmsCouponProductRelation>().eq("coupon_id",id));
     }
 
     @Override

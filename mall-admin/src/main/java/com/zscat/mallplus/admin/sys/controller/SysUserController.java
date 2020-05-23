@@ -134,7 +134,7 @@ public class SysUserController extends ApiController {
 
     @SysLog(MODULE = "sys", REMARK = "更新用户")
     @ApiOperation("更新用户")
-    @PostMapping(value = "/update/{id}")
+    @PostMapping(value = "/update")
     public CommonResult updateUser(@ApiParam("用户") @RequestBody SysUser entity) {
         try {
             if (sysUserService.updates(entity)) {

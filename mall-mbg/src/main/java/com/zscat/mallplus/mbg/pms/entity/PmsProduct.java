@@ -684,4 +684,5 @@ public class PmsProduct implements Serializable {
     public void setUrl(String url) {
         this.url = url;
     }
+
 }
