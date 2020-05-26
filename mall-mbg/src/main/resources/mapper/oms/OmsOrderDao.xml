@@ -2,184 +2,294 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zscat.mallplus.mbg.oms.mapper.OmsOrderMapper">
 
-    <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.zscat.mallplus.mbg.oms.entity.OmsOrder">
-        <id column="id" property="id" />
-        <result column="member_id" property="memberId" />
-        <result column="coupon_id" property="couponId" />
-        <result column="order_sn" property="orderSn" />
-        <result column="create_time" property="createTime" />
-        <result column="member_username" property="memberUsername" />
-        <result column="total_amount" property="totalAmount" />
-        <result column="pay_amount" property="payAmount" />
-        <result column="freight_amount" property="freightAmount" />
-        <result column="promotion_amount" property="promotionAmount" />
-        <result column="integration_amount" property="integrationAmount" />
-        <result column="coupon_amount" property="couponAmount" />
-        <result column="discount_amount" property="discountAmount" />
-        <result column="pay_type" property="payType" />
-        <result column="source_type" property="sourceType" />
-        <result column="status" property="status" />
-        <result column="order_type" property="orderType" />
-        <result column="delivery_company" property="deliveryCompany" />
-        <result column="delivery_sn" property="deliverySn" />
-        <result column="auto_confirm_day" property="autoConfirmDay" />
-        <result column="integration" property="integration" />
-        <result column="growth" property="growth" />
-        <result column="promotion_info" property="promotionInfo" />
-        <result column="bill_type" property="billType" />
-        <result column="bill_header" property="billHeader" />
-        <result column="bill_content" property="billContent" />
-        <result column="bill_receiver_phone" property="billReceiverPhone" />
-        <result column="bill_receiver_email" property="billReceiverEmail" />
-        <result column="receiver_name" property="receiverName" />
-        <result column="receiver_phone" property="receiverPhone" />
-        <result column="receiver_post_code" property="receiverPostCode" />
-        <result column="receiver_province" property="receiverProvince" />
-        <result column="receiver_city" property="receiverCity" />
-        <result column="receiver_region" property="receiverRegion" />
-        <result column="receiver_detail_address" property="receiverDetailAddress" />
-        <result column="note" property="note" />
-        <result column="confirm_status" property="confirmStatus" />
-        <result column="delete_status" property="deleteStatus" />
-        <result column="use_integration" property="useIntegration" />
-        <result column="payment_time" property="paymentTime" />
-        <result column="delivery_time" property="deliveryTime" />
-        <result column="receive_time" property="receiveTime" />
-        <result column="comment_time" property="commentTime" />
-        <result column="modify_time" property="modifyTime" />
-        <result column="prepay_id" property="prepayId" />
-        <result column="supply_id" property="supplyId" />
-        <result column="goods_id" property="goodsId" />
-        <result column="goods_name" property="goodsName" />
-        <result column="school_id" property="schoolId" />
-        <result column="transaction_id" property="transactionId" />
-    </resultMap>
-    <resultMap id="orderDetailMap" type="com.zscat.mallplus.mbg.oms.vo.OmsOrderDetail"
-               extends="com.zscat.mallplus.mbg.oms.mapper.OmsOrderMapper.BaseResultMap">
-        <collection property="orderItemList" columnPrefix="ot_"
-                    resultMap="com.zscat.mallplus.mbg.oms.mapper.OmsOrderItemMapper.BaseResultMap">
-        </collection>
-    </resultMap>
-    <!-- 通用查询结果列 -->
-    <sql id="Base_Column_List">
-        id, member_id, coupon_id, order_sn, create_time, member_username, total_amount, pay_amount, freight_amount, promotion_amount, integration_amount, coupon_amount, discount_amount, pay_type, source_type, status, order_type, delivery_company, delivery_sn, auto_confirm_day, integration, growth, promotion_info, bill_type, bill_header, bill_content, bill_receiver_phone, bill_receiver_email, receiver_name, receiver_phone, receiver_post_code, receiver_province, receiver_city, receiver_region, receiver_detail_address, note, confirm_status, delete_status, use_integration, payment_time, delivery_time, receive_time, comment_time, modify_time, prepay_id, supply_id, goods_id, goods_name, school_id,transaction_id
-    </sql>
-    <select id="getTimeOutOrders" resultMap="orderDetailMap">
-        SELECT
-        o.id,
-        o.order_sn,
-        o.coupon_id,
-        o.integration,
-        o.member_id,
-        o.use_integration,
-        ot.id ot_id,
-        ot.product_name ot_product_name,
-        ot.product_sku_id ot_product_sku_id,
-        ot.product_sku_code ot_product_sku_code,
-        ot.product_quantity ot_product_quantity
-        FROM
-        oms_order o
-        LEFT JOIN oms_order_item ot ON o.id = ot.order_id
-        WHERE
-        o.status = 0
-        AND o.create_time &lt; date_add(NOW(), INTERVAL -#{minute} MINUTE);
-    </select>
-    <update id="delivery">
-        UPDATE oms_order
-        SET
-        delivery_sn = CASE id
-        <foreach collection="list" item="item">
-            WHEN #{item.orderId} THEN #{item.deliverySn}
-        </foreach>
-        END,
-        delivery_company = CASE id
-        <foreach collection="list" item="item">
-            WHEN #{item.orderId} THEN #{item.deliveryCompany}
-        </foreach>
-        END,
-        delivery_time = CASE id
-        <foreach collection="list" item="item">
-            WHEN #{item.orderId} THEN now()
-        </foreach>
-        END,
-        `status` = CASE id
-        <foreach collection="list" item="item">
-            WHEN #{item.orderId} THEN 2
-        </foreach>
-        END
-        WHERE
-        id IN
-        <foreach collection="list" item="item" separator="," open="(" close=")">
-            #{item.orderId}
-        </foreach>
-        AND `status` = 1
-    </update>
-    <update id="updateSkuStock">
-        UPDATE pms_sku_stock
-        SET
-        stock = CASE id
-        <foreach collection="itemList" item="item">
-            WHEN #{item.productSkuId} THEN stock - #{item.productQuantity}
-        </foreach>
-        END,
-        lock_stock = CASE id
-        <foreach collection="itemList" item="item">
-            WHEN #{item.productSkuId} THEN lock_stock - #{item.productQuantity}
-        </foreach>
-        END
-        WHERE
-        id IN
-        <foreach collection="itemList" item="item" separator="," open="(" close=")">
-            #{item.productSkuId}
-        </foreach>
-    </update>
+  <!-- 通用查询映射结果 -->
+  <resultMap id="BaseResultMap" type="com.zscat.mallplus.mbg.oms.entity.OmsOrder">
+    <id column="id" property="id"/>
+    <result column="member_id" property="memberId"/>
+    <result column="coupon_id" property="couponId"/>
+    <result column="order_sn" property="orderSn"/>
+    <result column="create_time" property="createTime"/>
+    <result column="member_username" property="memberUsername"/>
+    <result column="total_amount" property="totalAmount"/>
+    <result column="pay_amount" property="payAmount"/>
+    <result column="freight_amount" property="freightAmount"/>
+    <result column="promotion_amount" property="promotionAmount"/>
+    <result column="integration_amount" property="integrationAmount"/>
+    <result column="coupon_amount" property="couponAmount"/>
+    <result column="discount_amount" property="discountAmount"/>
+    <result column="pay_type" property="payType"/>
+    <result column="source_type" property="sourceType"/>
+    <result column="status" property="status"/>
+    <result column="order_type" property="orderType"/>
+    <result column="delivery_company" property="deliveryCompany"/>
+    <result column="delivery_sn" property="deliverySn"/>
+    <result column="auto_confirm_day" property="autoConfirmDay"/>
+    <result column="integration" property="integration"/>
+    <result column="growth" property="growth"/>
+    <result column="promotion_info" property="promotionInfo"/>
+    <result column="bill_type" property="billType"/>
+    <result column="bill_header" property="billHeader"/>
+    <result column="bill_content" property="billContent"/>
+    <result column="bill_receiver_phone" property="billReceiverPhone"/>
+    <result column="bill_receiver_email" property="billReceiverEmail"/>
+    <result column="receiver_name" property="receiverName"/>
+    <result column="receiver_phone" property="receiverPhone"/>
+    <result column="receiver_post_code" property="receiverPostCode"/>
+    <result column="receiver_province" property="receiverProvince"/>
+    <result column="receiver_city" property="receiverCity"/>
+    <result column="receiver_region" property="receiverRegion"/>
+    <result column="receiver_detail_address" property="receiverDetailAddress"/>
+    <result column="note" property="note"/>
+    <result column="confirm_status" property="confirmStatus"/>
+    <result column="delete_status" property="deleteStatus"/>
+    <result column="use_integration" property="useIntegration"/>
+    <result column="payment_time" property="paymentTime"/>
+    <result column="delivery_time" property="deliveryTime"/>
+    <result column="receive_time" property="receiveTime"/>
+    <result column="comment_time" property="commentTime"/>
+    <result column="modify_time" property="modifyTime"/>
+    <result column="prepay_id" property="prepayId"/>
+    <result column="supply_id" property="supplyId"/>
+    <result column="goods_id" property="goodsId"/>
+    <result column="goods_name" property="goodsName"/>
+    <result column="school_id" property="schoolId"/>
+    <result column="transaction_id" property="transactionId"/>
+  </resultMap>
+  <resultMap id="orderDetailMap" type="com.zscat.mallplus.mbg.oms.vo.OmsOrderDetail"
+    extends="com.zscat.mallplus.mbg.oms.mapper.OmsOrderMapper.BaseResultMap">
+    <collection property="orderItemList" columnPrefix="ot_"
+      resultMap="com.zscat.mallplus.mbg.oms.mapper.OmsOrderItemMapper.BaseResultMap">
+    </collection>
+  </resultMap>
+  <!-- 通用查询结果列 -->
+  <sql id="Base_Column_List">
+    id, member_id, coupon_id, order_sn, create_time, member_username, total_amount, pay_amount, freight_amount, promotion_amount, integration_amount, coupon_amount, discount_amount, pay_type, source_type, status, order_type, delivery_company, delivery_sn, auto_confirm_day, integration, growth, promotion_info, bill_type, bill_header, bill_content, bill_receiver_phone, bill_receiver_email, receiver_name, receiver_phone, receiver_post_code, receiver_province, receiver_city, receiver_region, receiver_detail_address, note, confirm_status, delete_status, use_integration, payment_time, delivery_time, receive_time, comment_time, modify_time, prepay_id, supply_id, goods_id, goods_name, school_id,transaction_id
+  </sql>
+  <select id="getTimeOutOrders" resultMap="orderDetailMap">
+    SELECT o.id,
+           o.order_sn,
+           o.coupon_id,
+           o.integration,
+           o.member_id,
+           o.use_integration,
+           ot.id               ot_id,
+           ot.product_name     ot_product_name,
+           ot.product_sku_id   ot_product_sku_id,
+           ot.product_sku_code ot_product_sku_code,
+           ot.product_quantity ot_product_quantity
+    FROM oms_order                  o
+           LEFT JOIN oms_order_item ot ON o.id = ot.order_id
+    WHERE o.status = 0 AND o.create_time &lt; date_add(NOW(), INTERVAL - #{minute} MINUTE);
+  </select>
+  <update id="delivery">
+    UPDATE oms_order
+    SET
+    delivery_sn = CASE id
+    <foreach collection="list" item="item">
+      WHEN #{item.orderId} THEN #{item.deliverySn}
+    </foreach>
+    END,
+    delivery_company = CASE id
+    <foreach collection="list" item="item">
+      WHEN #{item.orderId} THEN #{item.deliveryCompany}
+    </foreach>
+    END,
+    delivery_time = CASE id
+    <foreach collection="list" item="item">
+      WHEN #{item.orderId} THEN now()
+    </foreach>
+    END,
+    `status` = CASE id
+    <foreach collection="list" item="item">
+      WHEN #{item.orderId} THEN 2
+    </foreach>
+    END
+    WHERE
+    id IN
+    <foreach collection="list" item="item" separator="," open="(" close=")">
+      #{item.orderId}
+    </foreach>
+    AND `status` = 1
+  </update>
+  <update id="updateSkuStock">
+    UPDATE pms_sku_stock
+    SET
+    stock = CASE id
+    <foreach collection="itemList" item="item">
+      WHEN #{item.productSkuId} THEN stock - #{item.productQuantity}
+    </foreach>
+    END,
+    lock_stock = CASE id
+    <foreach collection="itemList" item="item">
+      WHEN #{item.productSkuId} THEN lock_stock - #{item.productQuantity}
+    </foreach>
+    END
+    WHERE
+    id IN
+    <foreach collection="itemList" item="item" separator="," open="(" close=")">
+      #{item.productSkuId}
+    </foreach>
+  </update>
 
-    <select id="getTimeOutOrders" resultMap="orderDetailMap">
-        SELECT
-        o.id,
-        o.order_sn,
-        o.coupon_id,
-        o.integration,
-        o.member_id,
-        o.use_integration,
-        ot.id ot_id,
-        ot.product_name ot_product_name,
-        ot.product_sku_id ot_product_sku_id,
-        ot.product_sku_code ot_product_sku_code,
-        ot.product_quantity ot_product_quantity
-        FROM
-        oms_order o
-        LEFT JOIN oms_order_item ot ON o.id = ot.order_id
-        WHERE
-        o.status = 0
-        AND o.create_time &lt; date_add(NOW(), INTERVAL -#{minute} MINUTE);
-    </select>
-    <update id="updateOrderStatus">
-        update oms_order
-        set status=#{status}
-        where id in
-        <foreach collection="ids" item="id" separator="," open="(" close=")">
-            #{id}
-        </foreach>
-    </update>
-    <update id="releaseSkuStockLock">
-        UPDATE pms_sku_stock
-        SET
-        lock_stock = CASE id
-        <foreach collection="itemList" item="item">
-            WHEN #{item.productSkuId} THEN lock_stock - #{item.productQuantity}
-        </foreach>
-        END
-        WHERE
-        id IN
-        <foreach collection="itemList" item="item" separator="," open="(" close=")">
-            #{item.productSkuId}
-        </foreach>
-    </update>
+  <select id="getTimeOutOrders" resultMap="orderDetailMap">
+    SELECT o.id,
+           o.order_sn,
+           o.coupon_id,
+           o.integration,
+           o.member_id,
+           o.use_integration,
+           ot.id               ot_id,
+           ot.product_name     ot_product_name,
+           ot.product_sku_id   ot_product_sku_id,
+           ot.product_sku_code ot_product_sku_code,
+           ot.product_quantity ot_product_quantity
+    FROM oms_order                  o
+           LEFT JOIN oms_order_item ot ON o.id = ot.order_id
+    WHERE o.status = 0 AND o.create_time &lt; date_add(NOW(), INTERVAL - #{minute} MINUTE);
+  </select>
+  <update id="updateOrderStatus">
+    update oms_order
+    set status=#{status}
+    where id in
+    <foreach collection="ids" item="id" separator="," open="(" close=")">
+      #{id}
+    </foreach>
+  </update>
+  <update id="releaseSkuStockLock">
+    UPDATE pms_sku_stock
+    SET
+    lock_stock = CASE id
+    <foreach collection="itemList" item="item">
+      WHEN #{item.productSkuId} THEN lock_stock - #{item.productQuantity}
+    </foreach>
+    END
+    WHERE
+    id IN
+    <foreach collection="itemList" item="item" separator="," open="(" close=")">
+      #{item.productSkuId}
+    </foreach>
+  </update>
 
-    <select id="listOmsOrders" resultMap="BaseResultMap">
-      SELECT <include refid="Base_Column_List"/>
-        FROM OMS_ORDER WHERE ORDER_SN = #{outTradeNo} OR SUPPLY_ID = #{outTradeNo}
-    </select>
+  <select id="listOmsOrders" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM OMS_ORDER WHERE ORDER_SN = #{outTradeNo} OR SUPPLY_ID = #{outTradeNo}
+  </select>
+
+  <resultMap id="orderResultMap" type="com.zscat.mallplus.mbg.oms.vo.OrderResult"
+    extends="BaseResultMap">
+    <association resultMap="com.zscat.mallplus.mbg.sys.mapper.SysUserMapper.BaseResultMap" columnPrefix="sys_" property="sysUser"/>
+    <association resultMap="com.zscat.mallplus.mbg.ums.mapper.UmsMemberMapper.BaseResultMap" columnPrefix="ums_" property="umsMember"/>
+    <association resultMap="com.zscat.mallplus.mbg.oms.mapper.OmsOrderReturnSaleMapper.BaseResultMap" columnPrefix="sale_" property="omsOrderReturnSale"/>
+    <collection property="omsOrderItemList" columnPrefix="ot_"
+      resultMap="com.zscat.mallplus.mbg.oms.mapper.OmsOrderItemMapper.BaseResultMap">
+    </collection>
+    <collection property="pmsSkuStockList" columnPrefix="sk_"
+      resultMap="com.zscat.mallplus.mbg.pms.mapper.PmsSkuStockMapper.BaseResultMap">
+    </collection>
+  </resultMap>
+  <sql id="O_Base_Column_List">
+    o.id, o.member_id, o.coupon_id, o.order_sn, o.create_time, o.member_username, o.total_amount, o.pay_amount, o.freight_amount, o.promotion_amount, o.integration_amount, o.coupon_amount, o.discount_amount, o.pay_type, o.source_type, o.status, o.order_type, o.delivery_company, o.delivery_sn, o.auto_confirm_day, o.integration, o.growth, o.promotion_info, o.bill_type, o.bill_header, o.bill_content, o.bill_receiver_phone, o.bill_receiver_email, o.receiver_name, o.receiver_phone, o.receiver_post_code, o.receiver_province, o.receiver_city, o.receiver_region, o.receiver_detail_address, o.note, o.confirm_status, o.delete_status, o.use_integration, o.payment_time, o.delivery_time, o.receive_time, o.comment_time, o.modify_time, o.prepay_id, o.supply_id, o.goods_id, o.goods_name, o.school_id,o.transaction_id
+  </sql>
+  <sql id="Sys_Base_Column_List">
+    t.id as sys_id, t.username as sys_username,t.name as sys_name, t.nick_name as sys_nick_name,t.wechat_name as sys_wechat_name
+  </sql>
+
+
+  <sql id="Ums_Base_Column_List">
+    m.id as ums_id, m.username as ums_username, m.nickname as ums_nickname, m.phone as ums_phone
+  </sql>
+
+  <sql id="Sale_Base_Column_List">
+    os.id as sale_id, os.order_id as sale_order_id, os.order_sn as sale_order_sn, os.member_id as sale_member_id,
+    os.status as sale_status,
+    os.type as sale_type
+  </sql>
+  <sql id="Sk_Base_Column_List">
+    sk.id as sk_id, sk.product_id as sk_product_id, sk.sku_code as sk_sku_code, sk.price as sk_price, sk.stock as sk_stock, sk.low_stock as sk_low_stock, sk.sp1 as sk_sp1, sk.sp2 as sk_sp2, sk.sp3 as sk_sp3, sk.pic as sk_pic, sk.sale as sk_sale, sk.promotion_price as sk_promotion_price , sk.lock_stock as sk_lock_stock
+  </sql>
+  <select id="listOmsOrderByPage" resultMap="orderResultMap" parameterType="com.zscat.mallplus.mbg.oms.vo.OmsOrderQueryParam">
+    SELECT
+           <include refid="O_Base_Column_List"/>
+           ,
+           <include refid="Sys_Base_Column_List"/>
+           ,
+    <include refid="Ums_Base_Column_List"/>
+           ,
+    <include refid="Sale_Base_Column_List"/>
+           ,
+    ot.id               ot_id,
+    ot.product_name     ot_product_name,
+    ot.product_sku_id   ot_product_sku_id,
+    ot.product_sku_code ot_product_sku_code,
+    ot.product_quantity ot_product_quantity,
+    <include refid="Sk_Base_Column_List"/>
+    FROM oms_order                         o
+           LEFT JOIN ums_member            m ON o.member_id = m.id
+           left JOIN sys_user              t on t.id = m.match_user_id
+           LEFT JOIN oms_order_return_sale os on os.order_id = o.id
+           left join oms_order_item        ot on ot.order_id = o.id
+           left join pms_sku_stock sk on sk.id=ot.product_sku_id
+    <where>
+      1=1
+      <if test="orderParam.orderSn != null">
+        /**订单编号**/
+        AND  o.order_sn =#{orderParam.orderSn}
+      </if>
+
+      <if test="orderParam.receiverName != null">
+        /**收货人姓名**/
+        AND o.receiver_name = #{orderParam.receiverName}
+      </if>
+
+      <if test="orderParam.memberPhone != null">
+      /**买家手机号**/
+      AND m.phone = #{orderParam.memberPhone}
+      </if>
+
+      <if test="orderParam.receiverPhone != null">
+      /**收货人手机号**/
+      AND o.receiver_phone = #{orderParam.receiverPhone}
+      </if>
+
+      <if test="orderParam.deliverySn != null">
+      /**物流单号**/
+      AND o.delivery_sn = #{orderParam.deliverySn}
+      </if>
+      <if test="orderParam.sysUserNickName != null">
+      /**所属搭配师昵称(备注名)**/
+      AND t.nick_name = #{orderParam.sysUserNickName}
+      </if>
+
+      <if test="orderParam.status != null">
+      /**待付款/已完成/已发货/待发货/已关闭**/
+      and o.`status`=#{orderParam.status}
+      </if>
+
+      <if test="orderParam.orderSaleType != null">
+      /**售后状态**/
+      and os.type=#{orderParam.orderSaleType}
+      </if>
+      <if test="orderParam.orderSaleStatus != null">
+      /**售后状态**/
+      and os.`status`=#{orderParam.orderSaleStatus}
+      </if>
+
+      <if test="orderParam.payType != null">
+      /** 付款方式**/
+      and o.pay_type=#{orderParam.payType}
+      </if>
+
+      <if test="orderParam.orderType != null">
+      /**订单类型**/
+      and o.order_type=#{orderParam.orderType}
+      </if>
+
+      <if test="orderParam.productName != null">
+      and ot.product_name like "%"#{orderParam.productName}"%"
+      </if>
+      <if test="orderParam.startDate != null">AND o.create_time <![CDATA[>=]]> #{orderParam.startDate}</if>
+      <if test="orderParam.endDate != null">AND o.create_time <![CDATA[<=]]>#{orderParam.endDate}</if>
+    </where>
+  </select>
 </mapper>

@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -24,6 +25,7 @@ import java.util.List;
  */
 @Data
 @TableName("oms_order")
+@ApiModel("订单")
 public class OmsOrder implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -57,54 +59,63 @@ public class OmsOrder implements Serializable {
      * 提交时间
      */
     @TableField("create_time")
+    @ApiModelProperty("提交时间")
     private Date createTime;
 
     /**
      * 用户帐号
      */
     @TableField("member_username")
+    @ApiModelProperty("用户帐号")
     private String memberUsername;
 
     /**
      * 订单总金额
      */
     @TableField("total_amount")
+    @ApiModelProperty("订单总金额")
     private BigDecimal totalAmount;
 
     /**
      * 应付金额（实际支付金额）
      */
     @TableField("pay_amount")
+    @ApiModelProperty("应付金额（实际支付金额）")
     private BigDecimal payAmount;
 
     /**
      * 运费金额
      */
     @TableField("freight_amount")
+    @ApiModelProperty("运费金额")
     private BigDecimal freightAmount;
 
     /**
      * 促销优化金额（促销价、满减、阶梯价）
      */
     @TableField("promotion_amount")
+    @ApiModelProperty("促销优化金额（促销价、满减、阶梯价）")
     private BigDecimal promotionAmount;
 
     /**
      * 积分抵扣金额
      */
     @TableField("integration_amount")
+    @ApiModelProperty("积分抵扣金额")
     private BigDecimal integrationAmount;
 
     /**
      * 优惠券抵扣金额
      */
     @TableField("coupon_amount")
+    @ApiModelProperty("优惠券抵扣金额")
     private BigDecimal couponAmount;
 
     /**
      * 管理员后台调整订单使用的折扣金额
      */
     @TableField("discount_amount")
+    @ApiModelProperty("管理员后台调整订单使用的折扣金额")
     private BigDecimal discountAmount;
 
     /**
@@ -131,6 +142,7 @@ public class OmsOrder implements Serializable {
      * 订单类型：0->正常订单；1->秒杀订单
      */
     @TableField("order_type")
+    @ApiModelProperty("订单类型：0->正常订单；1->秒杀订单")
     private Integer orderType;
 
     /**
@@ -151,6 +163,7 @@ public class OmsOrder implements Serializable {
      * 自动确认时间（天）
      */
     @TableField("auto_confirm_day")
+    @ApiModelProperty("自动确认时间（天）")
     private Integer autoConfirmDay;
 
     /**
@@ -183,24 +196,28 @@ public class OmsOrder implements Serializable {
      * 发票抬头
      */
     @TableField("bill_header")
+    @ApiModelProperty("发票抬头")
     private String billHeader;
 
     /**
      * 发票内容
      */
     @TableField("bill_content")
+    @ApiModelProperty("发票内容")
     private String billContent;
 
     /**
      * 收票人电话
      */
     @TableField("bill_receiver_phone")
+    @ApiModelProperty("收票人电话")
     private String billReceiverPhone;
 
     /**
      * 收票人邮箱
      */
     @TableField("bill_receiver_email")
+    @ApiModelProperty("收票人邮箱")
     private String billReceiverEmail;
 
     /**

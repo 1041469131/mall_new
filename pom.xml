@@ -220,7 +220,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5.1</version>
+                <version>3.1</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
@@ -229,16 +229,16 @@
                       <compilerArgs>
                           <arg>-Xlint:deprecation</arg>
                       </compilerArgs> -->
-                    <compilerArguments>
-                        <!-- 是否输出所有的编译信息（包括类的加载等）-->
-                        <!--<verbose />-->
-                        <!-- 解决maven命令编译报错，因为rt.jar 和jce.jar在jre的lib下面，不在jdk的lib下面，
-                        导致maven找不到（java7以后会出现这个问题），将这2个jar包拷贝到jdk的lib下面估计也好使-->
+                   <!-- <compilerArguments>
+                        &lt;!&ndash; 是否输出所有的编译信息（包括类的加载等）&ndash;&gt;
+                        &lt;!&ndash;<verbose />&ndash;&gt;
+                        &lt;!&ndash; 解决maven命令编译报错，因为rt.jar 和jce.jar在jre的lib下面，不在jdk的lib下面，
+                        导致maven找不到（java7以后会出现这个问题），将这2个jar包拷贝到jdk的lib下面估计也好使&ndash;&gt;
                         <bootclasspath>${java.home}\lib\rt.jar;${java.home}\lib\jce.jar</bootclasspath>
-                    </compilerArguments>
+                    </compilerArguments>-->
                 </configuration>
             </plugin>
-            <plugin>
+           <!-- <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
                 <version>3.0.1</version>
@@ -250,14 +250,14 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
+            </plugin>-->
+            <!--<plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <fork>true</fork>
                 </configuration>
-            </plugin>
+            </plugin>-->
         </plugins>
     </build>
 

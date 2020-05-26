@@ -74,10 +74,10 @@ public class PmsSkuStock implements Serializable {
     private Integer sale;
 
     /**
-     * 单品促销价格
+     * 单品成本价格
      */
     @TableField("promotion_price")
-    @ApiModelProperty("单品促销价格")
+    @ApiModelProperty("单品成本价格")
     private BigDecimal promotionPrice;
 
     /**

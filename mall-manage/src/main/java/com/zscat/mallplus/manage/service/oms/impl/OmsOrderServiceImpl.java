@@ -1,6 +1,7 @@
 package com.zscat.mallplus.manage.service.oms.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zscat.mallplus.manage.config.WxAppletProperties;
 import com.zscat.mallplus.manage.service.marking.ISmsCouponHistoryService;
@@ -17,30 +18,66 @@ import com.zscat.mallplus.manage.service.ums.IUmsMemberReceiveAddressService;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberService;
 import com.zscat.mallplus.manage.service.ums.RedisService;
 import com.zscat.mallplus.manage.service.wechat.WechatApiService;
-import com.zscat.mallplus.manage.utils.*;
+import com.zscat.mallplus.manage.utils.CharUtil;
+import com.zscat.mallplus.manage.utils.DateUtils;
+import com.zscat.mallplus.manage.utils.MapUtils;
+import com.zscat.mallplus.manage.utils.ResponseUtil;
+import com.zscat.mallplus.manage.utils.UserUtils;
+import com.zscat.mallplus.manage.utils.XmlUtil;
 import com.zscat.mallplus.manage.utils.applet.TemplateData;
 import com.zscat.mallplus.manage.utils.applet.WX_TemplateMsgUtil;
 import com.zscat.mallplus.manage.utils.applet.WechatUtil;
 import com.zscat.mallplus.mbg.exception.ApiMallPlusException;
-import com.zscat.mallplus.mbg.marking.entity.*;
+import com.zscat.mallplus.mbg.marking.entity.SmsCoupon;
+import com.zscat.mallplus.mbg.marking.entity.SmsCouponHistory;
+import com.zscat.mallplus.mbg.marking.entity.SmsCouponProductCategoryRelation;
+import com.zscat.mallplus.mbg.marking.entity.SmsCouponProductRelation;
+import com.zscat.mallplus.mbg.marking.entity.SmsGroup;
+import com.zscat.mallplus.mbg.marking.entity.SmsGroupMember;
 import com.zscat.mallplus.mbg.marking.vo.SmsCouponHistoryDetail;
-import com.zscat.mallplus.mbg.oms.entity.*;
+import com.zscat.mallplus.mbg.oms.entity.OmsCartItem;
+import com.zscat.mallplus.mbg.oms.entity.OmsOrder;
+import com.zscat.mallplus.mbg.oms.entity.OmsOrderItem;
+import com.zscat.mallplus.mbg.oms.entity.OmsOrderOperateHistory;
+import com.zscat.mallplus.mbg.oms.entity.OmsOrderSetting;
+import com.zscat.mallplus.mbg.oms.mapper.OmsOrderItemMapper;
 import com.zscat.mallplus.mbg.oms.mapper.OmsOrderMapper;
 import com.zscat.mallplus.mbg.oms.mapper.OmsOrderOperateHistoryMapper;
 import com.zscat.mallplus.mbg.oms.mapper.OmsOrderSettingMapper;
-import com.zscat.mallplus.mbg.oms.vo.*;
+import com.zscat.mallplus.mbg.oms.vo.CartPromotionItem;
+import com.zscat.mallplus.mbg.oms.vo.ConfirmOrderResult;
+import com.zscat.mallplus.mbg.oms.vo.GroupAndOrderVo;
+import com.zscat.mallplus.mbg.oms.vo.OmsMoneyInfoParam;
+import com.zscat.mallplus.mbg.oms.vo.OmsOrderDeliveryParam;
+import com.zscat.mallplus.mbg.oms.vo.OmsOrderDetail;
+import com.zscat.mallplus.mbg.oms.vo.OmsOrderQueryParam;
+import com.zscat.mallplus.mbg.oms.vo.OmsReceiverInfoParam;
+import com.zscat.mallplus.mbg.oms.vo.OrderParam;
+import com.zscat.mallplus.mbg.oms.vo.OrderResult;
+import com.zscat.mallplus.mbg.oms.vo.TbThanks;
 import com.zscat.mallplus.mbg.pms.entity.PmsProduct;
 import com.zscat.mallplus.mbg.pms.entity.PmsSkuStock;
-import com.zscat.mallplus.mbg.pms.mapper.PmsSkuStockMapper;
 import com.zscat.mallplus.mbg.ums.entity.UmsIntegrationConsumeSetting;
 import com.zscat.mallplus.mbg.ums.entity.UmsMember;
 import com.zscat.mallplus.mbg.ums.entity.UmsMemberReceiveAddress;
-import com.zscat.mallplus.mbg.ums.entity.UmsMemberStatisticsInfo;
 import com.zscat.mallplus.mbg.ums.mapper.UmsIntegrationConsumeSettingMapper;
 import com.zscat.mallplus.mbg.ums.mapper.UmsMemberStatisticsInfoMapper;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.IdGeneratorUtil;
 import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import javax.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
@@ -49,13 +86,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -114,6 +144,8 @@ public class OmsOrderServiceImpl extends ServiceImpl<OmsOrderMapper, OmsOrder> i
     private IUmsMemberService memberService;
     @Resource
     private OmsOrderSettingMapper orderSettingMapper;
+    @Autowired
+    private OmsOrderItemMapper omsOrderItemMapper;
 
     @Autowired
     private UmsMemberStatisticsInfoMapper umsMemberStatisticsInfoMapper;
@@ -1324,5 +1356,12 @@ public class OmsOrderServiceImpl extends ServiceImpl<OmsOrderMapper, OmsOrder> i
     @Override
     public List<OmsOrder> listOmsOrders(String outTradeNo) {
         return orderMapper.listOmsOrders(outTradeNo);
+    }
+
+    @Override
+    public Page<OrderResult> listOmsOrderByPage(OmsOrderQueryParam oderParam) {
+        Page<OrderResult> page = new Page<>(oderParam.getPageNum(),oderParam.getPageSize());
+        Page<OrderResult> orderResultPage = orderMapper.listOmsOrderByPage(page, oderParam);
+        return orderResultPage;
     }
 }

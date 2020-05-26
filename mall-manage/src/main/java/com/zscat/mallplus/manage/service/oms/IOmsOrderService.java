@@ -1,8 +1,10 @@
 package com.zscat.mallplus.manage.service.oms;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrder;
 import com.zscat.mallplus.mbg.oms.vo.*;
+import com.zscat.mallplus.mbg.pms.vo.PmsProductVo;
 import com.zscat.mallplus.mbg.ums.entity.UmsMember;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import org.springframework.transaction.annotation.Transactional;
@@ -99,4 +101,6 @@ public interface IOmsOrderService extends IService<OmsOrder> {
     Map<String, Object> payPrepay(String str, String ipStr, BigDecimal totalFee, String isParentOrder, OmsOrder orderInfo, List<OmsOrder> orderList) throws Exception;
 
     List<OmsOrder> listOmsOrders(String outTradeNo);
+
+    Page<OrderResult> listOmsOrderByPage(OmsOrderQueryParam oderParam);
 }

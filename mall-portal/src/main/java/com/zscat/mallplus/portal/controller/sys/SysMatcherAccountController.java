@@ -6,20 +6,21 @@ import com.zscat.mallplus.manage.service.sys.ISysUserService;
 import com.zscat.mallplus.manage.service.ums.IUmsApplyMatcherService;
 import com.zscat.mallplus.manage.utils.UserUtils;
 import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
-import com.zscat.mallplus.mbg.marking.entity.SmsHomeAdvertise;
 import com.zscat.mallplus.mbg.sys.entity.SysMatcherAccount;
 import com.zscat.mallplus.mbg.sys.entity.SysUser;
 import com.zscat.mallplus.mbg.ums.entity.UmsApplyMatcher;
 import com.zscat.mallplus.mbg.utils.CommonResult;
-import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.Date;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController

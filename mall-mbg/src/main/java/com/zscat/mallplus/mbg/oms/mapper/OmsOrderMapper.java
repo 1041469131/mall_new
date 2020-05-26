@@ -1,10 +1,15 @@
 package com.zscat.mallplus.mbg.oms.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrder;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrderItem;
 import com.zscat.mallplus.mbg.oms.vo.OmsOrderDeliveryParam;
 import com.zscat.mallplus.mbg.oms.vo.OmsOrderDetail;
+import com.zscat.mallplus.mbg.oms.vo.OmsOrderQueryParam;
+import com.zscat.mallplus.mbg.oms.vo.OrderParam;
+import com.zscat.mallplus.mbg.oms.vo.OrderResult;
+import com.zscat.mallplus.mbg.pms.vo.PmsProductVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -47,4 +52,6 @@ public interface OmsOrderMapper extends BaseMapper<OmsOrder> {
     int delivery(@Param("list") List<OmsOrderDeliveryParam> deliveryParamList);
 
     List<OmsOrder> listOmsOrders(@Param("outTradeNo") String outTradeNo);
+
+    Page<OrderResult> listOmsOrderByPage(Page<OrderResult> pmsProductPage, @Param("orderParam") OmsOrderQueryParam orderParam);
 }

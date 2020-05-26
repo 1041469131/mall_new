@@ -26,14 +26,14 @@
                         password="${jdbc.password}">
         </jdbcConnection>
 
-        <javaModelGenerator targetPackage="com.zscat.mallplus.mbg.sys.entity" targetProject="mall-mbg\src\main\java"/>
+        <javaModelGenerator targetPackage="com.zscat.mallplus.mbg.oms.entity" targetProject="mall-mbg\src\main\java"/>
 
-        <sqlMapGenerator targetPackage="com.zscat.mallplus.mbg.sys.mapper" targetProject="mall-mbg\src\main\java"/>
+        <sqlMapGenerator targetPackage="com.zscat.mallplus.mbg.oms.mapper" targetProject="mall-mbg\src\main\java"/>
 
-        <javaClientGenerator type="XMLMAPPER" targetPackage="com.zscat.mallplus.mbg.sys.mapper"
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.zscat.mallplus.mbg.oms.mapper"
                              targetProject="mall-mbg\src\main\java"/>
         <!--生成全部表tableName设为%-->
-        <table tableName="sys_user_account">
+        <table tableName="oms_order_return_sale">
             <generatedKey column="id" sqlStatement="MySql" identity="true"/>
         </table>
     </context>
