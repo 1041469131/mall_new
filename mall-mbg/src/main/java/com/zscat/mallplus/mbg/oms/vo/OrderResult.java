@@ -3,6 +3,7 @@ package com.zscat.mallplus.mbg.oms.vo;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrder;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrderItem;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrderReturnSale;
+import com.zscat.mallplus.mbg.pms.entity.PmsBrand;
 import com.zscat.mallplus.mbg.pms.entity.PmsSkuStock;
 import com.zscat.mallplus.mbg.sys.entity.SysUser;
 import com.zscat.mallplus.mbg.ums.entity.UmsMember;
@@ -29,6 +30,10 @@ public class OrderResult extends OmsOrder {
   private List<OmsOrderItem> omsOrderItemList;
   @ApiModelProperty("商品sku")
   private List<PmsSkuStock>  pmsSkuStockList;
+  @ApiModelProperty("邀请人")
+  private SysUser inviteUser;
+  @ApiModelProperty("品牌")
+  private PmsBrand pmsBrand;
 
   public SysUser getSysUser() {
     return sysUser;
@@ -72,6 +77,24 @@ public class OrderResult extends OmsOrder {
 
   public OrderResult setPmsSkuStockList(List<PmsSkuStock> pmsSkuStockList) {
     this.pmsSkuStockList = pmsSkuStockList;
+    return this;
+  }
+
+  public SysUser getInviteUser() {
+    return inviteUser;
+  }
+
+  public OrderResult setInviteUser(SysUser inviteUser) {
+    this.inviteUser = inviteUser;
+    return this;
+  }
+
+  public PmsBrand getPmsBrand() {
+    return pmsBrand;
+  }
+
+  public OrderResult setPmsBrand(PmsBrand pmsBrand) {
+    this.pmsBrand = pmsBrand;
     return this;
   }
 }

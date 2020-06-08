@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zscat.mallplus.mbg.ums.mapper.UmsMatchTimeMapper">
+  <resultMap id="BaseResultMap" type="com.zscat.mallplus.mbg.ums.entity.UmsMatchTime">
+    <result column="id" jdbcType="BIGINT" property="id" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="match_time" jdbcType="TIMESTAMP" property="matchTime" />
+    <result column="member_id" jdbcType="BIGINT" property="memberId" />
+    <result column="match_user_id" jdbcType="BIGINT" property="matchUserId" />
+    <result column="dress_freq_month" jdbcType="INTEGER" property="dressFreqMonth" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, status, match_time, member_id, match_user_id,dress_freq_month
+  </sql>
+</mapper>

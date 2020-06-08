@@ -29,6 +29,10 @@ public class PmsProductUserMatchLibrary implements Serializable {
     @ApiModelProperty(value = "sku编号组合，多个用逗号隔开")
     private String skuIds;
 
+    @TableField("product_ids")
+    @ApiModelProperty(value = "产品组合，多个用逗号隔开")
+    private String productIds;
+
     /**标题*/
     @TableField("title")
     @ApiModelProperty(value = "标题")
@@ -183,5 +187,14 @@ public class PmsProductUserMatchLibrary implements Serializable {
 
     public void setSkuIds(String skuIds) {
         this.skuIds = skuIds;
+    }
+
+    public String getProductIds() {
+        return productIds;
+    }
+
+    public PmsProductUserMatchLibrary setProductIds(String productIds) {
+        this.productIds = productIds;
+        return this;
     }
 }

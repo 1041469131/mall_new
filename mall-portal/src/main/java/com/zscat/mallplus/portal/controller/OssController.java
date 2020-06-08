@@ -1,6 +1,7 @@
 package com.zscat.mallplus.portal.controller;
 
 
+import com.zscat.mallplus.manage.service.logistics.IlogisticsService;
 import com.zscat.mallplus.manage.service.sys.impl.OssServiceImpl;
 import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
 import com.zscat.mallplus.mbg.sys.vo.OssCallbackResult;
@@ -34,19 +35,8 @@ public class OssController {
 
     @Autowired
     private OssServiceImpl ossService;
-
-    @Value("${logistics.host}")
-    private String host;
-
-    @Value("${logistics.path}")
-    private String path;
-
-    @Value("${logistics.method}")
-    private String method;
-
-    @Value("${logistics.appcode}")
-    private String appcode;
-
+    @Autowired
+    private IlogisticsService ilogisticsService;
     @IgnoreAuth
     @ApiOperation(value = "oss上传签名生成")
     @RequestMapping(value = "/policy", method = RequestMethod.GET)
@@ -68,17 +58,10 @@ public class OssController {
     @ApiOperation(value = "获取物流相关信息")
     @RequestMapping(value = "getLogisticsInfos", method = RequestMethod.GET)
     @ResponseBody
-    public Object getLogisticsInfos(String no,String type) {
-        Map<String, String> headers = new HashMap<String, String>();
-        headers.put("Authorization", "APPCODE " + appcode);
-        Map<String, String> querys = new HashMap<String, String>();
-        querys.put("no", no);
-        if(!StringUtils.isEmpty(type)){
-            querys.put("no", type);
-        }
+    public Object getLogisticsInfos(String no) {
+
         try {
-            HttpResponse response = HttpUtils.doGet(host, path, method, headers, querys);
-            String respon = EntityUtils.toString(response.getEntity());
+            String respon = ilogisticsService.query(no);
             return new CommonResult().success(respon);
         }catch (Exception e){
             return new CommonResult().failed(e.getMessage());

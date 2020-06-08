@@ -1,7 +1,10 @@
 package com.zscat.mallplus.mbg.ums.vo;
 
+import com.zscat.mallplus.mbg.ums.entity.UmsMatchTime;
 import com.zscat.mallplus.mbg.ums.entity.UmsMember;
+import com.zscat.mallplus.mbg.ums.entity.UmsMemberTag;
 import io.swagger.annotations.ApiModelProperty;
+import java.util.List;
 
 /**
  * 会员扩展类
@@ -51,6 +54,14 @@ public class UmsMemberVo extends UmsMember {
 
     @ApiModelProperty("搭配师的手机号")
     private String matcherUserPhone;
+    @ApiModelProperty("搭配推送时间间隔")
+    private Integer dressFreqMonth;
+
+    @ApiModelProperty("搭配通知状态")
+    private UmsMatchTime umsMatchTime;
+
+    @ApiModelProperty("用户标签")
+    private List<UmsMemberTag> umsMemberTags;
 
     public String getDressStyleName() {
         return dressStyleName;
@@ -162,5 +173,32 @@ public class UmsMemberVo extends UmsMember {
 
     public void setMatcherUserPhone(String matcherUserPhone) {
         this.matcherUserPhone = matcherUserPhone;
+    }
+
+    public Integer getDressFreqMonth() {
+        return dressFreqMonth;
+    }
+
+    public UmsMemberVo setDressFreqMonth(Integer dressFreqMonth) {
+        this.dressFreqMonth = dressFreqMonth;
+        return this;
+    }
+
+    public UmsMatchTime getUmsMatchTime() {
+        return umsMatchTime;
+    }
+
+    public UmsMemberVo setUmsMatchTime(UmsMatchTime umsMatchTime) {
+        this.umsMatchTime = umsMatchTime;
+        return this;
+    }
+
+    public List<UmsMemberTag> getUmsMemberTags() {
+        return umsMemberTags;
+    }
+
+    public UmsMemberVo setUmsMemberTags(List<UmsMemberTag> umsMemberTags) {
+        this.umsMemberTags = umsMemberTags;
+        return this;
     }
 }

@@ -192,7 +192,7 @@
     o.id, o.member_id, o.coupon_id, o.order_sn, o.create_time, o.member_username, o.total_amount, o.pay_amount, o.freight_amount, o.promotion_amount, o.integration_amount, o.coupon_amount, o.discount_amount, o.pay_type, o.source_type, o.status, o.order_type, o.delivery_company, o.delivery_sn, o.auto_confirm_day, o.integration, o.growth, o.promotion_info, o.bill_type, o.bill_header, o.bill_content, o.bill_receiver_phone, o.bill_receiver_email, o.receiver_name, o.receiver_phone, o.receiver_post_code, o.receiver_province, o.receiver_city, o.receiver_region, o.receiver_detail_address, o.note, o.confirm_status, o.delete_status, o.use_integration, o.payment_time, o.delivery_time, o.receive_time, o.comment_time, o.modify_time, o.prepay_id, o.supply_id, o.goods_id, o.goods_name, o.school_id,o.transaction_id
   </sql>
   <sql id="Sys_Base_Column_List">
-    t.id as sys_id, t.username as sys_username,t.name as sys_name, t.nick_name as sys_nick_name,t.wechat_name as sys_wechat_name
+    t.id as sys_id, t.username as sys_username,t.name as sys_name, t.nick_name as sys_nick_name,t.wechat_name as sys_wechat_name,t.phone as sys_phone
   </sql>
 
 
@@ -232,6 +232,10 @@
            left join pms_sku_stock sk on sk.id=ot.product_sku_id
     <where>
       1=1
+      <if test="orderParam.orderId != null">
+        /**订单Id**/
+        AND  o.id =#{orderParam.orderId}
+      </if>
       <if test="orderParam.orderSn != null">
         /**订单编号**/
         AND  o.order_sn =#{orderParam.orderSn}

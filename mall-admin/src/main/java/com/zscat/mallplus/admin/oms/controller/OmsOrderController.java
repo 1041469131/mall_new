@@ -3,7 +3,12 @@ package com.zscat.mallplus.admin.oms.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zscat.mallplus.manage.service.logistics.IlogisticsService;
 import com.zscat.mallplus.manage.service.oms.IOmsOrderService;
+import com.zscat.mallplus.manage.service.pms.IPmsBrandService;
+import com.zscat.mallplus.manage.service.pms.IPmsProductService;
+import com.zscat.mallplus.manage.service.sys.ISysUserService;
+import com.zscat.mallplus.manage.service.ums.IUmsApplyMatcherService;
 import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrder;
@@ -12,6 +17,10 @@ import com.zscat.mallplus.mbg.oms.vo.OmsOrderDeliveryParam;
 import com.zscat.mallplus.mbg.oms.vo.OmsOrderQueryParam;
 import com.zscat.mallplus.mbg.oms.vo.OmsReceiverInfoParam;
 import com.zscat.mallplus.mbg.oms.vo.OrderResult;
+import com.zscat.mallplus.mbg.pms.entity.PmsBrand;
+import com.zscat.mallplus.mbg.pms.entity.PmsProduct;
+import com.zscat.mallplus.mbg.sys.entity.SysUser;
+import com.zscat.mallplus.mbg.ums.entity.UmsApplyMatcher;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.ValidatorUtils;
 import io.swagger.annotations.Api;
@@ -20,6 +29,7 @@ import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -41,6 +51,16 @@ public class OmsOrderController {
 
   @Autowired
   private IOmsOrderService IOmsOrderService;
+  @Autowired
+  private IUmsApplyMatcherService iUmsApplyMatcherService;
+  @Autowired
+  private ISysUserService iSysUserService;
+  @Autowired
+  private IlogisticsService ilogisticsService;
+  @Autowired
+  private IPmsProductService iPmsProductService;
+  @Autowired
+  private IPmsBrandService iPmsBrandService;
 
   @SysLog(MODULE = "oms", REMARK = "根据条件查询所有订单表列表")
   @ApiOperation("根据条件查询所有订单表列表")
@@ -138,8 +158,32 @@ public class OmsOrderController {
       if (ValidatorUtils.empty(id)) {
         return new CommonResult().paramFailed("订单表id");
       }
-      OmsOrder coupon = IOmsOrderService.getById(id);
-      return new CommonResult().success(coupon);
+      OmsOrderQueryParam queryParam=new OmsOrderQueryParam();
+      queryParam.setOrderId(id);
+      Page<OrderResult> orderResultPage = IOmsOrderService.listOmsOrderByPage(queryParam);
+      List<OrderResult> records = orderResultPage.getRecords();
+
+      if(!CollectionUtils.isEmpty(records)){
+        OrderResult orderResult = records.get(0);
+        //设置邀请人
+        if(orderResult.getSysUser()!=null) {
+          UmsApplyMatcher umsApplyMatcher = iUmsApplyMatcherService
+            .getOne(new QueryWrapper<UmsApplyMatcher>().eq("phone", orderResult.getSysUser().getPhone()));
+          if(umsApplyMatcher!=null&&umsApplyMatcher.getAuditStatus().equals("1")) {
+            String invitePhone = umsApplyMatcher.getInvitePhone();
+            SysUser sysUser = iSysUserService.getOne(new QueryWrapper<SysUser>().eq("phone", invitePhone));
+            orderResult.setInviteUser(sysUser);
+          }
+        }
+        //设置品牌
+        Long productId = orderResult.getOmsOrderItemList().get(0).getProductId();
+        PmsProduct pmsProduct = iPmsProductService.getById(productId);
+        PmsBrand pmsBrand = iPmsBrandService.getOne(new QueryWrapper<PmsBrand>().eq("id", pmsProduct.getBrandId()));
+        orderResult.setPmsBrand(pmsBrand);
+        return new CommonResult().success(orderResult);
+      }
+      return new CommonResult().success();
+
     } catch (Exception e) {
       log.error("查询订单表明细：%s", e.getMessage(), e);
       return new CommonResult().failed();
@@ -221,5 +265,18 @@ public class OmsOrderController {
       return new CommonResult().success(count);
     }
     return new CommonResult().failed();
+  }
+
+  @IgnoreAuth
+  @ApiOperation(value = "获取物流相关信息")
+  @RequestMapping(value = "getLogisticsInfos", method = RequestMethod.GET)
+  @ResponseBody
+  public Object getLogisticsInfos(String no) {
+    try {
+      String respon = ilogisticsService.query(no);
+      return new CommonResult().success(respon);
+    }catch (Exception e){
+      return new CommonResult().failed(e.getMessage());
+    }
   }
 }

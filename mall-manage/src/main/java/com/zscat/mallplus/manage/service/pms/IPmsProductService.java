@@ -6,8 +6,10 @@ import com.zscat.mallplus.mbg.pms.entity.PmsProduct;
 import com.zscat.mallplus.mbg.pms.entity.PmsProductVertifyRecord;
 import com.zscat.mallplus.mbg.pms.vo.PmsProductAndGroup;
 import com.zscat.mallplus.mbg.pms.vo.PmsProductParam;
+import com.zscat.mallplus.mbg.pms.vo.PmsProductQueryParam;
 import com.zscat.mallplus.mbg.pms.vo.PmsProductResult;
 import com.zscat.mallplus.mbg.pms.vo.PmsProductVo;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +34,8 @@ public interface IPmsProductService extends IService<PmsProduct> {
      * 根据商品编号获取更新信息
      */
     PmsProductResult getUpdateInfo(Long id);
+
+    List<PmsProductResult> getProductResults(List<Long> ids);
 
     /**
      * 更新商品
@@ -80,5 +84,9 @@ public interface IPmsProductService extends IService<PmsProduct> {
 
     PmsProductAndGroup getProductAndGroup(Long id);
 
-    Page<PmsProductVo> listPmsProductByPage(PmsProductVo pmsProductVo);
+    Page<PmsProductVo> listPmsProductByPage(PmsProductQueryParam queryParam);
+
+    Page<PmsProduct> listProductsByPage(PmsProductQueryParam queryParam);
+
+    Page<PmsProductVo> listPmsProductCollectByPage(PmsProductQueryParam queryParam);
 }

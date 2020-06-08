@@ -214,7 +214,7 @@ public class PayController extends ApiBaseAction {
             InputStream in = request.getInputStream();
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             byte[] buffer = new byte[1024];
-            int len = 0;
+            int len;
             while ((len = in.read(buffer)) != -1) {
                 out.write(buffer, 0, len);
             }
@@ -235,13 +235,14 @@ public class PayController extends ApiBaseAction {
                 String outTradeNo = result.getOut_trade_no();
                 log.error("订单" + outTradeNo + "支付成功");
                 // 业务处理
-                OmsOrder param = new OmsOrder();
-                param.setOrderSn(outTradeNo);
                 List<OmsOrder> list = orderService.listOmsOrders(outTradeNo);
                 List<OmsOrderTrade> omsOrderTrades = null;
                 if(!CollectionUtils.isEmpty(list)){
                     omsOrderTrades = new ArrayList<>();
                     for(OmsOrder orderInfo:list){
+                        if(orderInfo.getStatus().equals(MagicConstant.ORDER_STATUS_WAIT_SEND)){
+                            continue;
+                        }
                         List<OmsOrderItem> omsOrderItems = iOmsOrderItemService.list(new QueryWrapper<OmsOrderItem>().eq("order_id",orderInfo.getId()));
                         if(!CollectionUtils.isEmpty(omsOrderItems)){
                             for(OmsOrderItem omsOrderItem : omsOrderItems){

@@ -48,9 +48,8 @@ public class MatchLibraryAssemble {
      * @return
      */
     public static List<PmsProductMatchLibraryVo> assembleUserMatchLibrary(List<PmsProductUserMatchLibrary> pmsProductUserMatchLibraries){
-        List<PmsProductMatchLibraryVo> pmsProductMatchLibraryVos = null;
+        List<PmsProductMatchLibraryVo> pmsProductMatchLibraryVos = new ArrayList<>();
         if(!CollectionUtils.isEmpty(pmsProductUserMatchLibraries)){
-            pmsProductMatchLibraryVos = new ArrayList<>();
             for(PmsProductUserMatchLibrary pmsProductUserMatchLibrary : pmsProductUserMatchLibraries){
                 updateUserMatchFavorType(pmsProductUserMatchLibrary);
                 PmsProductMatchLibraryVo pmsProductMatchLibraryVo = assembleSingleUserMatchLibrary(pmsProductUserMatchLibrary);

@@ -15,11 +15,15 @@
         <result column="logo" property="logo" />
         <result column="big_pic" property="bigPic" />
         <result column="brand_story" property="brandStory" />
-    </resultMap>
+        <result column="delivery_closing_time" property="deliveryClosingTime" />
+        <result column="account_type" property="accountType" />
+        <result column="account" property="account" />
+        <result column="phone" property="phone" />
 
+    </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, first_letter, sort, factory_status, show_status, product_count, product_comment_count, logo, big_pic, brand_story
+        id, name, first_letter, sort, factory_status, show_status, product_count, product_comment_count, logo, big_pic, brand_story,delivery_closing_time,account_type,account,phone
     </sql>
 
 </mapper>

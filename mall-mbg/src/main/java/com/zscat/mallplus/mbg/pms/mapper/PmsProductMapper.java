@@ -3,6 +3,7 @@ package com.zscat.mallplus.mbg.pms.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zscat.mallplus.mbg.oms.vo.CartProduct;
+import com.zscat.mallplus.mbg.pms.vo.PmsProductQueryParam;
 import com.zscat.mallplus.mbg.pms.vo.PmsProductResult;
 import com.zscat.mallplus.mbg.pms.vo.PmsProductVo;
 import com.zscat.mallplus.mbg.pms.vo.PromotionProduct;
@@ -28,5 +29,9 @@ public interface PmsProductMapper extends BaseMapper<PmsProduct> {
 
     PmsProductResult getUpdateInfo(Long id);
 
-    Page<PmsProductVo> listPmsProductByPage(Page<PmsProductVo> pmsProductPage, @Param("pmsProductVo") PmsProductVo pmsProductVo);
+    List<PmsProductResult> getProductResults(@Param("ids") List<Long> ids);
+
+    Page<PmsProductVo> listPmsProductByPage(Page<PmsProductVo> pmsProductPage, @Param("queryParam") PmsProductQueryParam queryParam);
+
+    Page<PmsProductVo> listPmsProductCollectByPage(Page<PmsProductVo> page, @Param("queryParam") PmsProductQueryParam queryParam);
 }

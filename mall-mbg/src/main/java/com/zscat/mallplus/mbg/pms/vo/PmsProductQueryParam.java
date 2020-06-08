@@ -1,11 +1,12 @@
 package com.zscat.mallplus.mbg.pms.vo;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.annotations.ApiModelProperty;
+import java.math.BigDecimal;
 import lombok.Data;
 
 /**
  * 产品查询参数
- * https://github.com/shenzhuan/mallplus on 2018/4/27.
  */
 @Data
 public class PmsProductQueryParam {
@@ -15,6 +16,10 @@ public class PmsProductQueryParam {
 
     @ApiModelProperty("审核状态")
     private Integer verifyStatus;
+
+    @TableField("delete_status")
+    @ApiModelProperty(value = "删除状态：0->未删除；1->已删除")
+    private Integer deleteStatus;
 
     @ApiModelProperty("商品名称模糊关键字")
     private String keyword;
@@ -28,80 +33,40 @@ public class PmsProductQueryParam {
     @ApiModelProperty("商品品牌编号")
     private Long brandId;
 
+    @ApiModelProperty("起始价格区间")
+    private BigDecimal startPrice;
+
+    @ApiModelProperty("结束价格区间")
+    private BigDecimal endPrice;
+
+    @ApiModelProperty("起始销量区间")
+    private Integer startSale;
+
+    @ApiModelProperty("结束销量区间")
+    private Integer endSale;
+
+    @ApiModelProperty("搭配师id")
+    private Long matchUserId;
+
+    @ApiModelProperty("会员id")
+    private Long memberId;
+
+    @ApiModelProperty(value = "收藏的状态 0-为收藏 1-已收藏")
+    private String collectStatus;
+
+    @ApiModelProperty(value = "搭配库的归属类型 0-个人 1-公司")
+    private String matchOwer;
+
+    @ApiModelProperty("商品分类编号")
+    private Long productAttributeCategoryId;
+
     private Integer pageSize = 10;
     private Integer pageNum = 1;
-    private Long productAttributeCategoryId;
     private String  sort = "price asc"; // 1 asc
 
-    public Integer getPublishStatus() {
-        return publishStatus;
-    }
+    @ApiModelProperty(value = "收藏的状态 0-为推荐 1-已推荐，不传后台默认为0")
+    private String recommendType;
 
-    public void setPublishStatus(Integer publishStatus) {
-        this.publishStatus = publishStatus;
-    }
 
-    public Integer getVerifyStatus() {
-        return verifyStatus;
-    }
 
-    public void setVerifyStatus(Integer verifyStatus) {
-        this.verifyStatus = verifyStatus;
-    }
-
-    public String getKeyword() {
-        return keyword;
-    }
-
-    public void setKeyword(String keyword) {
-        this.keyword = keyword;
-    }
-
-    public String getProductSn() {
-        return productSn;
-    }
-
-    public void setProductSn(String productSn) {
-        this.productSn = productSn;
-    }
-
-    public Long getProductCategoryId() {
-        return productCategoryId;
-    }
-
-    public void setProductCategoryId(Long productCategoryId) {
-        this.productCategoryId = productCategoryId;
-    }
-
-    public Long getBrandId() {
-        return brandId;
-    }
-
-    public void setBrandId(Long brandId) {
-        this.brandId = brandId;
-    }
-
-    public Long getProductAttributeCategoryId() {
-        return productAttributeCategoryId;
-    }
-
-    public void setProductAttributeCategoryId(Long productAttributeCategoryId) {
-        this.productAttributeCategoryId = productAttributeCategoryId;
-    }
-
-    public Integer getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(Integer pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    public Integer getPageNum() {
-        return pageNum;
-    }
-
-    public void setPageNum(Integer pageNum) {
-        this.pageNum = pageNum;
-    }
 }

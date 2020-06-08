@@ -3,14 +3,12 @@ package com.macro.mall.portal.zscat.mallplus;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zscat.mallplus.MallPortalApplication;
 import com.zscat.mallplus.manage.config.WxAppletProperties;
-import com.zscat.mallplus.manage.service.oms.IOmsExpressCompanyService;
 import com.zscat.mallplus.manage.service.oms.IOmsOrderItemService;
 import com.zscat.mallplus.manage.service.oms.IOmsOrderReturnSaleService;
 import com.zscat.mallplus.manage.service.oms.IOmsOrderService;
 import com.zscat.mallplus.manage.service.oms.IOmsOrderTradeService;
 import com.zscat.mallplus.manage.service.pms.IPmsSkuStockService;
 import com.zscat.mallplus.manage.service.sys.ISysMatcherStatisticsService;
-import com.zscat.mallplus.mbg.oms.entity.OmsExpressCompany;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrder;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrderItem;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrderTrade;
@@ -18,11 +16,8 @@ import com.zscat.mallplus.mbg.oms.mapper.OmsOrderItemMapper;
 import com.zscat.mallplus.mbg.pms.entity.PmsProductCommission;
 import com.zscat.mallplus.mbg.pms.mapper.PmsProductCommissionMapper;
 import com.zscat.mallplus.mbg.sys.entity.SysUser;
-import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.IdGeneratorUtil;
 import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
-import com.zscat.mallplus.portal.controller.OmsExpressCompanyController;
-import io.swagger.annotations.ApiOperation;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,8 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = MallPortalApplication.class)

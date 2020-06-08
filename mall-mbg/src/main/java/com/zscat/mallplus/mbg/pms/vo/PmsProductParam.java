@@ -29,11 +29,17 @@ public class PmsProductParam extends PmsProduct {
     @ApiModelProperty("商品参数及自定义规格属性")
     private List<PmsProductAttributeValue> productAttributeValueList;
 
+    private List<PmsProductAttribute> productAttributeList;
+
     @ApiModelProperty("专题和商品关系")
     private List<CmsSubjectProductRelation> subjectProductRelationList;
 
     @ApiModelProperty("优选专区和商品的关系")
     private List<CmsPrefrenceAreaProductRelation> prefrenceAreaProductRelationList;
+    @ApiModelProperty("产品佣金比例")
+    List<PmsProductCommission> pmsProductCommissions;
+    @ApiModelProperty("品牌")
+    private PmsBrand pmsBrand;
 
     public List<PmsProductLadder> getProductLadderList() {
         return productLadderList;
@@ -89,5 +95,33 @@ public class PmsProductParam extends PmsProduct {
 
     public void setPrefrenceAreaProductRelationList(List<CmsPrefrenceAreaProductRelation> prefrenceAreaProductRelationList) {
         this.prefrenceAreaProductRelationList = prefrenceAreaProductRelationList;
+    }
+
+    public List<PmsProductCommission> getPmsProductCommissions() {
+        return pmsProductCommissions;
+    }
+
+    public PmsProductParam setPmsProductCommissions(
+      List<PmsProductCommission> pmsProductCommissions) {
+        this.pmsProductCommissions = pmsProductCommissions;
+        return this;
+    }
+
+    public List<PmsProductAttribute> getProductAttributeList() {
+        return productAttributeList;
+    }
+
+    public PmsProductParam setProductAttributeList(List<PmsProductAttribute> productAttributeList) {
+        this.productAttributeList = productAttributeList;
+        return this;
+    }
+
+    public PmsBrand getPmsBrand() {
+        return pmsBrand;
+    }
+
+    public PmsProductParam setPmsBrand(PmsBrand pmsBrand) {
+        this.pmsBrand = pmsBrand;
+        return this;
     }
 }

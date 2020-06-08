@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zscat.mallplus.mbg.pms.mapper.PmsProductUserMatchLibraryMapper">
+  <resultMap id="BaseResultMap" type="com.zscat.mallplus.mbg.pms.entity.PmsProductUserMatchLibrary">
+    <result column="id" jdbcType="BIGINT" property="id"/>
+    <result column="match_id" jdbcType="BIGINT" property="matchId"/>
+    <result column="sku_ids" jdbcType="VARCHAR" property="skuIds"/>
+    <result column="product_ids" jdbcType="VARCHAR" property="productIds"/>
+    <result column="title" jdbcType="VARCHAR" property="title"/>
+    <result column="title_descr" jdbcType="VARCHAR" property="titleDescr"/>
+    <result column="title_pic_url" jdbcType="VARCHAR" property="titlePicUrl"/>
+    <result column="match_user_id" jdbcType="BIGINT" property="matchUserId"/>
+    <result column="user_id" jdbcType="BIGINT" property="userId"/>
+    <result column="match_type" jdbcType="VARCHAR" property="matchType"/>
+    <result column="favor_type" jdbcType="VARCHAR" property="favorType"/>
+    <result column="recommend_type" jdbcType="VARCHAR" property="recommendType"/>
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, match_id, sku_ids,product_ids, title, title_descr, title_pic_url, match_user_id, user_id,
+    match_type, favor_type, recommend_type, update_time, create_time
+  </sql>
+
+
+  <sql id="Pum_Base_Column_List">
+    pum.id, pum.match_id, pum.sku_ids,pum.product_ids, pum.title, pum.title_descr, pum.title_pic_url, pum.match_user_id, pum.user_id,
+    pum.match_type, pum.favor_type, pum.recommend_type, pum.update_time, pum.create_time
+  </sql>
+
+  <select id="listByPage" parameterType="com.zscat.mallplus.mbg.pms.vo.PmsProductQueryParam" resultMap="BaseResultMap">
+    select pum.* from pms_product_user_match_library pum
+      LEFT JOIN pms_product P on FIND_IN_SET(p.id,pum.product_ids)
+      LEFT JOIN ums_collect uc ON pum.id = uc.assembly_id
+    <where>
+      uc.favor_type = 1
+      AND uc.type = 3
+      <if test="queryParam.brandId != null">
+        AND P.brand_id = #{queryParam.brandId}
+      </if>
+      <if test="queryParam.keyword != null">
+        AND P.name LIKE CONCAT('%',#{queryParam.keyword},'%')
+      </if>
+      <if test="queryParam.deleteStatus != null">
+        AND P.delete_status =#{queryParam.deleteStatus}
+      </if>
+      <if test="queryParam.startPrice != null">
+        AND P.price &gt;=#{queryParam.startPrice}
+      </if>
+      <if test="queryParam.endPrice != null">
+        AND P.price &lt;=#{queryParam.endPrice}
+      </if>
+      <if test="queryParam.productCategoryId != null">
+        AND P.product_category_id = #{queryParam.productCategoryId}
+      </if>
+      <if test="queryParam.memberId != null">
+        AND uc.member_id = #{queryParam.memberId}
+      </if>
+      <if test="queryParam.productAttributeCategoryId != null">
+        AND P.product_attribute_category_id = #{queryParam.productAttributeCategoryId}
+      </if>
+    </where>
+    GROUP BY
+      pum.id
+
+  </select>
+  <select id="oldListByPage" parameterType="com.zscat.mallplus.mbg.pms.vo.PmsProductQueryParam" resultMap="BaseResultMap">
+    select pum.id, pum.match_id, tmp_sku_ids as sku_ids, pum.title, pum.title_descr, pum.title_pic_url, pum.match_user_id, pum.user_id,
+    pum.match_type, pum.favor_type, pum.recommend_type, pum.update_time, pum.create_time from
+    (
+      select tmpall.id , GROUP_CONCAT(CONCAT(tmpall.sku_id)) as tmp_sku_ids from(
+        SELECT sku_tmp.*,pst.product_id from((
+          select a.ID,substring_index(substring_index(a.sku_ids,',',b.AutoIncreID),',',-1) as sku_id
+          from
+          pms_product_user_match_library a
+          join incre_table b
+          ON b.AutoIncreID &lt;= (length(a.sku_ids) - length(REPLACE(a.sku_ids, ',', '')) + 1)
+        )as sku_tmp
+      )
+      LEFT JOIN pms_sku_stock pst ON pst.id = sku_tmp.sku_id
+      LEFT JOIN pms_product P on pst.product_id=P.id
+      <where>
+        <if test="queryParam.brandId != null">
+          AND P.brand_id = #{queryParam.brandId}
+        </if>
+        <if test="queryParam.keyword != null">
+          AND P.name LIKE CONCAT('%',#{queryParam.keyword},'%')
+        </if>
+        <if test="queryParam.deleteStatus != null">
+          AND P.delete_status =#{queryParam.deleteStatus}
+        </if>
+        <if test="queryParam.startPrice != null">
+          AND P.price &gt;=#{queryParam.startPrice}
+        </if>
+        <if test="queryParam.endPrice != null">
+          AND P.price &lt;=#{queryParam.endPrice}
+        </if>
+        <if test="queryParam.productCategoryId != null">
+          AND P.product_category_id = #{queryParam.productCategoryId}
+        </if>
+        <if test="queryParam.publishStatus != null">
+          AND P.publish_status = #{queryParam.publishStatus}
+        </if>
+        <if test="queryParam.productAttributeCategoryId != null">
+          AND P.product_attribute_category_id = #{queryParam.productAttributeCategoryId}
+        </if>
+      </where>
+      ) as tmpall
+      GROUP BY tmpall.id
+    ) as pumtmp
+    left JOIN pms_product_user_match_library pum on pumtmp.id=pum.id
+    LEFT JOIN ums_collect uc ON pum.id = uc.assembly_id
+    WHERE
+    uc.favor_type = 1
+    AND uc.type = 3
+    <if test="queryParam.memberId != null">
+      AND uc.member_id = #{queryParam.memberId}
+    </if>
+  </select>
+</mapper>

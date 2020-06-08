@@ -38,7 +38,6 @@ public class PmsProductAttributeCategoryController {
     @SysLog(MODULE = "pms", REMARK = "根据条件查询所有产品属性分类表列表")
     @ApiOperation("根据条件查询所有产品属性分类表列表")
     @GetMapping(value = "/list")
-    @PreAuthorize("hasAuthority('pms:PmsProductAttributeCategory:read')")
     public Object getPmsProductAttributeCategoryByPage(PmsProductAttributeCategory entity,
                                                        @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
                                                        @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize

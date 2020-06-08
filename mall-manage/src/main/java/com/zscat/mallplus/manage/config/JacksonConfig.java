@@ -2,6 +2,8 @@ package com.zscat.mallplus.manage.config;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import java.text.SimpleDateFormat;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -30,6 +32,11 @@ public class JacksonConfig {
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         objectMapper.setDateFormat(sdf);
+        SimpleModule module = new SimpleModule();
+        module.addSerializer(Long.class, ToStringSerializer.instance);
+        module.addSerializer(Long.TYPE, ToStringSerializer.instance);
+        objectMapper.registerModule(module);
+
         // 字段保留，将null值转为""
 //        objectMapper.getSerializerProvider().setNullValueSerializer(new JsonSerializer<Object>()
 //        {

@@ -1,14 +1,18 @@
 package com.zscat.mallplus.admin.pms.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zscat.mallplus.manage.service.pms.IPmsBrandService;
 import com.zscat.mallplus.manage.service.pms.IPmsProductService;
 import com.zscat.mallplus.manage.utils.ImportUtil;
 import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
 import com.zscat.mallplus.mbg.annotation.SysLog;
+import com.zscat.mallplus.mbg.pms.entity.PmsBrand;
 import com.zscat.mallplus.mbg.pms.entity.PmsProduct;
 import com.zscat.mallplus.mbg.pms.entity.PmsProductVertifyRecord;
 import com.zscat.mallplus.mbg.pms.vo.PmsProductParam;
+import com.zscat.mallplus.mbg.pms.vo.PmsProductQueryParam;
 import com.zscat.mallplus.mbg.pms.vo.PmsProductResult;
 import com.zscat.mallplus.mbg.pms.vo.PmsProductVo;
 import com.zscat.mallplus.mbg.utils.CommonResult;
@@ -51,18 +55,18 @@ public class PmsProductController {
 
     @Autowired
     private ImportUtil importUtil;
+    @Autowired
+    private IPmsBrandService pmsBrandService;
 
     @SysLog(MODULE = "pms", REMARK = "根据条件查询所有商品信息列表")
     @ApiOperation("根据条件查询所有商品信息列表")
-    @GetMapping(value = "/list")
+    @PostMapping(value = "/list")
     @PreAuthorize("hasAuthority('pms:PmsProduct:read')")
-    public CommonResult getPmsProductByPage(@ApiParam("商品") PmsProduct entity,
-                                      @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
-                                      @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize
-    ) {
+    public CommonResult<Page<PmsProduct>> getPmsProductByPage(@RequestBody @ApiParam("商品查询条件") PmsProductQueryParam queryParam) {
         try {
-            return new CommonResult().success(iPmsProductService.page(new Page<>(pageNum, pageSize), new QueryWrapper<>(entity).eq("delete_status","0")
-                    .orderByAsc("sort").orderByDesc("create_time")));
+            queryParam.setDeleteStatus(0);
+            Page<PmsProduct> pmsProductPage = iPmsProductService.listProductsByPage(queryParam);
+            return new CommonResult().success(pmsProductPage);
         } catch (Exception e) {
             log.error("根据条件查询所有商品信息列表：%s", e.getMessage(), e);
         }
@@ -174,9 +178,11 @@ public class PmsProductController {
     @RequestMapping(value = "/updateInfo/{id}", method = RequestMethod.GET)
     @ResponseBody
     @SysLog(MODULE = "pms", REMARK = "根据商品id获取商品编辑信息")
-    @PreAuthorize("hasAuthority('pms:PmsProduct:read')")
+  //  @PreAuthorize("hasAuthority('pms:PmsProduct:read')")
     public CommonResult<PmsProductResult> getUpdateInfo(@ApiParam("商品id") @PathVariable Long id) {
         PmsProductResult productResult = iPmsProductService.getUpdateInfo(id);
+        PmsBrand pmsBrand = pmsBrandService.getById(productResult.getBrandId());
+        productResult.setPmsBrand(pmsBrand);
         return new CommonResult<PmsProductResult>().success(productResult);
     }
 
@@ -279,8 +285,9 @@ public class PmsProductController {
     @ApiOperation("根据条件查询所有商品信息列表")
     @PostMapping(value = "/listPmsProductByPage")
     @IgnoreAuth
-    public CommonResult<Page<PmsProductVo>> listPmsProductByPage(@ApiParam("产品信息的扩展类") @RequestBody PmsProductVo pmsProductVo) {
-        Page<PmsProductVo> pmsProductList = iPmsProductService.listPmsProductByPage(pmsProductVo);
+    public CommonResult<Page<PmsProductVo>> listPmsProductByPage(@ApiParam("产品信息的扩展类") @RequestBody PmsProductQueryParam queryParam) {
+        Page<PmsProductVo> pmsProductList = iPmsProductService.listPmsProductByPage(queryParam);
+
         return new CommonResult().success(pmsProductList);
     }
 

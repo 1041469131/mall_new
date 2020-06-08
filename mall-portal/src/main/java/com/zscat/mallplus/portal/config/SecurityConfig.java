@@ -59,8 +59,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.html",
                         "/**/*.css",
                         "/**/*.js",
+                        "/**/*.txt",
                         "/swagger-resources/**",
                         "/v2/api-docs/**"
+
                 )
                 .permitAll()
                 .antMatchers("/admin/login", "/admin/register")// 对登录注册要允许匿名访问
@@ -96,15 +98,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public UserDetailsService userDetailsService() {
         //获取登录用户信息
-        return new UserDetailsService() {
-            @Override
-            public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-                UmsMember member = memberService.getByUsername(username);
-                if (member != null) {
-                    return new MemberDetails(member);
-                }
-                throw new UsernameNotFoundException("用户名或密码错误");
+        return username -> {
+            UmsMember member = memberService.getByUsername(username);
+            if (member != null) {
+                return new MemberDetails(member);
             }
+            throw new UsernameNotFoundException("用户名或密码错误");
         };
     }
 

@@ -15,6 +15,8 @@ import com.zscat.mallplus.manage.utils.UserUtils;
 import com.zscat.mallplus.mbg.sys.entity.*;
 import com.zscat.mallplus.mbg.sys.mapper.*;
 import com.zscat.mallplus.mbg.sys.vo.SysUserVO;
+import com.zscat.mallplus.mbg.ums.entity.UmsApplyMatcher;
+import com.zscat.mallplus.mbg.ums.mapper.UmsApplyMatcherMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -80,6 +82,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Autowired
     private RedisService redisService;
+
+    @Autowired
+    private UmsApplyMatcherMapper umsApplyMatcherMapper;
     @Override
     public String refreshToken(String oldToken) {
         String token = oldToken.substring(tokenHead.length());
@@ -202,6 +207,16 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             admin.setPassword(md5Password);
         }
         updateRole(admin.getId(),admin.getRoleIds());
+        if(admin.getPhone()!=null){
+            //如果手机号不为空说明是修改手机号 umsApplyMatcher也需要修改手机号
+            SysUser sysUser = sysUserMapper.selectById(admin.getId());
+            UmsApplyMatcher umsApplyMatcher = umsApplyMatcherMapper.selectOne(new QueryWrapper<UmsApplyMatcher>().eq("phone", sysUser.getPhone()));
+            umsApplyMatcher.setPhone(admin.getPhone());
+            umsApplyMatcherMapper.updateById(umsApplyMatcher);
+            UmsApplyMatcher umsApplyMatcher1 = umsApplyMatcherMapper.selectOne(new QueryWrapper<UmsApplyMatcher>().eq("invite_phone", sysUser.getPhone()));
+            umsApplyMatcher1.setInvitePhone(admin.getPhone());
+            umsApplyMatcherMapper.updateById(umsApplyMatcher1);
+        }
          sysUserMapper.updateById(admin);
         return true;
     }

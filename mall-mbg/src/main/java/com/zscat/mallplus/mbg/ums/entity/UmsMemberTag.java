@@ -3,6 +3,7 @@ package com.zscat.mallplus.mbg.ums.entity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import io.swagger.annotations.ApiModel;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -20,6 +21,7 @@ import java.io.Serializable;
  * @author zscat
  * @since 2019-04-19
  */
+@ApiModel("标签")
 @TableName("ums_member_tag")
 public class UmsMemberTag implements Serializable {
 

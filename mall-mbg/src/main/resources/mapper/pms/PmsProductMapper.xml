@@ -97,10 +97,31 @@
         <collection property="productAttributeValueList" columnPrefix="attribute_"
                     resultMap="com.zscat.mallplus.mbg.pms.mapper.PmsProductAttributeValueMapper.BaseResultMap">
         </collection>
+
+        <collection property="productAttributeList" columnPrefix="att_"
+          resultMap="com.zscat.mallplus.mbg.pms.mapper.PmsProductAttributeMapper.BaseResultMap">
+        </collection>
         <collection property="subjectProductRelationList" column="{productId=id}"
                     select="selectSubjectProductRelationByProductId"/>
         <collection property="prefrenceAreaProductRelationList" column="{productId=id}"
                     select="selectPrefrenceAreaProductRelationByProductId"/>
+
+
+
+    </resultMap>
+
+
+    <resultMap id="updateInfoMap1" type="com.zscat.mallplus.mbg.pms.vo.PmsProductResult"
+      extends="BaseResultMap">
+        <result column="cateParentId" jdbcType="BIGINT" property="cateParentId"/>
+        <result column="favor_type" jdbcType="VARCHAR" property="favoriteType"/>
+        <collection property="skuStockList" columnPrefix="sku_"
+          resultMap="com.zscat.mallplus.mbg.pms.mapper.PmsSkuStockMapper.BaseResultMap">
+        </collection>
+        <collection property="pmsProductCommissions" columnPrefix="comm_"
+          resultMap="com.zscat.mallplus.mbg.pms.mapper.PmsProductCommissionMapper.BaseResultMap">
+        </collection>
+
 
     </resultMap>
 
@@ -117,8 +138,11 @@
         member_member_price,m.member_level_name member_member_level_name,
         s.id sku_id,s.product_id sku_product_id,s.price sku_price,s.low_stock sku_low_stock,s.pic sku_pic,s.sale
         sku_sale,s.sku_code sku_sku_code,s.sp1 sku_sp1,s.sp2 sku_sp2,s.sp3 sku_sp3,s.stock sku_stock,s.lock_stock sku_lock_stock,
+               s.promotion_price sku_promotion_price,
         a.id attribute_id,a.product_id attribute_product_id,a.product_attribute_id
-        attribute_product_attribute_id,a.value attribute_value
+        attribute_product_attribute_id,a.value attribute_value,
+        at.id att_id, at.product_attribute_category_id att_product_attribute_category_id,  at.name att_name
+
         FROM pms_product p
         LEFT JOIN pms_product_category pc on pc.id = p.product_category_id
         LEFT JOIN pms_product_ladder l ON p.id = l.product_id
@@ -127,7 +151,27 @@
         LEFT JOIN pms_sku_stock s ON s.product_id = p.id
         LEFT JOIN ums_collect c ON c.assembly_id=s.id
         LEFT JOIN pms_product_attribute_value a ON a.product_id=p.id
+        left join  pms_product_attribute  at on  at.id=a.product_attribute_id
         WHERE p.id=#{id}
+    </select>
+
+
+    <select id="getProductResults" resultMap="updateInfoMap1">
+        SELECT p.*,c.favor_type,
+               pc.parent_id cateParentId,
+               s.id sku_id,s.product_id sku_product_id,s.price sku_price,s.low_stock sku_low_stock,s.pic sku_pic,s.sale
+                            sku_sale,s.sku_code sku_sku_code,s.sp1 sku_sp1,s.sp2 sku_sp2,s.sp3 sku_sp3,s.stock sku_stock,s.lock_stock sku_lock_stock,
+        comm.id as comm_id, comm.product_id as comm_product_id, comm.promote_type as comm_promote_type, comm.commission_type as comm_commission_type, comm.commission_proportion as comm_commission_proportion, comm.invite_proportion as comm_invite_proportion,
+        comm.update_date as comm_update_date, comm.update_time as comm_update_time, comm.create_date as comm_create_date,  comm.create_time as comm_create_time,comm.matcher_level as comm_matcher_level
+        FROM pms_product p
+                 LEFT JOIN pms_product_category pc on pc.id = p.product_category_id
+                 LEFT JOIN pms_sku_stock s ON s.product_id = p.id
+                 LEFT JOIN ums_collect c ON c.assembly_id=s.id
+                 LEFT JOIN pms_product_commission comm  ON comm.product_id=p.id
+        WHERE p.id IN
+        <foreach collection="ids" open="(" close=")" item="id" separator=",">
+            #{id}
+        </foreach>
     </select>
     <select id="selectSubjectProductRelationByProductId"
             resultMap="com.zscat.mallplus.mbg.pms.mapper.CmsSubjectProductRelationMapper.BaseResultMap">
@@ -209,17 +253,89 @@
         ppc.commission_proportion as ppc_commission_proportion,ppc.invite_proportion as ppc_invite_proportion,ppc.update_time as ppc_update_time
     </sql>
 
-    <select id="listPmsProductByPage" parameterType="com.zscat.mallplus.mbg.pms.vo.PmsProductVo" resultMap="pmsProductVoMap">
+    <select id="listPmsProductByPage" parameterType="com.zscat.mallplus.mbg.pms.vo.PmsProductQueryParam" resultMap="pmsProductVoMap">
         SELECT <include refid="Base_Column_List"/>
         FROM PMS_PRODUCT P
         <where>
-            <if test="pmsProductVo.brandId != null">
-                AND P.brand_id = #{pmsProductVo.brandId}
+
+            <if test="queryParam.deleteStatus != null">
+                AND P.delete_status = #{queryParam.deleteStatus}
             </if>
-            <if test="pmsProductVo.name != null">
-                AND P.name LIKE CONCAT('%',#{pmsProductVo.name},'%')
+
+            <if test="queryParam.brandId != null">
+                AND P.brand_id = #{queryParam.brandId}
             </if>
+
+            <if test="queryParam.keyword != null">
+                AND P.name LIKE CONCAT('%',#{queryParam.keyword},'%')
+            </if>
+
+            <if test="queryParam.deleteStatus != null">
+                AND P.delete_status =#{queryParam.deleteStatus}
+            </if>
+
+            <if test="queryParam.startPrice != null">
+                AND P.price &gt;=#{queryParam.startPrice}
+            </if>
+
+            <if test="queryParam.endPrice != null">
+                AND P.price &lt;=#{queryParam.endPrice}
+            </if>
+
+            <if test="queryParam.startSale != null">
+                AND P.sale &gt;=#{queryParam.startSale}
+            </if>
+
+            <if test="queryParam.endSale  != null">
+                AND P.sale &lt;=#{queryParam.endSale}
+            </if>
+
+            <if test="queryParam.productSn != null">
+                AND P.product_sn= #{queryParam.productSn}
+            </if>
+
+            <if test="queryParam.productCategoryId != null">
+                AND P.product_category_id = #{queryParam.productCategoryId}
+            </if>
+
+            <if test="queryParam.publishStatus != null">
+                AND P.publish_status = #{queryParam.publishStatus}
+            </if>
+            <if test="queryParam.productAttributeCategoryId != null">
+                AND P.product_attribute_category_id = #{queryParam.productAttributeCategoryId}
+            </if>
+
         </where>
+        order by sort asc, create_time desc
     </select>
 
+    <select id="listPmsProductCollectByPage" parameterType="com.zscat.mallplus.mbg.pms.vo.PmsProductQueryParam" resultMap="pmsProductVoMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM pms_product_user_collect pc left join PMS_PRODUCT P on pc.product_id=P.id
+        <where>
+            <if test="queryParam.brandId != null">
+                AND P.brand_id = #{queryParam.brandId}
+            </if>
+            <if test="queryParam.keyword != null">
+                AND P.name LIKE CONCAT('%',#{queryParam.keyword},'%')
+            </if>
+            <if test="queryParam.deleteStatus != null">
+                AND P.delete_status =#{queryParam.deleteStatus}
+            </if>
+            <if test="queryParam.startPrice != null">
+                AND P.price &gt;=#{queryParam.startPrice}
+            </if>
+            <if test="queryParam.endPrice != null">
+                AND P.price &lt;=#{queryParam.endPrice}
+            </if>
+            <if test="queryParam.productCategoryId != null">
+                AND P.product_category_id = #{queryParam.productCategoryId}
+            </if>
+            <if test="queryParam.productAttributeCategoryId != null">
+                AND P.product_attribute_category_id = #{queryParam.productAttributeCategoryId}
+            </if>
+
+
+        </where>
+    </select>
 </mapper>

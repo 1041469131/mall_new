@@ -1,7 +1,11 @@
 package com.zscat.mallplus.admin.pms.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zscat.mallplus.manage.assemble.MatchLibraryAssemble;
+import com.zscat.mallplus.manage.service.oms.IOmsOrderItemService;
+import com.zscat.mallplus.manage.service.oms.IOmsOrderReturnSaleService;
+import com.zscat.mallplus.manage.service.oms.IOmsOrderService;
 import com.zscat.mallplus.manage.service.pms.IPmsProductMatchLibraryService;
 import com.zscat.mallplus.manage.service.pms.IPmsProductService;
 import com.zscat.mallplus.manage.service.pms.IPmsProductUserMatchLibraryService;
@@ -10,17 +14,25 @@ import com.zscat.mallplus.manage.utils.JsonUtil;
 import com.zscat.mallplus.manage.utils.UserUtils;
 import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
 import com.zscat.mallplus.mbg.annotation.SysLog;
+import com.zscat.mallplus.mbg.oms.entity.OmsOrder;
+import com.zscat.mallplus.mbg.oms.entity.OmsOrderItem;
+import com.zscat.mallplus.mbg.oms.entity.OmsOrderReturnSale;
 import com.zscat.mallplus.mbg.pms.entity.PmsProduct;
 import com.zscat.mallplus.mbg.pms.entity.PmsProductMatchLibrary;
 import com.zscat.mallplus.mbg.pms.entity.PmsProductUserMatchLibrary;
 import com.zscat.mallplus.mbg.pms.vo.PmsProductMatchLibraryVo;
+import com.zscat.mallplus.mbg.pms.vo.PmsProductQueryParam;
 import com.zscat.mallplus.mbg.pms.vo.PmsProductResult;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.IdGeneratorUtil;
 import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.LongStream;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +50,8 @@ import java.util.*;
  */
 @Slf4j
 @RestController
-@Api(tags = "PmsProductMatchController", description = "管理搭配相关")
-@RequestMapping("/pms/PmsProductMatchController")
+@Api(tags = "PmsProductMatchController", description = "收藏管理搭配相关")
+@RequestMapping("/pms/PmsProductMatch")
 public class PmsProductMatchController {
 
     @Autowired
@@ -51,11 +63,17 @@ public class PmsProductMatchController {
     @Autowired
     private IPmsProductService iPmsProductService;
 
+    @Autowired
+    private IOmsOrderService omsOrderService;
+    @Autowired
+    private IOmsOrderReturnSaleService omsOrderReturnSaleService;
+    @Autowired
+    private IOmsOrderItemService omsOrderItemService;
+
     @IgnoreAuth
     @SysLog(MODULE = "pms", REMARK = "保存或者更新搭配库信息")
     @ApiOperation("保存或者更新搭配库信息")
     @RequestMapping(value = "/saveOrUpdate", method = RequestMethod.POST)
-    @PreAuthorize("hasAuthority('pms:PmsBrand:read')")
     public CommonResult<PmsProductMatchLibrary> saveOrUpdatePmsProductMatchLibrary(@ApiParam("搭配库") @RequestBody PmsProductMatchLibrary pmsProductMatchLibrary) {
         Long userId = UserUtils.getCurrentMember().getId();
         Long id = pmsProductMatchLibrary.getId();
@@ -84,70 +102,71 @@ public class PmsProductMatchController {
 
 
     @IgnoreAuth
-    @SysLog(MODULE = "pms", REMARK = "加入或者修改到用户库中")
-    @ApiOperation("加入到用户库中")
+    @SysLog(MODULE = "pms", REMARK = "购物车提交")
+    @ApiOperation("购物车提交")
     @RequestMapping(value = "/saveOrUpdate4User", method = RequestMethod.POST)
-    @PreAuthorize("hasAuthority('pms:PmsBrand:read')")
-    public CommonResult<PmsProductUserMatchLibrary> saveMatchLibrary4User(@ApiParam("用户搭配库") @RequestBody PmsProductUserMatchLibrary pmsProductUserMatchLibrary) {
-        if(pmsProductUserMatchLibrary.getId() == null){
-            pmsProductUserMatchLibrary.setId(IdGeneratorUtil.getIdGeneratorUtil().nextId());
-            pmsProductUserMatchLibrary.setCreateTime(new Date());
-        }else{
-            if(StringUtils.isEmpty(pmsProductUserMatchLibrary.getSkuIds())){
-                return new CommonResult<PmsProductUserMatchLibrary>().failed("该用户推荐没有选择规格");
+    public CommonResult<List<PmsProductUserMatchLibrary>> saveMatchLibrary4User(@ApiParam("用户搭配库") @RequestBody List<PmsProductUserMatchLibrary> pmsProductUserMatchLibrarys) {
+        for (int i = 0; i < pmsProductUserMatchLibrarys.size(); i++) {
+            PmsProductUserMatchLibrary pmsProductUserMatchLibrary=pmsProductUserMatchLibrarys.get(i);
+            if (pmsProductUserMatchLibrary.getId() == null) {
+                pmsProductUserMatchLibrary.setId(IdGeneratorUtil.getIdGeneratorUtil().nextId()+i);
+                pmsProductUserMatchLibrary.setCreateTime(new Date());
+            } else {
+                if (StringUtils.isEmpty(pmsProductUserMatchLibrary.getSkuIds())) {
+                    return new CommonResult<List<PmsProductUserMatchLibrary>>().failed("该用户推荐没有选择规格");
+                }
+                PmsProductUserMatchLibrary oldPmsProductUserMatchLibrary = iPmsProductUserMatchLibraryService
+                  .getById(pmsProductUserMatchLibrary.getId());
+                if (MagicConstant.RECOMMEND_TYPE_YES.equals(oldPmsProductUserMatchLibrary.getRecommendType())) {
+                    return new CommonResult<List<PmsProductUserMatchLibrary>>().failed("该用户是已推荐的状态不能修改");
+                }
             }
-            PmsProductUserMatchLibrary oldPmsProductUserMatchLibrary = iPmsProductUserMatchLibraryService.getById(pmsProductUserMatchLibrary.getId());
-            if(MagicConstant.RECOMMEND_TYPE_YES.equals(oldPmsProductUserMatchLibrary.getRecommendType())){
-                return new CommonResult<PmsProductUserMatchLibrary>().failed("该用户是已推荐的状态不能修改");
+            pmsProductUserMatchLibrary.setUpdateTime(new Date());
+            pmsProductUserMatchLibrary.setMatchUserId(UserUtils.getCurrentMember().getId());
+            if (StringUtils.isEmpty(pmsProductUserMatchLibrary.getMatchType())) {
+                pmsProductUserMatchLibrary.setMatchType(MagicConstant.MATCH_TYPE_COMBIN);
+            }
+            if (StringUtils.isEmpty(pmsProductUserMatchLibrary.getRecommendType())) {
+                pmsProductUserMatchLibrary.setRecommendType(MagicConstant.RECOMMEND_TYPE_NO);
             }
         }
-        pmsProductUserMatchLibrary.setUpdateTime(new Date());
-        pmsProductUserMatchLibrary.setMatchUserId(UserUtils.getCurrentMember().getId());
-        if(StringUtils.isEmpty(pmsProductUserMatchLibrary.getMatchType())){
-            pmsProductUserMatchLibrary.setMatchType(MagicConstant.MATCH_TYPE_COMBIN);
-        }
-        if(StringUtils.isEmpty(pmsProductUserMatchLibrary.getRecommendType())){
-            pmsProductUserMatchLibrary.setRecommendType(MagicConstant.RECOMMEND_TYPE_NO);
-        }
-
-        if(iPmsProductUserMatchLibraryService.saveOrUpdate(pmsProductUserMatchLibrary)){
-            return new CommonResult<PmsProductUserMatchLibrary>().success(pmsProductUserMatchLibrary);
-        }
-        return  new CommonResult<PmsProductUserMatchLibrary>().failed("操作失败");
+        iPmsProductUserMatchLibraryService.saveOrUpdateBatch(pmsProductUserMatchLibrarys);
+        return new CommonResult<List<PmsProductUserMatchLibrary>>().success(pmsProductUserMatchLibrarys);
     }
 
 
     @IgnoreAuth
     @SysLog(MODULE = "pms", REMARK = "查询搭配库信息")
-    @ApiOperation("查询搭配库信息")
+    @ApiOperation("查询（收藏）搭配库信息")
     @PostMapping(value = "/listMatchLibrary")
-    @PreAuthorize("hasAuthority('pms:PmsBrand:read')")
-    public CommonResult<List<PmsProductMatchLibraryVo>> listMatchLibrary(@ApiParam("收藏的状态 0-为收藏 1-已收藏") @Param("collectStatus") String collectStatus) {
-        Long userId = UserUtils.getCurrentMember().getId();
+//    @PreAuthorize("hasAuthority('pms:PmsBrand:read')")
+    public CommonResult<Page<PmsProductMatchLibraryVo>> listMatchLibrary(@ApiParam("条件")@RequestBody PmsProductQueryParam queryParam) {
         List<PmsProductMatchLibraryVo> pmsProductMatchLibraryVos = null;
-        List<PmsProductMatchLibrary> pmsProductMatchLibraries = iPmsProductMatchLibraryService.list(new QueryWrapper<PmsProductMatchLibrary>().
-                eq("operate_id", userId).eq("match_ower", MagicConstant.MATCH_OWER_PERSON).eq("collect_status", StringUtils.isEmpty(collectStatus)?MagicConstant.COLLECT_STATUS_YES:collectStatus).
-                orderByDesc("update_time"));
+        Page<PmsProductMatchLibrary> pmsProductMatchLibraryPage = iPmsProductMatchLibraryService.listByPage(queryParam);
+        List<PmsProductMatchLibrary> pmsProductMatchLibraries =  pmsProductMatchLibraryPage.getRecords();
         if(!CollectionUtils.isEmpty(pmsProductMatchLibraries)){
             pmsProductMatchLibraryVos = new ArrayList<>();
             for(PmsProductMatchLibrary pmsProductMatchLibrary : pmsProductMatchLibraries){
                 PmsProductMatchLibraryVo pmsProductMatchLibraryVo = new PmsProductMatchLibraryVo();
-                String productIds = pmsProductMatchLibrary.getProductIds();
-                if(!StringUtils.isEmpty(productIds)){
-                    String[] productArray = productIds.split(",");
-                    List<PmsProductResult> pmsProductResults = new ArrayList<>();
-                    for(String productId:productArray){
-                        PmsProductResult pmsProductResult = iPmsProductService.getUpdateInfo(Long.valueOf(productId));
-                        pmsProductResults.add(pmsProductResult);
-                    }
-                    List<PmsProduct> pmsProducts= (List<PmsProduct>) iPmsProductService.listByIds(Arrays.asList(productArray));
+                String productIdstr = pmsProductMatchLibrary.getProductIds();
+                if(!StringUtils.isEmpty(productIdstr)){
+//                    String[] productArray = productIds.split(",");
+//                    List<PmsProductResult> pmsProductResults = new ArrayList<>();
+//                    for(String productId:productArray){
+//                        PmsProductResult pmsProductResult = iPmsProductService.getUpdateInfo(Long.valueOf(productId));
+//                        pmsProductResults.add(pmsProductResult);
+//                    }
+                    List<Long> productIds = Arrays.stream(productIdstr.split(",")).map(e -> Long.valueOf(e)).collect(Collectors.toList());
+                    List<PmsProductResult> pmsProductResults = iPmsProductService.getProductResults(productIds);
                     pmsProductMatchLibraryVo.setPmsProductResults(pmsProductResults);
                     pmsProductMatchLibraryVo.setPmsProductMatchLibrary(pmsProductMatchLibrary);
                     pmsProductMatchLibraryVos.add(pmsProductMatchLibraryVo);
                 }
             }
         }
-        return  new CommonResult().success(pmsProductMatchLibraryVos);
+        Page<PmsProductMatchLibraryVo> productMatchLibraryVoPage=new Page<>(pmsProductMatchLibraryPage.getCurrent(),pmsProductMatchLibraryPage.getSize(),pmsProductMatchLibraryPage.getTotal());
+        productMatchLibraryVoPage.setRecords(pmsProductMatchLibraryVos);
+        return  new CommonResult().success(productMatchLibraryVoPage);
     }
 
     @IgnoreAuth
@@ -192,18 +211,47 @@ public class PmsProductMatchController {
     @SysLog(MODULE = "pms", REMARK = "查询用户的搭配库")
     @ApiOperation("查询用户的搭配库")
     @PostMapping(value = "/listUserMatchLibaray")
-    @PreAuthorize("hasAuthority('pms:PmsBrand:read')")
-    public CommonResult<List<PmsProductMatchLibraryVo>> listUserMatchLibaray(@ApiParam("用户id") Long memberId) {
+    public CommonResult<List<PmsProductMatchLibraryVo>> listUserMatchLibaray(@RequestBody @ApiParam("查询参数") PmsProductQueryParam queryParam) {
         Long userId = UserUtils.getCurrentMember().getId();
         List<PmsProductUserMatchLibrary> pmsProductUserMatchLibraries = iPmsProductUserMatchLibraryService.list(new QueryWrapper<PmsProductUserMatchLibrary>().
-                eq("match_user_id", userId).eq("user_id", memberId).orderByDesc("update_time"));
+                eq("match_user_id", userId).eq("user_id", queryParam.getMemberId()).eq("recommend_type",queryParam.getRecommendType()).orderByDesc("update_time"));
         List<PmsProductMatchLibraryVo> pmsProductMatchLibraryVos = MatchLibraryAssemble.assembleUserMatchLibrary(pmsProductUserMatchLibraries);
         return  new CommonResult().success(pmsProductMatchLibraryVos);
     }
 
+
     @IgnoreAuth
-    @SysLog(MODULE = "pms", REMARK = "将用户的搭配收藏到搭配师")
-    @ApiOperation("将用户的搭配收藏到搭配师")
+    @SysLog(MODULE = "pms", REMARK = "用户商品订单状态")
+    @ApiOperation("用户商品订单状态")
+    @PostMapping(value = "/listOrderStatus")
+    public CommonResult<Map<Long,Long>> listOrderStatus(@ApiParam("用户id") Long memberId) {
+        //购买过的单品
+        List<Long> orderIds4Pay = omsOrderService
+          .list(new QueryWrapper<OmsOrder>().lambda().eq(OmsOrder::getMemberId, memberId).in(OmsOrder::getStatus, 1, 2, 3)).stream().map(OmsOrder::getId).collect(Collectors.toList());
+        List<Long> productIds4Pay = CollectionUtils.isEmpty(orderIds4Pay)?new ArrayList<>():omsOrderItemService
+          .list(new QueryWrapper<OmsOrderItem>().lambda().in(OmsOrderItem::getOrderId, orderIds4Pay))
+          .stream().map(OmsOrderItem::getProductId).collect(
+            Collectors.toList());
+
+        //退货过的单品
+        List<Long> orderIds4returnSale = omsOrderReturnSaleService
+          .list(new QueryWrapper<OmsOrderReturnSale>().lambda().eq(OmsOrderReturnSale::getMemberId, memberId)
+            .eq(OmsOrderReturnSale::getType, MagicConstant.RETURN_APPLY_TYPE_AFTER_SALE)).stream().map(OmsOrderReturnSale::getOrderId)
+          .collect(Collectors.toList());
+        List<Long> productIds4returnSale = CollectionUtils.isEmpty(orderIds4returnSale)?new ArrayList<>():omsOrderItemService
+          .list(new QueryWrapper<OmsOrderItem>().lambda().in(OmsOrderItem::getOrderId, orderIds4returnSale))
+          .stream().map(OmsOrderItem::getProductId).collect(
+            Collectors.toList());
+
+        Map<Long,Long> orderStatus=new LinkedHashMap<>();
+        productIds4Pay.forEach(productIdPay->orderStatus.put(productIdPay,1L));
+        productIds4returnSale.forEach(productIdReturnSale->orderStatus.put(productIdReturnSale,0L));
+        return  new CommonResult().success(orderStatus);
+    }
+
+    @IgnoreAuth
+    @SysLog(MODULE = "pms", REMARK = "将用户的搭配放到收藏搭配库")
+    @ApiOperation("将用户的搭配放到收藏搭配库")
     @PostMapping(value = "/setUserMatch2Match")
     @PreAuthorize("hasAuthority('pms:PmsBrand:read')")
     public CommonResult<PmsProductUserMatchLibrary> setUserMatch2Match(@ApiParam("用户搭配id") @Param("matchId") Long matchId) {

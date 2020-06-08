@@ -6,8 +6,11 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zscat.mallplus.manage.config.WxAppletProperties;
 import com.zscat.mallplus.manage.helper.CalcRecommendStatus;
 import com.zscat.mallplus.manage.service.marking.ISmsCouponService;
+import com.zscat.mallplus.manage.service.pms.IPmsProductUserMatchLibraryService;
 import com.zscat.mallplus.manage.service.sms.ISmsService;
 import com.zscat.mallplus.manage.service.sys.ISysUserService;
+import com.zscat.mallplus.manage.service.ums.IUmsMatchTimeService;
+import com.zscat.mallplus.manage.service.ums.IUmsMemberRegisterParamService;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberService;
 import com.zscat.mallplus.manage.service.ums.RedisService;
 import com.zscat.mallplus.manage.utils.*;
@@ -18,7 +21,9 @@ import com.zscat.mallplus.mbg.pms.entity.PmsProductUserMatchLibrary;
 import com.zscat.mallplus.mbg.pms.mapper.PmsProductUserMatchLibraryMapper;
 import com.zscat.mallplus.mbg.sys.entity.SysUser;
 import com.zscat.mallplus.mbg.sys.mapper.SysAreaMapper;
+import com.zscat.mallplus.mbg.ums.entity.UmsMatchTime;
 import com.zscat.mallplus.mbg.ums.entity.UmsMember;
+import com.zscat.mallplus.mbg.ums.entity.UmsMemberRegisterParam;
 import com.zscat.mallplus.mbg.ums.entity.UmsMemberStatisticsInfo;
 import com.zscat.mallplus.mbg.ums.entity.UmsRecommendRelation;
 import com.zscat.mallplus.mbg.ums.entity.VUmsMember;
@@ -83,7 +88,7 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
     private UmsMemberStatisticsInfoMapper umsMemberStatisticsInfoMapper;
 
     @Autowired
-    private PmsProductUserMatchLibraryMapper pmsProductUserMatchLibraryMapper;
+    private IPmsProductUserMatchLibraryService pmsProductUserMatchLibraryService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UmsMemberServiceImpl.class);
    /* @Resource
@@ -97,6 +102,8 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
 
     @Autowired
     private UmsRecommendRelationMapper umsRecommendRelationMapper;
+    @Autowired
+    private IUmsMemberRegisterParamService iUmsMemberRegisterParamService;
 
     @Autowired
     private ISysUserService iSysUserService;
@@ -105,6 +112,8 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
     private JwtTokenUtil jwtTokenUtil;
     @Autowired
     private ISmsService smsService;
+    @Autowired
+    private IUmsMatchTimeService umsMatchTimeService;
 
     @Value("${redis.key.prefix.authCode}")
     private String REDIS_KEY_PREFIX_AUTH_CODE;
@@ -281,7 +290,8 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
                 // umsMember.setGender(Integer.parseInt(me.get("gender")));
                 umsMember.setNickname(me.get("nickName").toString());
                 umsMember.setSessionKey(sessionData.getString("session_key"));
-                umsMember.setCreateDate(new Date().getTime());
+                umsMember.setGender(Integer.valueOf(me.get("gender").toString()));
+                umsMember.setCreateDate(System.currentTimeMillis());
                 umsMemberMapper.insert(umsMember);
                 saveUmsStatisticsInfo(umsMember);
                 token = jwtTokenUtil.generateToken(umsMember.getUsername());
@@ -329,19 +339,19 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
         Map<String, Object> tokenMap = new HashMap<>();
         String token = null;
         //密码需要客户端加密后传递
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, passwordEncoder.encode(password));
+//        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, passwordEncoder.encode(password));
         try {
            /* Authentication authentication = authenticationManager.authenticate(authenticationToken);
             SecurityContextHolder.getContext().setAuthentication(authentication);
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
             UmsMember member = this.getByUsername(username);
             token = jwtTokenUtil.generateToken(userDetails);*/
-
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
             if(!passwordEncoder.matches(password,userDetails.getPassword())){
                 throw new BadCredentialsException("密码不正确");
             }
-            UmsMember member = this.getByUsername(username);
+            MemberDetails memberDetails = (MemberDetails) userDetails;
+            UmsMember member = memberDetails.getUmsMember();
             //   Authentication authentication = authenticationManager.authenticate(authenticationToken);
             Authentication authentication = new UsernamePasswordAuthenticationToken(
                     userDetails,null,userDetails.getAuthorities());
@@ -468,6 +478,29 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
                 if(!org.apache.commons.lang.StringUtils.isEmpty(umsMember.getRecommendId())){
                     Integer count = umsRecommendRelationMapper.selectCount(new QueryWrapper<UmsRecommendRelation>().eq("recommended_id",UserUtils.getCurrentUmsMember().getId()).
                             eq("status","1"));
+                    //插入时间节点
+                    List<UmsMatchTime> timeList = umsMatchTimeService
+                      .list(new QueryWrapper<UmsMatchTime>().lambda().eq(UmsMatchTime::getMemberId, umsMember.getId()));
+                    if (CollectionUtils.isEmpty(timeList)) {
+                        UmsMember umsMemberQuery = umsMemberMapper.selectById(umsMember.getId());
+                        UmsMatchTime umsMatchTime = new UmsMatchTime();
+                        umsMatchTime.setMatchTime(umsMember.getCreateTime());
+                        if(umsMemberQuery.getMatchUserId()!=null){
+                            umsMatchTime.setMatchUserId(umsMemberQuery.getMatchUserId());
+                        }else{
+                            //TODO 设置公司的搭配师
+                            umsMatchTime.setMatchUserId(null);
+                        }
+                        umsMatchTime.setMemberId(umsMember.getId());
+                        umsMatchTime.setStatus(0);
+                        if(umsMemberQuery.getDressFreq()!=null) {
+                            UmsMemberRegisterParam umsMemberRegisterParam = iUmsMemberRegisterParamService.findById(Long.valueOf(umsMemberQuery.getDressFreq()));
+                            umsMatchTime.setDressFreqMonth(dealDressFreqMonth( umsMemberRegisterParam.getName()));
+                        }else{
+                            umsMatchTime.setDressFreqMonth(2);
+                        }
+                        umsMatchTimeService.save(umsMatchTime);
+                    }
                     if(count == 0){
                         UmsRecommendRelation umsRecommendRelation = new UmsRecommendRelation();
                         umsRecommendRelation.setStatus("1");
@@ -523,5 +556,16 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
         Page<VUmsMemberVo> vUmsMemberVoPage = umsMemberMapper.pageVUmsMembers(pmsProductPage,paramMap);
         return vUmsMemberVoPage;
     }
-
+    private Integer dealDressFreqMonth(String dressFreqName){
+        switch (dressFreqName){
+            case "每个月":
+                return 1;
+            case "每2个月":
+                return 2;
+            case"每个季度":
+                return 3;
+            default:
+                return 6;
+        }
+    }
 }

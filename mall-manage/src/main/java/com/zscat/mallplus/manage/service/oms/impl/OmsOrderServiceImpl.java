@@ -1360,7 +1360,9 @@ public class OmsOrderServiceImpl extends ServiceImpl<OmsOrderMapper, OmsOrder> i
 
     @Override
     public Page<OrderResult> listOmsOrderByPage(OmsOrderQueryParam oderParam) {
-        Page<OrderResult> page = new Page<>(oderParam.getPageNum(),oderParam.getPageSize());
+        Integer pageNum = oderParam.getPageNum() == null ? 1 : oderParam.getPageNum();
+        Integer pageSize = oderParam.getPageSize()==null ?10:oderParam.getPageSize();
+        Page<OrderResult> page = new Page<>(pageNum,pageSize);
         Page<OrderResult> orderResultPage = orderMapper.listOmsOrderByPage(page, oderParam);
         return orderResultPage;
     }

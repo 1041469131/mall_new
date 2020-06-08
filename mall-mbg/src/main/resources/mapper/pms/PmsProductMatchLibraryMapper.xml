@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zscat.mallplus.mbg.pms.mapper.PmsProductMatchLibraryMapper">
+  <resultMap id="BaseResultMap" type="com.zscat.mallplus.mbg.pms.entity.PmsProductMatchLibrary">
+    <result column="id" jdbcType="BIGINT" property="id" />
+    <result column="product_ids" jdbcType="VARCHAR" property="productIds" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="title_descr" jdbcType="VARCHAR" property="titleDescr" />
+    <result column="title_pic_url" jdbcType="VARCHAR" property="titlePicUrl" />
+    <result column="operate_id" jdbcType="BIGINT" property="operateId" />
+    <result column="match_ower" jdbcType="VARCHAR" property="matchOwer" />
+    <result column="match_type" jdbcType="VARCHAR" property="matchType" />
+    <result column="collect_status" jdbcType="VARCHAR" property="collectStatus" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, product_ids, title, title_descr, title_pic_url, operate_id, match_ower, match_type, 
+    collect_status, update_time, create_time
+  </sql>
+
+  <sql id="Pum_Base_Column_List">
+    pum.id,  pum.product_ids,  pum.title,  pum.title_descr,  pum.title_pic_url,  pum.operate_id,  pum.match_ower,  pum.match_type,
+     pum.collect_status,  pum.update_time,  pum.create_time
+  </sql>
+
+  <select id="listByPage" parameterType="com.zscat.mallplus.mbg.pms.vo.PmsProductQueryParam" resultMap="BaseResultMap">
+    select <include refid="Pum_Base_Column_List"/>
+    from pms_product_match_library pum  LEFT JOIN pms_product P on FIND_IN_SET(p.id,pum.product_ids)
+    where
+          1=1
+    <if test="queryParam.collectStatus != null">
+      and  pum.collect_status=#{queryParam.collectStatus}
+    </if>
+    <if test="queryParam.matchOwer != null">
+      and  pum.match_ower=#{queryParam.matchOwer}
+    </if>
+    <if test="queryParam.matchUserId != null">
+      and  pum.operate_id=#{queryParam.matchUserId}
+    </if>
+    <if test="queryParam.brandId != null">
+      AND P.brand_id = #{queryParam.brandId}
+    </if>
+    <if test="queryParam.keyword != null">
+      AND P.name LIKE CONCAT('%',#{queryParam.keyword},'%')
+    </if>
+    <if test="queryParam.deleteStatus != null">
+      AND P.delete_status =#{queryParam.deleteStatus}
+    </if>
+    <if test="queryParam.startPrice != null">
+      AND P.price &gt;=#{queryParam.startPrice}
+    </if>
+    <if test="queryParam.endPrice != null">
+      AND P.price &lt;=#{queryParam.endPrice}
+    </if>
+    <if test="queryParam.productCategoryId != null">
+      AND P.product_category_id = #{queryParam.productCategoryId}
+    </if>
+    <if test="queryParam.productAttributeCategoryId != null">
+      AND P.product_attribute_category_id = #{queryParam.productAttributeCategoryId}
+    </if>
+    GROUP BY
+    pum.id
+    order by pum.update_time desc
+  </select>
+
+</mapper>

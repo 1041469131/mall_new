@@ -46,4 +46,6 @@ public class OmsOrderQueryParam {
     private Date startDate;
     @ApiModelProperty("结束时间")
     private Date endDate;
+    @ApiModelProperty("订单id")
+    private Long orderId;
 }

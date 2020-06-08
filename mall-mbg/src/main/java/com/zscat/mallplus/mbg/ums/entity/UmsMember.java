@@ -215,6 +215,12 @@ public class UmsMember implements Serializable {
     @ApiModelProperty(value = "创建时间，时间戳")
     private Long createDate;
 
+    @ApiModelProperty("用户印像")
+    private String impression;
+    @TableField("budget_status")
+    @ApiModelProperty("预算状态 0 不接受预算上调 1接受预算上调")
+    private Integer budgetStatus;
+
     private static final long serialVersionUID = 1L;
 
     public Long getId() {
@@ -647,5 +653,23 @@ public class UmsMember implements Serializable {
 
     public void setCreateDate(Long createDate) {
         this.createDate = createDate;
+    }
+
+    public String getImpression() {
+        return impression;
+    }
+
+    public UmsMember setImpression(String impression) {
+        this.impression = impression;
+        return this;
+    }
+
+    public Integer getBudgetStatus() {
+        return budgetStatus;
+    }
+
+    public UmsMember setBudgetStatus(Integer budgetStatus) {
+        this.budgetStatus = budgetStatus;
+        return this;
     }
 }

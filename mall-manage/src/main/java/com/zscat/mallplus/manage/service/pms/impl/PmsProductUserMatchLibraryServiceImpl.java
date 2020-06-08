@@ -1,12 +1,14 @@
 package com.zscat.mallplus.manage.service.pms.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zscat.mallplus.manage.helper.CalcRecommendStatus;
 import com.zscat.mallplus.manage.service.pms.IPmsProductUserMatchLibraryService;
 import com.zscat.mallplus.manage.utils.DateUtils;
 import com.zscat.mallplus.mbg.pms.entity.PmsProductUserMatchLibrary;
 import com.zscat.mallplus.mbg.pms.mapper.PmsProductUserMatchLibraryMapper;
+import com.zscat.mallplus.mbg.pms.vo.PmsProductQueryParam;
 import com.zscat.mallplus.mbg.ums.entity.UmsMember;
 import com.zscat.mallplus.mbg.ums.entity.UmsMemberStatisticsInfo;
 import com.zscat.mallplus.mbg.ums.mapper.UmsMemberMapper;
@@ -73,6 +75,11 @@ public class PmsProductUserMatchLibraryServiceImpl extends ServiceImpl<PmsProduc
             return this.saveOrUpdateBatch(pmsProductUserMatchLibraries);
         }
         return false;
+    }
+
+    @Override
+    public Page<PmsProductUserMatchLibrary> listByPage(PmsProductQueryParam queryParam) {
+        return pmsProductUserMatchLibraryMapper.listByPage(new Page<>(queryParam.getPageNum(),queryParam.getPageSize()),queryParam);
     }
 
     private Integer getRecommendCount(Long memberId) {

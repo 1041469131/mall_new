@@ -42,7 +42,7 @@ public class PmsBrandController {
                                     @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize
     ) {
         try {
-            return new CommonResult().success(IPmsBrandService.page(new Page<PmsBrand>(pageNum, pageSize), new QueryWrapper<>(entity).orderByDesc("id")));
+            return new CommonResult().success(IPmsBrandService.page(new Page<>(pageNum, pageSize), new QueryWrapper<>(entity).orderByDesc("id")));
         } catch (Exception e) {
             log.error("根据条件查询所有品牌表列表：%s", e.getMessage(), e);
         }

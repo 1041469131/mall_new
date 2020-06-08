@@ -16,9 +16,12 @@ import com.zscat.mallplus.mbg.pms.entity.*;
 import com.zscat.mallplus.mbg.pms.mapper.*;
 import com.zscat.mallplus.mbg.pms.vo.PmsProductAndGroup;
 import com.zscat.mallplus.mbg.pms.vo.PmsProductParam;
+import com.zscat.mallplus.mbg.pms.vo.PmsProductQueryParam;
 import com.zscat.mallplus.mbg.pms.vo.PmsProductResult;
 import com.zscat.mallplus.mbg.pms.vo.PmsProductVo;
 import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,7 +117,9 @@ public class PmsProductServiceImpl extends ServiceImpl<PmsProductMapper, PmsProd
     }
 
     private void handleSkuStockCode(List<PmsSkuStock> skuStockList, Long productId) {
-        if (CollectionUtils.isEmpty(skuStockList)) return;
+        if (CollectionUtils.isEmpty(skuStockList)) {
+            return;
+        }
         for (int i = 0; i < skuStockList.size(); i++) {
             PmsSkuStock skuStock = skuStockList.get(i);
             if (StringUtils.isEmpty(skuStock.getSkuCode())) {
@@ -134,6 +139,11 @@ public class PmsProductServiceImpl extends ServiceImpl<PmsProductMapper, PmsProd
     @Override
     public PmsProductResult getUpdateInfo(Long id) {
         return pmsProductMapper.getUpdateInfo(id);
+    }
+
+    @Override
+    public List<PmsProductResult> getProductResults(List<Long> ids) {
+        return pmsProductMapper.getProductResults(ids);
     }
 
     @Override
@@ -247,7 +257,9 @@ public class PmsProductServiceImpl extends ServiceImpl<PmsProductMapper, PmsProd
      */
     private void relateAndInsertList(Object dao, List dataList, Long productId) {
         try {
-            if (CollectionUtils.isEmpty(dataList)) return;
+            if (CollectionUtils.isEmpty(dataList)) {
+                return;
+            }
             for (Object item : dataList) {
                 Method setProductId = item.getClass().getMethod("setProductId", Long.class);
                 setProductId.invoke(item, productId);
@@ -352,17 +364,61 @@ public class PmsProductServiceImpl extends ServiceImpl<PmsProductMapper, PmsProd
     }
 
     @Override
-    public Page<PmsProductVo> listPmsProductByPage(PmsProductVo pmsProductVo) {
-        Page<PmsProductVo> page = new Page<>(pmsProductVo.getPageNum(),pmsProductVo.getPageSize());
-        Page<PmsProductVo> pmsProductVoPage = pmsProductMapper.listPmsProductByPage(page,pmsProductVo);
+    public Page<PmsProductVo> listPmsProductByPage(PmsProductQueryParam queryParam) {
+        Page<PmsProductVo> page = new Page<>(queryParam.getPageNum(),queryParam.getPageSize());
+        Page<PmsProductVo> pmsProductVoPage = pmsProductMapper.listPmsProductByPage(page,queryParam);
         List<PmsProductVo> pmsProductVos = pmsProductVoPage.getRecords();
+        buildSkuAndCommission1(pmsProductVos);
+        pmsProductVoPage.setRecords(pmsProductVos);
+        return pmsProductVoPage;
+    }
+
+    @Override
+    public Page<PmsProduct> listProductsByPage(PmsProductQueryParam queryParam) {
+        Page<PmsProductVo> page = new Page<>(queryParam.getPageNum(),queryParam.getPageSize());
+        Page<PmsProductVo> pmsProductVoPage = pmsProductMapper.listPmsProductByPage(page,queryParam);
+        List<PmsProduct> pmsProducts = pmsProductVoPage.getRecords().stream().map(pmsProductVo -> (PmsProduct) pmsProductVo)
+          .collect(Collectors.toList());
+        Page<PmsProduct> pmsProductPage = new Page<>(pmsProductVoPage.getCurrent(), pmsProductVoPage.getSize(),
+          pmsProductVoPage.getTotal());
+        pmsProductPage.setRecords(pmsProducts);
+        return pmsProductPage;
+    }
+
+    private void buildSkuAndCommission(List<PmsProductVo> pmsProductVos) {
         if(!CollectionUtils.isEmpty(pmsProductVos)){
             for(PmsProductVo productVo : pmsProductVos){
                 List<PmsProductCommission> pmsProductCommissions = pmsProductCommissionMapper.selectList(new QueryWrapper<PmsProductCommission>().eq("product_id",productVo.getId()));
                 productVo.setPmsProductCommissions(pmsProductCommissions);
+                List<PmsSkuStock> pmsSkuStocks = skuStockMapper
+                  .selectList(new QueryWrapper<PmsSkuStock>().eq("product_id", productVo.getId()));
+                productVo.setPmsSkuStocks(pmsSkuStocks);
             }
-            pmsProductVoPage.setRecords(pmsProductVos);
         }
+    }
+
+    private void buildSkuAndCommission1(List<PmsProductVo> pmsProductVos) {
+        if(!CollectionUtils.isEmpty(pmsProductVos)){
+            List<Long> productIds = pmsProductVos.stream().map(PmsProductVo::getId).distinct().collect(Collectors.toList());
+            Map<Long, PmsProductResult> pmsProductResultMap = pmsProductMapper.getProductResults(productIds).stream()
+              .collect(Collectors.toMap(PmsProductResult::getId, Function.identity()));
+            for(PmsProductVo productVo : pmsProductVos){
+                PmsProductResult pmsProductResult = pmsProductResultMap.get(productVo.getId());
+                productVo.setPmsProductCommissions(pmsProductResult.getPmsProductCommissions());
+                productVo.setPmsSkuStocks(pmsProductResult.getSkuStockList());
+                productVo.setFavoriteType(pmsProductResult.getFavoriteType());
+            }
+        }
+    }
+
+    @Override
+    public Page<PmsProductVo> listPmsProductCollectByPage(PmsProductQueryParam queryParam) {
+        Page<PmsProductVo> page = new Page<>(queryParam.getPageNum(),queryParam.getPageSize());
+        Page<PmsProductVo> pmsProductVoPage = pmsProductMapper.listPmsProductCollectByPage(page,queryParam);
+        List<PmsProductVo> pmsProductVos = pmsProductVoPage.getRecords();
+        buildSkuAndCommission1(pmsProductVos);
+        pmsProductVoPage.setRecords(pmsProductVos);
+
         return pmsProductVoPage;
     }
 }
