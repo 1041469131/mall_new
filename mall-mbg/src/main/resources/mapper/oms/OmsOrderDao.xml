@@ -223,6 +223,9 @@
     ot.product_sku_id   ot_product_sku_id,
     ot.product_sku_code ot_product_sku_code,
     ot.product_quantity ot_product_quantity,
+    ot.product_id ot_product_id,
+    ot.coupon_amount ot_coupon_amount,
+    ot.product_price ot_product_price,
     <include refid="Sk_Base_Column_List"/>
     FROM oms_order                         o
            LEFT JOIN ums_member            m ON o.member_id = m.id
@@ -295,5 +298,6 @@
       <if test="orderParam.startDate != null">AND o.create_time <![CDATA[>=]]> #{orderParam.startDate}</if>
       <if test="orderParam.endDate != null">AND o.create_time <![CDATA[<=]]>#{orderParam.endDate}</if>
     </where>
+    order  by o.create_time desc
   </select>
 </mapper>

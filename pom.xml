@@ -79,7 +79,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>thirdparty</groupId>
+            <artifactId>jexcel</artifactId>
+            <version>1.9-SNAPSHOT</version>
+        </dependency>
         <!--Swagger-UI API文档生产工具-->
         <dependency>
             <groupId>io.springfox</groupId>

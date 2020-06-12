@@ -41,4 +41,8 @@
         WHERE TR.member_id = #{memberId}
     </select>
 
+    <select id="listTagsCountByMatchUserId" resultMap="umsMemberTagVo">
+        select t.*,count(r.member_id) as fanCount from ums_member_tag t  LEFT JOIN ums_member_member_tag_relation r on r.tag_id=t.id  where t.match_user_id=#{matchUserId}  GROUP BY t.id
+    </select>
+
 </mapper>

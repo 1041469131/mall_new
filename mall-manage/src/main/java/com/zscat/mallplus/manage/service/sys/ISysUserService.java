@@ -38,6 +38,9 @@ public interface ISysUserService extends IService<SysUser> {
 
     List<SysPermission> listUserPerms(Long id);
 
+
+    List<SysPermission> listPermissions();
+
     void removePermissRedis(Long id);
 
     /**

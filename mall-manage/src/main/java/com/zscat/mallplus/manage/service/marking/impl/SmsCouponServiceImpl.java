@@ -309,8 +309,10 @@ public class SmsCouponServiceImpl extends ServiceImpl<SmsCouponMapper, SmsCoupon
         List<SmsCouponHistoryDetail> enableList = new ArrayList<>();
         List<SmsCouponHistoryDetail> disableList = new ArrayList<>();
         for (SmsCouponHistoryDetail couponHistoryDetail : allList) {
-            Integer useType = couponHistoryDetail.getCoupon().getUseType();//使用类型：0->全场通用；1->指定分类；2->指定商品
-            BigDecimal minPoint = couponHistoryDetail.getCoupon().getMinPoint();//使用门槛；0表示无门槛
+            //使用类型：0->全场通用；1->指定分类；2->指定商品
+            Integer useType = couponHistoryDetail.getCoupon().getUseType();
+            //使用门槛；0表示无门槛
+            BigDecimal minPoint = couponHistoryDetail.getCoupon().getMinPoint();
             Date endTime = couponHistoryDetail.getCoupon().getEndTime();
             if (useType.equals(MagicConstant.COUPON_USE_TYPE_ALL)) {
                 //0->全场通用

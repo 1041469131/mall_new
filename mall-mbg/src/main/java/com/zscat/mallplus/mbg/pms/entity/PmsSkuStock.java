@@ -206,7 +206,10 @@ public class PmsSkuStock implements Serializable {
         if (!StringUtils.isEmpty(this.sp3)) {
             sb.append("," + this.sp3);
         }
-        return sb.toString();
+        if(sb.length()>0){
+            return sb.toString().substring(1);
+        }
+        return null;
     }
     public void setMeno(String meno) {
         this.meno = meno;

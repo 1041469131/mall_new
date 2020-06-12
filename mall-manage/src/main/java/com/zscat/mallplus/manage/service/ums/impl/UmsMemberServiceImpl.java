@@ -460,47 +460,28 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
 
     @Override
     @Transactional
-    public String register4MiniProgram(UmsMemberVo umsMember) {
+    public String register4MiniProgram(UmsMemberVo umsMember) throws Exception{
         umsMember.setId(UserUtils.getCurrentUmsMember().getId());
         umsMember.setUpdateTime(new Date());
         if(MagicConstant.UMS_IS_COMPLETE_DONE.equals(umsMember.getIsRegister())){
             Long matchUserId = null;
             if(!org.apache.commons.lang.StringUtils.isEmpty(umsMember.getMatcherUserPhone())){
                 SysUser sysUser = iSysUserService.getOne(new QueryWrapper<SysUser>().eq("phone", umsMember.getMatcherUserPhone()));
+                if(sysUser==null){
+                    throw new Exception("搭配师填写的手机号不正确");
+                }
                 matchUserId = sysUser.getId();
             }else{
                 matchUserId = iSysUserService.getRandomSysUser().getId();
             }
             umsMember.setMatchUserId(matchUserId);
+            setMatchTime(umsMember, matchUserId);
         }
         if(updateById(umsMember)){
             if(MagicConstant.UMS_IS_COMPLETE_DONE.equals(umsMember.getIsRegister())){
                 if(!org.apache.commons.lang.StringUtils.isEmpty(umsMember.getRecommendId())){
                     Integer count = umsRecommendRelationMapper.selectCount(new QueryWrapper<UmsRecommendRelation>().eq("recommended_id",UserUtils.getCurrentUmsMember().getId()).
                             eq("status","1"));
-                    //插入时间节点
-                    List<UmsMatchTime> timeList = umsMatchTimeService
-                      .list(new QueryWrapper<UmsMatchTime>().lambda().eq(UmsMatchTime::getMemberId, umsMember.getId()));
-                    if (CollectionUtils.isEmpty(timeList)) {
-                        UmsMember umsMemberQuery = umsMemberMapper.selectById(umsMember.getId());
-                        UmsMatchTime umsMatchTime = new UmsMatchTime();
-                        umsMatchTime.setMatchTime(umsMember.getCreateTime());
-                        if(umsMemberQuery.getMatchUserId()!=null){
-                            umsMatchTime.setMatchUserId(umsMemberQuery.getMatchUserId());
-                        }else{
-                            //TODO 设置公司的搭配师
-                            umsMatchTime.setMatchUserId(null);
-                        }
-                        umsMatchTime.setMemberId(umsMember.getId());
-                        umsMatchTime.setStatus(0);
-                        if(umsMemberQuery.getDressFreq()!=null) {
-                            UmsMemberRegisterParam umsMemberRegisterParam = iUmsMemberRegisterParamService.findById(Long.valueOf(umsMemberQuery.getDressFreq()));
-                            umsMatchTime.setDressFreqMonth(dealDressFreqMonth( umsMemberRegisterParam.getName()));
-                        }else{
-                            umsMatchTime.setDressFreqMonth(2);
-                        }
-                        umsMatchTimeService.save(umsMatchTime);
-                    }
                     if(count == 0){
                         UmsRecommendRelation umsRecommendRelation = new UmsRecommendRelation();
                         umsRecommendRelation.setStatus("1");
@@ -528,6 +509,27 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
         return null;
     }
 
+    private void setMatchTime(UmsMemberVo umsMember, Long matchUserId) {
+        //插入时间节点
+        List<UmsMatchTime> timeList = umsMatchTimeService
+          .list(new QueryWrapper<UmsMatchTime>().lambda().eq(UmsMatchTime::getMemberId, umsMember.getId()));
+        if (CollectionUtils.isEmpty(timeList)) {
+            UmsMember umsMemberQuery = umsMemberMapper.selectById(umsMember.getId());
+            UmsMatchTime umsMatchTime = new UmsMatchTime();
+            umsMatchTime.setMatchTime(umsMember.getCreateTime());
+            umsMatchTime.setMatchUserId(matchUserId);
+            umsMatchTime.setMemberId(umsMember.getId());
+            umsMatchTime.setStatus(0);
+            if(umsMemberQuery.getDressFreq()!=null) {
+                UmsMemberRegisterParam umsMemberRegisterParam = iUmsMemberRegisterParamService.findById(Long.valueOf(umsMemberQuery.getDressFreq()));
+                umsMatchTime.setDressFreqMonth(dealDressFreqMonth( umsMemberRegisterParam.getName()));
+            }else{
+                umsMatchTime.setDressFreqMonth(2);
+            }
+            umsMatchTimeService.save(umsMatchTime);
+        }
+    }
+
     @Override
     public Page<UmsMemberVo> pageUmsMembers(Page<UmsMemberVo> umsMemberPage, Map<String, Object> paramMap) {
         return umsMemberMapper.pageUmsMembers(umsMemberPage,paramMap);
@@ -536,25 +538,7 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
     @Override
     @Transactional
     public Page<VUmsMemberVo> listVUmsMembers(VUmsMemberVo vUmsMemberVo) {
-        Page<VUmsMemberVo> pmsProductPage = new Page<>(vUmsMemberVo.getPageNum(),vUmsMemberVo.getPageSize());
-        Map<String,Object> paramMap = new HashMap<>();
-        paramMap.put("phone",vUmsMemberVo.getPhone());
-        paramMap.put("matchUserId",vUmsMemberVo.getMatchUserId());
-        paramMap.put("recommendStatus",vUmsMemberVo.getRecommendStatus());
-        paramMap.put("fanName",vUmsMemberVo.getFanName());
-        paramMap.put("tagName",vUmsMemberVo.getTagname());
-        paramMap.put("matchUserame",vUmsMemberVo.getMatchUserName());
-        paramMap.put("inviteName",vUmsMemberVo.getInviteName());
-        paramMap.put("startCreateDate",DateUtils.convertStringToDate(vUmsMemberVo.getStartCreateDate()));
-        paramMap.put("endCreateDate",DateUtils.convertStringToDate(vUmsMemberVo.getEndCreateDate()));
-        paramMap.put("startRecommendDate",DateUtils.convertStringToDate(vUmsMemberVo.getStartRecommendDate()));
-        paramMap.put("endRecommendDate",DateUtils.convertStringToDate(vUmsMemberVo.getEndRecommendDate()));
-        paramMap.put("startTotalAmount",vUmsMemberVo.getStartTotalAmount());
-        paramMap.put("endTotalAmount",vUmsMemberVo.getEndTotalAmount());
-        paramMap.put("startAvaAmount",vUmsMemberVo.getStartAvaAmount());
-        paramMap.put("endAvaAmount",vUmsMemberVo.getEndTotalAmount());
-        Page<VUmsMemberVo> vUmsMemberVoPage = umsMemberMapper.pageVUmsMembers(pmsProductPage,paramMap);
-        return vUmsMemberVoPage;
+      return  umsMemberMapper.pageVUmsMembers(new Page<>(vUmsMemberVo.getPageNum(),vUmsMemberVo.getPageSize()),vUmsMemberVo);
     }
     private Integer dealDressFreqMonth(String dressFreqName){
         switch (dressFreqName){

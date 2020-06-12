@@ -153,7 +153,7 @@ public class OmsOrderController {
   @ApiOperation("查询订单表明细")
   @RequestMapping(value = "/{id}")
   @PreAuthorize("hasAuthority('oms:OmsOrder:read')")
-  public Object getOmsOrderById(@ApiParam("订单表id") @PathVariable Long id) {
+  public CommonResult<OrderResult> getOmsOrderById(@ApiParam("订单表id") @PathVariable Long id) {
     try {
       if (ValidatorUtils.empty(id)) {
         return new CommonResult().paramFailed("订单表id");

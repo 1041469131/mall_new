@@ -96,8 +96,10 @@ public class SysMatcherStatisticsServiceImpl extends ServiceImpl<SysMatcherStati
                 if(!StringUtils.isEmpty(umsApplyMatcher.getInvitePhone())){
                     SysUser inviteSysUser = sysUserMapper.selectOne(new QueryWrapper<SysUser>().eq("phone",umsApplyMatcher.getInvitePhone()));
                     //邀请搭配师的比例
-                    saveOrupdateOmsMatcherCommission(omsOrder,inviteSysUser,"1");
-                    accountMatcherStatics(inviteSysUser);
+                    if(inviteSysUser!=null) {
+                        saveOrupdateOmsMatcherCommission(omsOrder, inviteSysUser, "1");
+                        accountMatcherStatics(inviteSysUser);
+                    }
                 }
             }
         }

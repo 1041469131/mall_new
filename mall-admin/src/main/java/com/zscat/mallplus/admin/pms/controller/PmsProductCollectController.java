@@ -106,14 +106,13 @@ public class PmsProductCollectController {
     return new CommonResult().success(new Page<PmsProductMatchLibraryVo>(pmsProductUserMatchLibraryPage.getCurrent(),pmsProductUserMatchLibraryPage.getSize(),pmsProductUserMatchLibraryPage.getTotal()).setRecords(pmsProductMatchLibraryVos));
   }
 
-  @IgnoreAuth
   @SysLog(MODULE = "pms", REMARK = "历史单品")
   @ApiOperation("历史单品")
-  @PostMapping(value = "/listProductHistory/{memeberId}")
+  @PostMapping(value = "/listProductHistory/{memberId}")
   public CommonResult<PmsProductHistoryVO> listProductHistory(
-    @ApiParam("会员Id") @PathVariable Long memeberId) {
+    @ApiParam("会员Id") @PathVariable Long memberId) {
     Map<String, Set<Long>> favorTypeMap = umsCollectService
-      .list(new QueryWrapper<UmsCollect>().lambda().eq(UmsCollect::getMemberId, memeberId).eq(UmsCollect::getType, 1))
+      .list(new QueryWrapper<UmsCollect>().lambda().eq(UmsCollect::getMemberId, memberId).eq(UmsCollect::getType, 1))
       .stream().collect(
         Collectors.groupingBy(UmsCollect::getFavorType, Collectors.mapping(UmsCollect::getAssemblyId, Collectors.toSet())));
     //喜欢的单品
@@ -124,12 +123,12 @@ public class PmsProductCollectController {
     List<PmsProduct> pmsProducts4dislike =CollectionUtils.isEmpty(productIds4dislike)?new ArrayList<>(): (List<PmsProduct>) pmsProductService.listByIds(productIds4dislike);
     //购买过的单品
     List<Long> orderIds4Pay = omsOrderService
-      .list(new QueryWrapper<OmsOrder>().lambda().eq(OmsOrder::getMemberId, memeberId)
+      .list(new QueryWrapper<OmsOrder>().lambda().eq(OmsOrder::getMemberId, memberId)
         .in(OmsOrder::getStatus, 1, 2, 3)).stream().map(OmsOrder::getId).collect(Collectors.toList());
     List<PmsProduct> pmsProducts4Pay = getPmsProducts(orderIds4Pay);
     //退货过的单品
     List<Long> orderIds4returnSale = omsOrderReturnSaleService
-      .list(new QueryWrapper<OmsOrderReturnSale>().lambda().eq(OmsOrderReturnSale::getMemberId, memeberId)
+      .list(new QueryWrapper<OmsOrderReturnSale>().lambda().eq(OmsOrderReturnSale::getMemberId, memberId)
         .eq(OmsOrderReturnSale::getType, MagicConstant.RETURN_APPLY_TYPE_AFTER_SALE)).stream().map(OmsOrderReturnSale::getOrderId)
       .collect(Collectors.toList());
     List<PmsProduct> pmsProducts4returnSale = getPmsProducts(orderIds4returnSale);
@@ -150,6 +149,9 @@ public class PmsProductCollectController {
       .list(new QueryWrapper<OmsOrderItem>().lambda().in(OmsOrderItem::getOrderId, orderIds4Pay))
       .stream().map(OmsOrderItem::getProductId).collect(
         Collectors.toList());
+    if(CollectionUtils.isEmpty(productIds4Pay)){
+      return new ArrayList<>();
+    }
     return (List<PmsProduct>) pmsProductService.listByIds(productIds4Pay);
   }
 

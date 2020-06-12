@@ -70,7 +70,8 @@ public class PmsSkuStockServiceImpl extends ServiceImpl<PmsSkuStockMapper, PmsSk
             pmsSkuStock.setStock(pmsSkuStock.getStock()-count);
             pmsSkuStock.setLockStock(pmsSkuStock.getLockStock()-count);
             pmsProduct.setStock(pmsProduct.getStock()-count);
-            pmsProduct.setSale(pmsProduct.getSale()+count);
+            int sale = pmsProduct.getSale() == null ? 0 : pmsProduct.getSale();
+            pmsProduct.setSale(sale+count);
            if(pmsProduct.getStock()<=0){
                //下架
                pmsProduct.setPublishStatus(0);

@@ -258,7 +258,7 @@ public class UmsMemberController {
             }else  {
               Calendar calendar= Calendar.getInstance();
               calendar.add(Calendar.DATE, -3);
-              if(umsMatchTime.getMatchTime().after(calendar.getTime())){
+              if(umsMatchTime.getMatchTime().before(calendar.getTime())){
                 umsMatchTime.setStatus(3);
               }
             }
@@ -266,7 +266,7 @@ public class UmsMemberController {
       umsMember.setUmsMatchTime(umsMatchTime);
     });
     umsMemberVos.sort(Comparator.comparing((UmsMemberVo e)->e.getUmsMatchTime().getStatus()).reversed().thenComparing(
-      UmsMember::getCreateTime).reversed());
+      UmsMember::getCreateTime));
 
 
     return new CommonResult().success(new Page(page.getCurrent(),page.getSize(),page.getTotal()).setRecords(umsMemberVos));
@@ -371,12 +371,45 @@ public class UmsMemberController {
   @ResponseBody
   @SysLog(MODULE = "ums", REMARK = "根据搭配师id查询搭配师下面的粉丝")
 //    @PreAuthorize("hasAuthority('ums:UmsMember:read')")
-  public CommonResult<List<VUmsMemberVo>> listUmsMember4Matcher(@RequestBody VUmsMemberVo vUmsMemberVo) {
+  public CommonResult<List<VUmsMemberVo>> listUmsMember4Matcher(@ApiParam("查询参数")@RequestBody VUmsMemberVo vUmsMemberVo) {
     //当为搭配师平台的时候，将登陆用户的id赋值给搭配师
-    if (MagicConstant.SYSTEM_TYPE_MATCH.equals(vUmsMemberVo.getSystemType())) {
-      vUmsMemberVo.setMatchUserId(UserUtils.getCurrentMember().getId());
-    }
+    vUmsMemberVo.setMatchUserId(UserUtils.getCurrentMember().getId());
     Page<VUmsMemberVo> umsMembers = IUmsMemberService.listVUmsMembers(vUmsMemberVo);
+    //设置时间间隔
+    Set<Long> memberIds = umsMembers.getRecords().stream().map(VUmsMemberVo::getId).collect(Collectors.toSet());
+    List<UmsMatchTime> umsMatchTimeList = umsMatchTimeService.list(new QueryWrapper<UmsMatchTime>().lambda().ge(UmsMatchTime::getStatus,0)
+      .in(UmsMatchTime::getMemberId, memberIds));
+    Map<Long, UmsMatchTime> umsMatchTimeMap = umsMatchTimeList.stream().collect(Collectors
+      .toMap(UmsMatchTime::getMemberId, Function.identity(),
+        (e1, e2) -> e1.getMatchTime().compareTo(e2.getMatchTime()) > 0 ? e1 : e2));
+    umsMembers.getRecords().forEach(umsMember->{
+      UmsMatchTime umsMatchTime = umsMatchTimeMap.get(umsMember.getId());
+      if(umsMatchTime==null){
+        umsMatchTime=new UmsMatchTime();
+        umsMatchTime.setMatchTime(umsMember.getCreateTime());
+        umsMatchTime.setMatchUserId(umsMember.getMatchUserId());
+        umsMatchTime.setMemberId(umsMember.getId());
+        umsMatchTime.setStatus(0);
+        Integer dressFreqMonth = dealDressFreqMonth(dealUserTag(umsMember.getDressFreq()));
+        umsMatchTime.setDressFreqMonth(dressFreqMonth==null?2:dressFreqMonth);
+      }
+      //空搭配和需推荐才有状态变化
+      if(umsMatchTime.getStatus()==0||umsMatchTime.getStatus()==3){
+        if(umsMatchTime.getMatchTime().before(new Date())){
+          //急需推荐
+          umsMatchTime.setStatus(4);
+        }else  {
+          Calendar calendar= Calendar.getInstance();
+          calendar.add(Calendar.DATE, -3);
+          if(umsMatchTime.getMatchTime().before(calendar.getTime())){
+            umsMatchTime.setStatus(3);
+          }
+        }
+      }
+      umsMember.setUmsMatchTime(umsMatchTime);
+      List<UmsMemberTag> umsMemberTags = umsMemberTagService.listTagsByMemberId(umsMember.getId());
+      umsMember.setUmsMemberTags(umsMemberTags);
+    });
     return new CommonResult().success(umsMembers);
   }
 

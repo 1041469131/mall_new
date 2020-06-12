@@ -1,10 +1,13 @@
 package com.zscat.mallplus.mbg.ums.vo;
 
+import com.zscat.mallplus.mbg.ums.entity.UmsMatchTime;
+import com.zscat.mallplus.mbg.ums.entity.UmsMemberTag;
 import com.zscat.mallplus.mbg.ums.entity.VUmsMember;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @ApiModel("粉丝和平台管理扩展对象")
 public class VUmsMemberVo extends VUmsMember {
@@ -53,6 +56,14 @@ public class VUmsMemberVo extends VUmsMember {
 
     @ApiModelProperty("页的总数据")
     private Integer pageSize;
+
+    @ApiModelProperty("搭配通知状态")
+    private UmsMatchTime umsMatchTime;
+
+    @ApiModelProperty("用户标签")
+    private List<UmsMemberTag> umsMemberTags;
+    @ApiModelProperty("穿衣频率")
+    private String dressFreq;
 
     public Integer getRecomendCount() {
         return recomendCount;
@@ -172,5 +183,32 @@ public class VUmsMemberVo extends VUmsMember {
 
     public void setRecommendStatus(String recommendStatus) {
         this.recommendStatus = recommendStatus;
+    }
+
+    public UmsMatchTime getUmsMatchTime() {
+        return umsMatchTime;
+    }
+
+    public VUmsMemberVo setUmsMatchTime(UmsMatchTime umsMatchTime) {
+        this.umsMatchTime = umsMatchTime;
+        return this;
+    }
+
+    public List<UmsMemberTag> getUmsMemberTags() {
+        return umsMemberTags;
+    }
+
+    public VUmsMemberVo setUmsMemberTags(List<UmsMemberTag> umsMemberTags) {
+        this.umsMemberTags = umsMemberTags;
+        return this;
+    }
+
+    public String getDressFreq() {
+        return dressFreq;
+    }
+
+    public VUmsMemberVo setDressFreq(String dressFreq) {
+        this.dressFreq = dressFreq;
+        return this;
     }
 }

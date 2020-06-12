@@ -236,6 +236,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
+    public List<SysPermission> listPermissions() {
+        return permissionMapper.selectList(new QueryWrapper<SysPermission>().lambda().eq(SysPermission::getStatus,1));
+    }
+
+    @Override
     public void removePermissRedis(Long id) {
         redisService.remove(String.format(Rediskey.menuTreesList,id));
         redisService.remove(String.format(Rediskey.menuList,id));

@@ -27,5 +27,5 @@ public interface UmsMemberMapper extends BaseMapper<UmsMember> {
 
     Page<UmsMemberVo> pageUmsMembers(Page<UmsMemberVo> umsMemberPage, Map<String, Object> paramMap);
 
-    Page<VUmsMemberVo> pageVUmsMembers(Page<VUmsMemberVo> pmsProductPage, @Param("paramMap") Map<String, Object> paramMap);
+    Page<VUmsMemberVo> pageVUmsMembers(Page<VUmsMemberVo> pmsProductPage, @Param("paramMap") VUmsMemberVo vUmsMemberVo);
 }

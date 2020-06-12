@@ -214,7 +214,7 @@ public class PmsProductMatchController {
     public CommonResult<List<PmsProductMatchLibraryVo>> listUserMatchLibaray(@RequestBody @ApiParam("查询参数") PmsProductQueryParam queryParam) {
         Long userId = UserUtils.getCurrentMember().getId();
         List<PmsProductUserMatchLibrary> pmsProductUserMatchLibraries = iPmsProductUserMatchLibraryService.list(new QueryWrapper<PmsProductUserMatchLibrary>().
-                eq("match_user_id", userId).eq("user_id", queryParam.getMemberId()).eq("recommend_type",queryParam.getRecommendType()).orderByDesc("update_time"));
+                eq("match_user_id", userId).eq("user_id", queryParam.getMemberId()).eq("recommend_type",queryParam.getRecommendType()==null?1:queryParam.getRecommendType()).orderByDesc("update_time"));
         List<PmsProductMatchLibraryVo> pmsProductMatchLibraryVos = MatchLibraryAssemble.assembleUserMatchLibrary(pmsProductUserMatchLibraries);
         return  new CommonResult().success(pmsProductMatchLibraryVos);
     }

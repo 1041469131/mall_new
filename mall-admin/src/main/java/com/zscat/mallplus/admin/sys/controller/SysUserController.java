@@ -12,6 +12,7 @@ import com.zscat.mallplus.manage.service.sys.ISysUserAccountService;
 import com.zscat.mallplus.manage.service.sys.ISysUserRoleService;
 import com.zscat.mallplus.manage.service.sys.ISysUserService;
 import com.zscat.mallplus.manage.service.ums.RedisService;
+import com.zscat.mallplus.manage.utils.UserUtils;
 import com.zscat.mallplus.manage.vo.SmsResultVO;
 import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
 import com.zscat.mallplus.mbg.annotation.SysLog;
@@ -321,7 +322,8 @@ public class SysUserController extends ApiController {
     @ApiOperation("分页获取获取搭配师列表")
     @RequestMapping(value = "/pageMyInviteMatcherUsers", method = RequestMethod.POST)
     @ResponseBody
-    public CommonResult<Page<SysUserVO>> pageMyInviteMatcherUsers(@RequestBody SysUserVO sysUser) {
+    public CommonResult<Page<SysUserVO>> pageMyInviteMatcherUsers(@ApiParam("参数") @RequestBody SysUserVO sysUser) {
+        sysUser.setId(UserUtils.getCurrentMember().getId());
         Page<SysUserVO> sysUserVOPage = sysUserService.pageMyInviteMatcherUsers(sysUser);
         return new CommonResult<Page<SysUserVO>>().success(sysUserVOPage);
     }

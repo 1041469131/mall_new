@@ -202,7 +202,7 @@ public class UmsMemberController extends ApiBaseAction {
     @ApiOperation("用户注册接口(小程序)")
     @RequestMapping(value = "/register4MiniProgram")
     @ResponseBody
-    public CommonResult<UmsMember> register4MiniProgram(UmsMemberVo umsMember) {
+    public CommonResult<UmsMember> register4MiniProgram(UmsMemberVo umsMember)throws Exception {
         String msg = memberService.register4MiniProgram(umsMember);
         return new CommonResult().success(msg);
     }

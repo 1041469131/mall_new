@@ -23,6 +23,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -68,7 +69,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/v2/api-docs/**"
                 )
                 .permitAll()
-                .antMatchers("/admin/login", "/admin/register")// 对登录注册要允许匿名访问
+                .antMatchers("/sys/sysUser/login", "/admin/register")// 对登录注册要允许匿名访问
                 .permitAll()
                 .antMatchers(HttpMethod.OPTIONS)//跨域请求会先进行一次options请求
                 .permitAll()
@@ -78,12 +79,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticated();
         // 禁用缓存
         httpSecurity.headers().cacheControl();
-        // 添加JWT filter
-        httpSecurity.addFilterBefore(jwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+
         //添加自定义未授权和未登录结果返回
         httpSecurity.exceptionHandling()
-                .accessDeniedHandler(restfulAccessDeniedHandler)
-                .authenticationEntryPoint(restAuthenticationEntryPoint);
+          .accessDeniedHandler(restfulAccessDeniedHandler)
+          .authenticationEntryPoint(restAuthenticationEntryPoint);
+        // 添加JWT filter
+
+        httpSecurity.addFilterBefore(corsFilter(), ChannelProcessingFilter.class);
+        httpSecurity.addFilterBefore(jwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+//        //添加自定义未授权和未登录结果返回
+//        httpSecurity.exceptionHandling()
+//                .accessDeniedHandler(restfulAccessDeniedHandler)
+//                .authenticationEntryPoint(restAuthenticationEntryPoint);
     }
 
     @Override
@@ -107,7 +115,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             user.setUsername(username);
             SysUser admin = sysUserService.getOne(new QueryWrapper<>(user));
             if (admin != null) {
-                List<SysPermission> permissionList = sysUserService.listUserPerms(admin.getId());
+                List<SysPermission> permissionList = sysUserService.listPermissions();
+                  //sysUserService.listUserPerms(admin.getId());
                 return new AdminUserDetails(admin, permissionList);
             }
             throw new UsernameNotFoundException("用户名或密码错误");
@@ -133,8 +142,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         source.registerCorsConfiguration("/**", config);
-        FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
-        bean.setOrder(0);
-        return new CorsFilter(source);
+        CorsFilter corsFilter = new CorsFilter(source);
+//        FilterRegistrationBean bean = new FilterRegistrationBean();
+//        bean.setOrder(0);
+//        bean.setFilter(corsFilter);
+        return corsFilter;
     }
 }

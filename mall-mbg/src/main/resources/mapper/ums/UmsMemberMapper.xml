@@ -72,6 +72,7 @@
         <result column="ava_amount" jdbcType="DECIMAL" property="avaAmount" />
         <result column="dress_freq_name" jdbcType="VARCHAR" property="dressFreqName" />
         <result column="dress_freq_code" jdbcType="VARCHAR" property="dressFreqCode" />
+        <result column="dress_freq" jdbcType="VARCHAR" property="dressFreq" />
         <result column="phone" jdbcType="VARCHAR" property="phone" />
         <result column="order_count" jdbcType="DECIMAL" property="orderCount" />
         <result column="icon" jdbcType="VARCHAR" property="icon" />
@@ -122,8 +123,8 @@
         where urr.recommend_id = #{recommendedId} and urr.status = '1'
     </select>
     
-    <select id="pageVUmsMembers" resultMap="vUmsMemberMap">
-        SELECT T.ID,T.MATCH_USER_ID,T.FAN_NAME,T.CREATE_TIME,T.MATCH_USER_NAME,T.CREATE_DATE,
+    <select id="pageVUmsMembers"  parameterType="com.zscat.mallplus.mbg.ums.vo.VUmsMemberVo" resultMap="vUmsMemberMap">
+        SELECT T.ID,T.MATCH_USER_ID,T.FAN_NAME,T.CREATE_TIME,T.MATCH_USER_NAME,T.CREATE_DATE,T.dress_freq,
         T.INVITE_NAME,IFNULL(T.TOTAL_AMOUNT,0) AS TOTAL_AMOUNT,T.PERSONALIZED_SIGNATURE,
         IFNULL(T.AVA_AMOUNT,0) AS AVA_AMOUNT,T.DRESS_FREQ_NAME,T.DRESS_FREQ_CODE,
         T.PHONE,IFNULL(T.ORDER_COUNT,0) AS ORDER_COUNT,T.ICON,T1.RECOMEND_DATE,T1.RECOMEND_TIME,T1.RECOMMEND_STATUS,
@@ -141,10 +142,10 @@
                 AND T1.RECOMMEND_STATUS = #{paramMap.recommendStatus}
             </if>
             <if test="paramMap.fanName != null">
-                AND (T.FAN_NAME LIKE #{paramMap.fanName} OR T.personalized_signature LIKE #{paramMap.fanName})
+                AND (T.FAN_NAME LIKE  CONCAT('%',#{paramMap.fanName},'%') OR T.personalized_signature LIKE  CONCAT('%',#{paramMap.fanName},'%'))
             </if>
-            <if test="paramMap.matchUserame != null">
-                AND T.MATCH_USER_NAME LIKE #{paramMap.fanName}
+            <if test="paramMap.matchUserName != null">
+                AND T.MATCH_USER_NAME LIKE #{paramMap.matchUserName}
             </if>
             <if test="paramMap.inviteName != null">
                 AND T.INVITE_NAME LIKE #{paramMap.inviteName}
