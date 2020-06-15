@@ -231,8 +231,6 @@ public class UmsMemberController {
       umsMemberVo.setUmsMemberTags(umsMemberTags);
       return umsMemberVo;
     }).collect(Collectors.toList());
-
-
     //设置时间间隔
     Set<Long> memberIds = umsMemberVos.stream().map(UmsMemberVo::getId).collect(Collectors.toSet());
     List<UmsMatchTime> umsMatchTimeList = umsMatchTimeService.list(new QueryWrapper<UmsMatchTime>().lambda().ge(UmsMatchTime::getStatus,0)
@@ -257,7 +255,7 @@ public class UmsMemberController {
                 umsMatchTime.setStatus(4);
             }else  {
               Calendar calendar= Calendar.getInstance();
-              calendar.add(Calendar.DATE, -3);
+              calendar.add(Calendar.DAY_OF_YEAR, 3);
               if(umsMatchTime.getMatchTime().before(calendar.getTime())){
                 umsMatchTime.setStatus(3);
               }
@@ -267,8 +265,6 @@ public class UmsMemberController {
     });
     umsMemberVos.sort(Comparator.comparing((UmsMemberVo e)->e.getUmsMatchTime().getStatus()).reversed().thenComparing(
       UmsMember::getCreateTime));
-
-
     return new CommonResult().success(new Page(page.getCurrent(),page.getSize(),page.getTotal()).setRecords(umsMemberVos));
   }
 
@@ -383,34 +379,39 @@ public class UmsMemberController {
       .toMap(UmsMatchTime::getMemberId, Function.identity(),
         (e1, e2) -> e1.getMatchTime().compareTo(e2.getMatchTime()) > 0 ? e1 : e2));
     umsMembers.getRecords().forEach(umsMember->{
-      UmsMatchTime umsMatchTime = umsMatchTimeMap.get(umsMember.getId());
-      if(umsMatchTime==null){
-        umsMatchTime=new UmsMatchTime();
-        umsMatchTime.setMatchTime(umsMember.getCreateTime());
-        umsMatchTime.setMatchUserId(umsMember.getMatchUserId());
-        umsMatchTime.setMemberId(umsMember.getId());
-        umsMatchTime.setStatus(0);
-        Integer dressFreqMonth = dealDressFreqMonth(dealUserTag(umsMember.getDressFreq()));
-        umsMatchTime.setDressFreqMonth(dressFreqMonth==null?2:dressFreqMonth);
-      }
-      //空搭配和需推荐才有状态变化
-      if(umsMatchTime.getStatus()==0||umsMatchTime.getStatus()==3){
-        if(umsMatchTime.getMatchTime().before(new Date())){
-          //急需推荐
-          umsMatchTime.setStatus(4);
-        }else  {
-          Calendar calendar= Calendar.getInstance();
-          calendar.add(Calendar.DATE, -3);
-          if(umsMatchTime.getMatchTime().before(calendar.getTime())){
-            umsMatchTime.setStatus(3);
-          }
-        }
-      }
+      UmsMatchTime umsMatchTime = getUmsMatchTime(umsMatchTimeMap, umsMember);
       umsMember.setUmsMatchTime(umsMatchTime);
       List<UmsMemberTag> umsMemberTags = umsMemberTagService.listTagsByMemberId(umsMember.getId());
       umsMember.setUmsMemberTags(umsMemberTags);
     });
     return new CommonResult().success(umsMembers);
+  }
+
+  private UmsMatchTime getUmsMatchTime(Map<Long, UmsMatchTime> umsMatchTimeMap, VUmsMemberVo umsMember) {
+    UmsMatchTime umsMatchTime = umsMatchTimeMap.get(umsMember.getId());
+    if(umsMatchTime==null){
+      umsMatchTime=new UmsMatchTime();
+      umsMatchTime.setMatchTime(umsMember.getCreateTime());
+      umsMatchTime.setMatchUserId(umsMember.getMatchUserId());
+      umsMatchTime.setMemberId(umsMember.getId());
+      umsMatchTime.setStatus(0);
+      Integer dressFreqMonth = dealDressFreqMonth(dealUserTag(umsMember.getDressFreq()));
+      umsMatchTime.setDressFreqMonth(dressFreqMonth==null?2:dressFreqMonth);
+    }
+    //空搭配和需推荐才有状态变化
+    if(umsMatchTime.getStatus()==0||umsMatchTime.getStatus()==3){
+      if(umsMatchTime.getMatchTime().before(new Date())){
+        //急需推荐
+        umsMatchTime.setStatus(4);
+      }else  {
+        Calendar calendar= Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, 3);
+        if(umsMatchTime.getMatchTime().before(calendar.getTime())){
+          umsMatchTime.setStatus(3);
+        }
+      }
+    }
+    return umsMatchTime;
   }
 
 }

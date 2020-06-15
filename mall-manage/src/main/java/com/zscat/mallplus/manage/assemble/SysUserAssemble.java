@@ -14,9 +14,9 @@ public class SysUserAssemble {
      * @param umsApplyMatcherVo
      * @return
      */
-    public static SysUser assembleSysUser(UmsApplyMatcherVo umsApplyMatcherVo) {
+    public static SysUser assembleSysUser(UmsApplyMatcherVo umsApplyMatcherVo,String userName) {
         SysUser sysUser = new SysUser();
-        sysUser.setUsername(umsApplyMatcherVo.getUserName());
+        sysUser.setUsername(userName);
         sysUser.setName(umsApplyMatcherVo.getUserName());
         sysUser.setCreateTime(new Date());
         sysUser.setNickName(umsApplyMatcherVo.getNickname());
@@ -26,6 +26,7 @@ public class SysUserAssemble {
         sysUser.setIcon(umsApplyMatcherVo.getIcon());
         sysUser.setIntroduction(umsApplyMatcherVo.getIntroduce());
         sysUser.setType("1");
+        //TODO 设置等级
         sysUser.setLevel("1");
         sysUser.setRoleIds("10");
         return sysUser;

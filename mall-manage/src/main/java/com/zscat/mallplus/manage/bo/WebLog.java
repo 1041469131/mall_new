@@ -141,4 +141,22 @@ public class WebLog {
     public void setResult(Object result) {
         this.result = result;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("WebLog{");
+        sb.append("description='").append(description).append('\'');
+        sb.append(", username='").append(username).append('\'');
+        sb.append(", startTime=").append(startTime);
+        sb.append(", spendTime=").append(spendTime);
+        sb.append(", basePath='").append(basePath).append('\'');
+        sb.append(", uri='").append(uri).append('\'');
+        sb.append(", url='").append(url).append('\'');
+        sb.append(", method='").append(method).append('\'');
+        sb.append(", ip='").append(ip).append('\'');
+        sb.append(", parameter=").append(parameter);
+        sb.append(", result=").append(result);
+        sb.append('}');
+        return sb.toString();
+    }
 }

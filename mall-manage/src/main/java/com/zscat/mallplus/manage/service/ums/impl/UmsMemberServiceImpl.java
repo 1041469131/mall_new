@@ -234,6 +234,7 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
     public UmsMember queryByOpenId(String openId) {
         UmsMember queryO = new UmsMember();
         queryO.setWeixinOpenid(openId);
+
         return umsMemberMapper.selectOne(new QueryWrapper<>(queryO));
     }
 
@@ -516,7 +517,9 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
         if (CollectionUtils.isEmpty(timeList)) {
             UmsMember umsMemberQuery = umsMemberMapper.selectById(umsMember.getId());
             UmsMatchTime umsMatchTime = new UmsMatchTime();
-            umsMatchTime.setMatchTime(umsMember.getCreateTime());
+            Calendar calendar= Calendar.getInstance();
+            calendar.add(Calendar.DAY_OF_YEAR, 3);
+            umsMatchTime.setMatchTime(calendar.getTime());
             umsMatchTime.setMatchUserId(matchUserId);
             umsMatchTime.setMemberId(umsMember.getId());
             umsMatchTime.setStatus(0);

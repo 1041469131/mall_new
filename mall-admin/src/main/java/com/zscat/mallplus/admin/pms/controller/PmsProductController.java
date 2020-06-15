@@ -287,7 +287,6 @@ public class PmsProductController {
     @IgnoreAuth
     public CommonResult<Page<PmsProductVo>> listPmsProductByPage(@ApiParam("产品信息的扩展类") @RequestBody PmsProductQueryParam queryParam) {
         Page<PmsProductVo> pmsProductList = iPmsProductService.listPmsProductByPage(queryParam);
-
         return new CommonResult().success(pmsProductList);
     }
 

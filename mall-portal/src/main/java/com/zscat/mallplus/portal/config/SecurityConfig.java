@@ -65,9 +65,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 )
                 .permitAll()
-                .antMatchers("/api/applet/**", "/admin/register","/api/pay/notify")// 对登录注册要允许匿名访问
+                // 对登录注册要允许匿名访问
+                .antMatchers("/api/applet/**","/api/aliyun/oss/**","/api/member/getPhoneNo","/api/pay/notify","/api/umsApplyMatcher/queryUmsApplyMatcher","/api/umsApplyMatcher/saveOrUpdate")
                 .permitAll()
-                .antMatchers(HttpMethod.OPTIONS)//跨域请求会先进行一次options请求
+                //跨域请求会先进行一次options请求
+                .antMatchers(HttpMethod.OPTIONS)
                 .permitAll()
 //                .antMatchers("/**")//测试时全部运行访问
 //                .permitAll()

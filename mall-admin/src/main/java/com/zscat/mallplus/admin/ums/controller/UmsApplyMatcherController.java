@@ -1,6 +1,8 @@
 package com.zscat.mallplus.admin.ums.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zscat.mallplus.admin.utils.GeneratorCodeUtil;
 import com.zscat.mallplus.manage.assemble.SysUserAssemble;
 import com.zscat.mallplus.manage.service.sys.ISysUserService;
 import com.zscat.mallplus.manage.service.ums.IUmsApplyMatcherService;
@@ -59,10 +61,22 @@ public class UmsApplyMatcherController {
         if(iUmsApplyMatcherService.updateById(umsApplyMatcherVo)){
             if(MagicConstant.AUDIT_STATUS_PASSED.equals(umsApplyMatcherVo.getAuditStatus())){
                 BeanUtils.copyProperties(umsApplyMatcher,umsApplyMatcherVo );
-                SysUser sysUser = SysUserAssemble.assembleSysUser(umsApplyMatcherVo);
+                //TODO 设置随机用户名通知
+                SysUser sysUser = SysUserAssemble.assembleSysUser(umsApplyMatcherVo,generatorUserName());
                 iSysUserService.saves(sysUser);
             }
         }
         return new CommonResult().success();
+    }
+
+
+    private String generatorUserName(){
+        while(true){
+            String username = GeneratorCodeUtil.generatorString(8);
+            SysUser querySysUser = iSysUserService.getOne(new QueryWrapper<SysUser>().lambda().eq(SysUser::getUsername, username));
+            if(querySysUser==null){
+                return username;
+            }
+        }
     }
 }

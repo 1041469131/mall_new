@@ -266,7 +266,7 @@ public class OmsCartItemServiceImpl extends ServiceImpl<OmsCartItemMapper, OmsCa
         } else {
           handleNoReduce(cartPromotionItemList, itemList, promotionProduct);
         }
-      } else if (promotionType.equals(MagicConstant.PROMOTION_TYPE_FULL_REDUCTION)) {
+      } else if (Objects.equals(promotionType, MagicConstant.PROMOTION_TYPE_FULL_REDUCTION)) {
         //满减
         BigDecimal totalAmount = getCartItemAmount(itemList, promotionProductMap);
         PmsProductFullReduction fullReduction = getProductFullReduction(totalAmount, promotionProduct.getProductFullReductionList());

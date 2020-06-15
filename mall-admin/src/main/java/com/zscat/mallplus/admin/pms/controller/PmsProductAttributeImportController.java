@@ -95,7 +95,7 @@ public class PmsProductAttributeImportController {
         continue;
       }
       ProductAttributeModel productAttributeModel = new ProductAttributeModel();
-      String name = map.get("羊毛 腈纶 蚕丝 麻 马海毛 棉 羊绒 涤纶 锦纶 兔毛 莱卡 莫代尔 格子布 牛津纺 绸缎 法兰绒(磨毛) 牛仔布 蚕丝 羊毛布 亚麻布 色织布").toString().trim();
+      String name = map.get("个搭属性名").toString().trim();
       productAttributeModel.setName(name);
 
       String filterType = (String) map.get("分类筛选样式").toString().trim();

@@ -3,8 +3,10 @@ package com.zscat.mallplus.manage.service.sys.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zscat.mallplus.manage.service.oms.IOmsMatcherCommissionItemService;
 import com.zscat.mallplus.manage.service.sys.ISysMatcherStatisticsService;
 import com.zscat.mallplus.mbg.oms.entity.OmsMatcherCommission;
+import com.zscat.mallplus.mbg.oms.entity.OmsMatcherCommissionItem;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrder;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrderItem;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrderReturnSale;
@@ -25,6 +27,7 @@ import com.zscat.mallplus.mbg.ums.entity.UmsMember;
 import com.zscat.mallplus.mbg.ums.mapper.UmsApplyMatcherMapper;
 import com.zscat.mallplus.mbg.ums.mapper.UmsMemberMapper;
 import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,6 +67,9 @@ public class SysMatcherStatisticsServiceImpl extends ServiceImpl<SysMatcherStati
     @Autowired
     private SysMatcherAccountMapper sysMatcherAccountMapper;
 
+    @Autowired
+    private IOmsMatcherCommissionItemService omsMatcherCommissionItemService;
+
     @Override
     public Page<SysMatcherStatisticsVo> pageMatherStatistics(SysMatcherStatisticsVo sysMatcherStatisticsVo) {
         Page<SysMatcherStatisticsVo> sysMatcherStatisticsVoPage = sysMatcherStatisticsMapper.pageMatherStatistics(new Page<>(sysMatcherStatisticsVo.getPageNum(),sysMatcherStatisticsVo.getPageSize()),sysMatcherStatisticsVo);
@@ -88,7 +94,7 @@ public class SysMatcherStatisticsServiceImpl extends ServiceImpl<SysMatcherStati
             Long matcherId = umsMember.getMatchUserId();
             SysUser sysUser = sysUserMapper.selectById(matcherId);
             //商品分佣的搭配师统计
-            saveOrupdateOmsMatcherCommission(omsOrder,sysUser,"0");
+            saveOrUpdateOmsMatcherCommission(omsOrder,sysUser,"0");
             accountMatcherStatics(sysUser);
             //邀请奖励搭配师统计
             UmsApplyMatcher umsApplyMatcher = umsApplyMatcherMapper.selectOne(new QueryWrapper<UmsApplyMatcher>().eq("phone",sysUser.getPhone()).eq("audit_status",MagicConstant.AUDIT_STATUS_PASSED));
@@ -97,7 +103,7 @@ public class SysMatcherStatisticsServiceImpl extends ServiceImpl<SysMatcherStati
                     SysUser inviteSysUser = sysUserMapper.selectOne(new QueryWrapper<SysUser>().eq("phone",umsApplyMatcher.getInvitePhone()));
                     //邀请搭配师的比例
                     if(inviteSysUser!=null) {
-                        saveOrupdateOmsMatcherCommission(omsOrder, inviteSysUser, "1");
+                        saveOrUpdateOmsMatcherCommission(omsOrder, inviteSysUser, "1");
                         accountMatcherStatics(inviteSysUser);
                     }
                 }
@@ -231,12 +237,11 @@ public class SysMatcherStatisticsServiceImpl extends ServiceImpl<SysMatcherStati
 
     /**
      * 更新订单搭配比例
-     * @param omsOrder
-     * @param sysUser
      */
-    private OmsMatcherCommission saveOrupdateOmsMatcherCommission(OmsOrder omsOrder, SysUser sysUser, String profitType) {
+    private OmsMatcherCommission saveOrUpdateOmsMatcherCommission(OmsOrder omsOrder, SysUser sysUser, String profitType) {
         OmsMatcherCommission omsMatcherCommission = omsMatcherCommissionMapper.selectOne(new QueryWrapper<OmsMatcherCommission>().eq("order_id",omsOrder.getId()).eq("profit_type",profitType).
                 eq("matcher_user_id",sysUser.getId()));
+        List<OmsOrderItem> omsOrderItems = omsOrderItemMapper.selectList(new QueryWrapper<OmsOrderItem>().eq("order_id",omsOrder.getId()));
         if(omsMatcherCommission == null ){
             omsMatcherCommission = new OmsMatcherCommission();
             omsMatcherCommission.setProfitType(profitType);
@@ -245,8 +250,13 @@ public class SysMatcherStatisticsServiceImpl extends ServiceImpl<SysMatcherStati
             omsMatcherCommission.setOrderId(omsOrder.getId());
             omsMatcherCommission.setMatcherUserId(sysUser.getId());
         }
-        OmsOrderReturnSale omsOrderReturnSale = omsOrderReturnSaleMapper.selectOne(new QueryWrapper<OmsOrderReturnSale>().eq("order_id",omsOrder.getId()).notIn("status",new Object[]{MagicConstant.RETURN_STATUS_FINISHED,MagicConstant.RETURN_STATUS_CANCEL,
-                MagicConstant.RETURN_STATUS_REFUSE}));
+        List<OmsMatcherCommissionItem> omsMatcherCommissionItems = omsMatcherCommissionItemService
+          .list(new QueryWrapper<OmsMatcherCommissionItem>().eq("order_id", omsOrder.getId()).eq("profit_type",profitType));
+        if(CollectionUtils.isEmpty(omsMatcherCommissionItems)) {
+            omsMatcherCommissionItems=saveOrupdateOmsMatcherCommissionItems(omsOrderItems,omsMatcherCommission,sysUser.getLevel());
+        }
+        OmsOrderReturnSale omsOrderReturnSale = omsOrderReturnSaleMapper.selectOne(new QueryWrapper<OmsOrderReturnSale>().eq("order_id",omsOrder.getId()).notIn("status",MagicConstant.RETURN_STATUS_FINISHED,MagicConstant.RETURN_STATUS_CANCEL,
+                MagicConstant.RETURN_STATUS_REFUSE));
         if(MagicConstant.ORDER_STATUS_YET_DONE.equals(omsOrder.getStatus()) || MagicConstant.ORDER_STATUS_WAIT_SEND.equals(omsOrder.getStatus()) ||
                 MagicConstant.ORDER_STATUS_YET_SEND.equals(omsOrder.getStatus())){
             if(omsOrderReturnSale != null){
@@ -257,7 +267,8 @@ public class SysMatcherStatisticsServiceImpl extends ServiceImpl<SysMatcherStati
         }
         omsMatcherCommission.setUpdateDate(new Date());
         omsMatcherCommission.setUpdateTime(System.currentTimeMillis());
-        BigDecimal profit = calcProfit(omsOrder,omsMatcherCommission.getProfitType(),sysUser);
+        BigDecimal profit = omsMatcherCommissionItems.stream().map(OmsMatcherCommissionItem::getProfit).reduce(BigDecimal.ZERO,BigDecimal::add);
+        //BigDecimal profit = calcProfit(omsOrderItems,omsMatcherCommission.getProfitType(),sysUser);
         omsMatcherCommission.setProfit(profit);
         if(omsMatcherCommission.getId() == null){
             omsMatcherCommissionMapper.insert(omsMatcherCommission);
@@ -267,37 +278,77 @@ public class SysMatcherStatisticsServiceImpl extends ServiceImpl<SysMatcherStati
         return omsMatcherCommission;
     }
 
-    /**
-     * 计算订单的收益
-     * @param omsOrder
-     * @return
-     */
-    private BigDecimal calcProfit(OmsOrder omsOrder, String profitType, SysUser matcherUser) {
-        List<OmsOrderItem> omsOrderItems = omsOrderItemMapper.selectList(new QueryWrapper<OmsOrderItem>().eq("order_id",omsOrder.getId()));
-        BigDecimal profit = BigDecimal.ZERO;//收益
-        //查询订单下面的商品列表
-        if(!CollectionUtils.isEmpty(omsOrderItems)){
-            for (OmsOrderItem omsOrderItem : omsOrderItems){
-                Long productId = omsOrderItem.getProductId();
-                Integer productCount = omsOrderItem.getProductQuantity();
-                BigDecimal price = omsOrderItem.getProductPrice();
-                PmsProductCommission pmsProductCommission = pmsProductCommissionMapper.selectOne(new QueryWrapper<PmsProductCommission>().eq("product_id",productId).
-                        eq("matcher_level",matcherUser.getLevel()));
-                //商品的分佣查询为空或者不为空但是商品的分佣类型是不分佣
-                if(pmsProductCommission == null ||(pmsProductCommission != null && "1".equals(pmsProductCommission.getPromoteType())) ){
-                    return BigDecimal.ZERO;
-                }
-                BigDecimal proportion = BigDecimal.ZERO;
-                if("0".equals(profitType)){//商品佣金
-                    proportion = pmsProductCommission.getCommissionProportion();//分佣比例
-                }else{
-                    proportion = pmsProductCommission.getInviteProportion();//邀请奖励
-                }
-                profit = profit.add(proportion.divide(new BigDecimal(100)).multiply(price).multiply(new BigDecimal(productCount)));
+
+    private List<OmsMatcherCommissionItem> saveOrupdateOmsMatcherCommissionItems( List<OmsOrderItem> omsOrderItems,OmsMatcherCommission omsMatcherCommission,String level){
+        List<OmsMatcherCommissionItem> collect = omsOrderItems.stream().map(omsOrderItem -> {
+            OmsMatcherCommissionItem omsMatcherCommissionItem = new OmsMatcherCommissionItem();
+            omsMatcherCommissionItem.setCreateDate(new Date());
+            omsMatcherCommissionItem.setMatcherUserId(omsMatcherCommission.getMatcherUserId());
+            omsMatcherCommissionItem.setOrderId(omsMatcherCommission.getOrderId());
+            omsMatcherCommissionItem.setOrderItemId(omsOrderItem.getId());
+            omsMatcherCommissionItem.setProductId(omsOrderItem.getProductId());
+            omsMatcherCommissionItem.setProfitType(omsMatcherCommission.getProfitType());
+            omsMatcherCommissionItem.setStatus(omsMatcherCommission.getStatus());
+            omsMatcherCommissionItem.setUpdateDate(new Date());
+            Long productId = omsOrderItem.getProductId();
+            Integer productCount = omsOrderItem.getProductQuantity();
+            BigDecimal price = omsOrderItem.getProductPrice();
+            PmsProductCommission pmsProductCommission = pmsProductCommissionMapper
+              .selectOne(new QueryWrapper<PmsProductCommission>().eq("product_id", productId).
+                eq("matcher_level", level));
+            //商品的分佣查询为空或者不为空但是商品的分佣类型是不分佣
+            if (pmsProductCommission == null || "1".equals(pmsProductCommission.getPromoteType())) {
+                omsMatcherCommissionItem.setProfit(BigDecimal.ZERO);
+                return null;
             }
+            BigDecimal proportion;
+            //商品佣金
+            if ("0".equals(omsMatcherCommissionItem.getProfitType())) {
+                //分佣比例
+                proportion = pmsProductCommission.getCommissionProportion();
+            } else {
+                //邀请奖励
+                proportion = pmsProductCommission.getInviteProportion();
+            }
+            BigDecimal profit = proportion.divide(new BigDecimal(100)).multiply(price).multiply(new BigDecimal(productCount));
+            omsMatcherCommissionItem.setProfit(profit);
+            return omsMatcherCommissionItem;
+        }).filter(Objects::nonNull).collect(Collectors.toList());
+        if(!CollectionUtils.isEmpty(collect)) {
+            omsMatcherCommissionItemService.saveOrUpdateBatch(collect);
         }
-        return profit;
+        return collect;
     }
+//    /**
+//     * 计算订单的收益
+//     * @param
+//     * @return
+//     */
+//    private BigDecimal calcProfit(List<OmsOrderItem> omsOrderItems , String profitType, SysUser matcherUser) {
+//       BigDecimal profit = BigDecimal.ZERO;//收益
+//        //查询订单下面的商品列表
+//        if(!CollectionUtils.isEmpty(omsOrderItems)){
+//            for (OmsOrderItem omsOrderItem : omsOrderItems){
+//                Long productId = omsOrderItem.getProductId();
+//                Integer productCount = omsOrderItem.getProductQuantity();
+//                BigDecimal price = omsOrderItem.getProductPrice();
+//                PmsProductCommission pmsProductCommission = pmsProductCommissionMapper.selectOne(new QueryWrapper<PmsProductCommission>().eq("product_id",productId).
+//                        eq("matcher_level",matcherUser.getLevel()));
+//                //商品的分佣查询为空或者不为空但是商品的分佣类型是不分佣
+//                if(pmsProductCommission == null ||(pmsProductCommission != null && "1".equals(pmsProductCommission.getPromoteType())) ){
+//                    return BigDecimal.ZERO;
+//                }
+//                BigDecimal proportion = BigDecimal.ZERO;
+//                if("0".equals(profitType)){//商品佣金
+//                    proportion = pmsProductCommission.getCommissionProportion();//分佣比例
+//                }else{
+//                    proportion = pmsProductCommission.getInviteProportion();//邀请奖励
+//                }
+//                profit = profit.add(proportion.divide(new BigDecimal(100)).multiply(price).multiply(new BigDecimal(productCount)));
+//            }
+//        }
+//        return profit;
+//    }
 
     @Override
     public void timingMatcherStatics() {

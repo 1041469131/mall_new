@@ -83,8 +83,6 @@ public class WebLogAspect {
         logMap.put("parameter", webLog.getParameter());
         logMap.put("spendTime", webLog.getSpendTime());
         logMap.put("description", webLog.getDescription());
-        //        LOGGER.info("{}", JsonUtil.objectToJson(webLog));
-        LOGGER.info(Markers.appendEntries(logMap), JsonUtil.objectToJson(webLog));
         return result;
     }
 
