@@ -2,6 +2,7 @@ package com.zscat.mallplus.mbg.oms.vo;
 
 import io.swagger.annotations.ApiModelProperty;
 import java.util.Date;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -35,7 +36,9 @@ public class OmsOrderQueryParam {
     @ApiModelProperty(value = "售后类型：类型 0-退款 1-售后")
     private Integer orderSaleType;
     @ApiModelProperty(value = "售后状态：状态 0->待处理；1->退货中；2->已完成；3->已拒绝;4-已撤销，5-寄回退款退货，6-已收货")
-    private Integer orderSaleStatus;
+    private List<Integer> orderSaleStatus;
+
+
     @ApiModelProperty(value = "订单提交时间")
     private String createTime;
     @ApiModelProperty("页码")

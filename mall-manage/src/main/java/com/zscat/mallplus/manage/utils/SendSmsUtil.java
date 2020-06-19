@@ -31,8 +31,10 @@ public class SendSmsUtil {
         request.setAction("SendSms");
         request.putQueryParameter("RegionId", "cn-hangzhou");
         request.putQueryParameter("PhoneNumbers", phoneNumber);
-        request.putQueryParameter("SignName", "士盒");                    //输入你的短信签名名称
-        request.putQueryParameter("TemplateCode", templateCode);            //输入你的短信模板ID
+        //输入你的短信签名名称
+        request.putQueryParameter("SignName", "个搭");
+        //输入你的短信模板ID
+        request.putQueryParameter("TemplateCode", templateCode);
         request.putQueryParameter("TemplateParam", templateParam);
         try {
             CommonResponse response = client.getCommonResponse(request);

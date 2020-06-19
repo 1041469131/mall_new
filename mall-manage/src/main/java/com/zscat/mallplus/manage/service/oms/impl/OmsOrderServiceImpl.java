@@ -14,6 +14,7 @@ import com.zscat.mallplus.manage.service.oms.IOmsOrderOperateHistoryService;
 import com.zscat.mallplus.manage.service.oms.IOmsOrderService;
 import com.zscat.mallplus.manage.service.pms.IPmsProductService;
 import com.zscat.mallplus.manage.service.pms.IPmsSkuStockService;
+import com.zscat.mallplus.manage.service.sms.ISmsService;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberReceiveAddressService;
 import com.zscat.mallplus.manage.service.ums.IUmsMemberService;
 import com.zscat.mallplus.manage.service.ums.RedisService;
@@ -76,7 +77,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -104,24 +104,18 @@ public class OmsOrderServiceImpl extends ServiceImpl<OmsOrderMapper, OmsOrder> i
 
   @Resource
   private OmsOrderMapper orderMapper;
-
   @Resource
   private IOmsOrderOperateHistoryService orderOperateHistoryDao;
   @Resource
   private OmsOrderOperateHistoryMapper orderOperateHistoryMapper;
-
   @Resource
   private RedisService redisService;
-  @Value("${redis.key.prefix.orderId}")
-  private String REDIS_KEY_PREFIX_ORDER_ID;
   @Resource
   private IPmsProductService productService;
   @Resource
   private IUmsMemberReceiveAddressService addressService;
-
   @Autowired
   private WxAppletProperties wxAppletProperties;
-
   @Resource
   private WechatApiService wechatApiService;
   @Resource
@@ -130,7 +124,6 @@ public class OmsOrderServiceImpl extends ServiceImpl<OmsOrderMapper, OmsOrder> i
   private ISmsGroupMemberService groupMemberService;
   @Resource
   private IOmsCartItemService cartItemService;
-
   @Resource
   private ISmsCouponService couponService;
   @Resource
@@ -151,6 +144,8 @@ public class OmsOrderServiceImpl extends ServiceImpl<OmsOrderMapper, OmsOrder> i
   private OmsOrderItemMapper omsOrderItemMapper;
   @Autowired
   private UmsMemberStatisticsInfoMapper umsMemberStatisticsInfoMapper;
+  @Autowired
+  private ISmsService smsService;
 
   @Override
   public int delivery(List<OmsOrderDeliveryParam> deliveryParamList) {
@@ -168,6 +163,10 @@ public class OmsOrderServiceImpl extends ServiceImpl<OmsOrderMapper, OmsOrder> i
         return history;
       }).collect(Collectors.toList());
     orderOperateHistoryDao.saveBatch(operateHistoryList);
+    deliveryParamList.forEach(delivery->{
+      OmsOrder om = orderService.getById(delivery.getOrderId());
+      smsService.deliveryNotify(om.getReceiverPhone(),delivery.getDeliverySn(),delivery.getDeliveryCompany());
+    });
     return count;
   }
 

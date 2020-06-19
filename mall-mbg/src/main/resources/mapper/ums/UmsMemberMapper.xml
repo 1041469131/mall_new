@@ -116,6 +116,20 @@
         SELECT <include refid="Base_Column_List" /> FROM ums_member ORDER BY RAND() LIMIT 1
     </select>
 
+    <select id="pageUmsMembers" parameterType="com.zscat.mallplus.mbg.ums.vo.UmsMemberQueryParam" resultMap="BaseResultMap">
+        select um.* from ums_member um LEFT JOIN ums_match_time ut on um.id=ut.member_id and ut.`status`=0
+        <where>
+            <if test="queryParam.keyWord != null">
+               and(um.nickname LIKE CONCAT('%',#{queryParam.keyWord},'%') or personalized_signatureLIKE CONCAT('%',#{queryParam.keyWord},'%') or phone=#{queryParam.keyWord})
+            </if>
+            <if test="queryParam.matcherUserId != null">
+               and um.match_user_id=#{queryParam.matcherUserId}
+            </if>
+        </where>
+        GROUP BY um.id
+        ORDER BY max(ut.match_time) asc
+    </select>
+
     <select id="getRecommedInfos" resultMap="BaseResultMap">
         SELECT t.nickname, t.icon,t.create_time
         FROM ums_recommend_relation urr

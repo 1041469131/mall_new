@@ -11,8 +11,6 @@ import com.zscat.mallplus.manage.service.ums.IUmsMemberTagService;
 import com.zscat.mallplus.manage.utils.UserUtils;
 import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
 import com.zscat.mallplus.mbg.annotation.SysLog;
-import com.zscat.mallplus.mbg.pms.entity.CmsPrefrenceAreaProductRelation;
-import com.zscat.mallplus.mbg.pms.entity.PmsProductUserMatchLibrary;
 import com.zscat.mallplus.mbg.ums.entity.UmsMatchTime;
 import com.zscat.mallplus.mbg.ums.entity.UmsMember;
 import com.zscat.mallplus.mbg.ums.entity.UmsMemberRegisterParam;
@@ -22,12 +20,9 @@ import com.zscat.mallplus.mbg.ums.vo.UmsMemberVo;
 import com.zscat.mallplus.mbg.ums.vo.VUmsMemberVo;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.ValidatorUtils;
-import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
@@ -70,7 +65,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UmsMemberController {
 
   @Resource
-  private IUmsMemberService IUmsMemberService;
+  private IUmsMemberService umsMemberService;
 
   @Autowired
   private IUmsMemberRegisterParamService iUmsMemberRegisterParamService;
@@ -93,9 +88,9 @@ public class UmsMemberController {
     try {
       if (!StringUtils.isEmpty(keyword)) {
         return new CommonResult()
-          .success(IUmsMemberService.page(new Page<UmsMember>(pageNum, pageSize), new QueryWrapper<UmsMember>().like("nickname", keyword)));
+          .success(umsMemberService.page(new Page<UmsMember>(pageNum, pageSize), new QueryWrapper<UmsMember>().like("nickname", keyword)));
       } else {
-        return new CommonResult().success(IUmsMemberService.page(new Page<UmsMember>(pageNum, pageSize), new QueryWrapper<UmsMember>()));
+        return new CommonResult().success(umsMemberService.page(new Page<UmsMember>(pageNum, pageSize), new QueryWrapper<UmsMember>()));
       }
 
     } catch (Exception e) {
@@ -114,7 +109,7 @@ public class UmsMemberController {
   ) {
     Page<UmsMemberVo> umsMemberPage = new Page<>(pageNum, pageSize);
     Map<String, Object> paramMap = new HashMap<>();
-    Page<UmsMemberVo> pmsProductList = IUmsMemberService.pageUmsMembers(umsMemberPage, paramMap);
+    Page<UmsMemberVo> pmsProductList = umsMemberService.pageUmsMemberVOs(umsMemberPage, paramMap);
     return pmsProductList;
   }
 
@@ -124,7 +119,7 @@ public class UmsMemberController {
   @PreAuthorize("hasAuthority('ums:UmsMember:create')")
   public Object saveUmsMember(@RequestBody UmsMember entity) {
     try {
-      if (IUmsMemberService.save(entity)) {
+      if (umsMemberService.save(entity)) {
         return new CommonResult().success();
       }
     } catch (Exception e) {
@@ -141,7 +136,7 @@ public class UmsMemberController {
   @IgnoreAuth
   public CommonResult updateUmsMember(@RequestBody UmsMember entity) {
     try {
-      if (IUmsMemberService.updateById(entity)) {
+      if (umsMemberService.updateById(entity)) {
         return new CommonResult().success();
       }
     } catch (Exception e) {
@@ -161,7 +156,7 @@ public class UmsMemberController {
       if (ValidatorUtils.empty(id)) {
         return new CommonResult().paramFailed("会员表id");
       }
-      if (IUmsMemberService.removeById(id)) {
+      if (umsMemberService.removeById(id)) {
         return new CommonResult().success();
       }
     } catch (Exception e) {
@@ -180,7 +175,7 @@ public class UmsMemberController {
       if (ValidatorUtils.empty(id)) {
         return new CommonResult().paramFailed("会员表id");
       }
-      UmsMember coupon = IUmsMemberService.getById(id);
+      UmsMember coupon = umsMemberService.getById(id);
       return new CommonResult().success(coupon);
     } catch (Exception e) {
       log.error("查询会员表明细：%s", e.getMessage(), e);
@@ -195,7 +190,7 @@ public class UmsMemberController {
   @SysLog(MODULE = "pms", REMARK = "批量删除会员表")
   @PreAuthorize("hasAuthority('ums:UmsMember:delete')")
   public Object deleteBatch(@RequestParam("ids") List<Long> ids) {
-    boolean count = IUmsMemberService.removeByIds(ids);
+    boolean count = umsMemberService.removeByIds(ids);
     if (count) {
       return new CommonResult().success(count);
     } else {
@@ -208,18 +203,11 @@ public class UmsMemberController {
   @ResponseBody
   @SysLog(MODULE = "ums", REMARK = "根据条件查询搭配师下面的用户")
   public CommonResult<Page<UmsMemberVo>> queryUserByNickName(@ApiParam("查询条件") @RequestBody UmsMemberQueryParam queryParam) {
-    List<UmsMember> umsMembers;
-    IPage<UmsMember> page;
     Long matcherUserId = UserUtils.getCurrentMember().getId();
-    if (queryParam.getKeyWord()!=null) {
-      QueryWrapper<UmsMember> queryWrapper = new QueryWrapper<UmsMember>().like("nickname", queryParam.getKeyWord()).or()
-        .like("personalized_signature", queryParam.getKeyWord()).or().eq("phone", queryParam.getKeyWord()).eq("match_user_id",matcherUserId);
-     page = IUmsMemberService.page(new Page<>(queryParam.getPageNum(), queryParam.getPageSize()), queryWrapper);
-      umsMembers =page.getRecords();
-    }else{
-      page = IUmsMemberService.page(new Page<>(queryParam.getPageNum(), queryParam.getPageSize()),new QueryWrapper<UmsMember>().eq("match_user_id",matcherUserId));
-      umsMembers =page.getRecords();
-    }
+    queryParam.setMatcherUserId(matcherUserId);
+    IPage<UmsMember> page = umsMemberService.pageUmsMembers(new Page<>(queryParam.getPageNum(), queryParam.getPageSize()), queryParam);
+    List<UmsMember> umsMembers =page.getRecords();
+
     if (CollectionUtils.isEmpty(umsMembers)) {
       return new CommonResult().success();
     }
@@ -275,7 +263,7 @@ public class UmsMemberController {
   @ResponseBody
   @SysLog(MODULE = "ums", REMARK = "用户详情")
   public CommonResult<UmsMemberVo> detail(@ApiParam("查询条件")@RequestBody UmsMemberQueryParam queryParam) {
-    List<UmsMember> umsMemberList = IUmsMemberService.list(new QueryWrapper<UmsMember>().eq("id", queryParam.getId()));
+    List<UmsMember> umsMemberList = umsMemberService.list(new QueryWrapper<UmsMember>().eq("id", queryParam.getId()));
     if (!CollectionUtils.isEmpty(umsMemberList)) {
       List<UmsMemberVo> umsMemberVos = new ArrayList<>();
       dealUmsMembers(umsMemberList, umsMemberVos);
@@ -370,7 +358,7 @@ public class UmsMemberController {
   public CommonResult<List<VUmsMemberVo>> listUmsMember4Matcher(@ApiParam("查询参数")@RequestBody VUmsMemberVo vUmsMemberVo) {
     //当为搭配师平台的时候，将登陆用户的id赋值给搭配师
     vUmsMemberVo.setMatchUserId(UserUtils.getCurrentMember().getId());
-    Page<VUmsMemberVo> umsMembers = IUmsMemberService.listVUmsMembers(vUmsMemberVo);
+    Page<VUmsMemberVo> umsMembers = umsMemberService.listVUmsMembers(vUmsMemberVo);
     //设置时间间隔
     Set<Long> memberIds = umsMembers.getRecords().stream().map(VUmsMemberVo::getId).collect(Collectors.toSet());
     List<UmsMatchTime> umsMatchTimeList = umsMatchTimeService.list(new QueryWrapper<UmsMatchTime>().lambda().ge(UmsMatchTime::getStatus,0)
@@ -396,7 +384,7 @@ public class UmsMemberController {
       umsMatchTime.setMemberId(umsMember.getId());
       umsMatchTime.setStatus(0);
       Integer dressFreqMonth = dealDressFreqMonth(dealUserTag(umsMember.getDressFreq()));
-      umsMatchTime.setDressFreqMonth(dressFreqMonth==null?2:dressFreqMonth);
+      umsMatchTime.setDressFreqMonth(dressFreqMonth);
     }
     //空搭配和需推荐才有状态变化
     if(umsMatchTime.getStatus()==0||umsMatchTime.getStatus()==3){

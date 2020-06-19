@@ -9,6 +9,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -66,6 +67,20 @@ public class UmsMatchTimeController {
   public CommonResult<List<UmsMatchTime>> list(@ApiParam("搭配参数") @RequestBody UmsMatchTime umsMatchTime) {
     List<UmsMatchTime> list = umsMatchTimeService
       .list(new QueryWrapper<UmsMatchTime>().lambda().eq(UmsMatchTime::getMemberId, umsMatchTime.getMemberId()));
+    list.forEach(u->{
+      if(u.getStatus()==0||u.getStatus()==3){
+        if(u.getMatchTime().before(new Date())){
+          //急需推荐
+          u.setStatus(4);
+        }else  {
+          Calendar calendar= Calendar.getInstance();
+          calendar.add(Calendar.DAY_OF_YEAR, 3);
+          if(u.getMatchTime().before(calendar.getTime())){
+            u.setStatus(3);
+          }
+        }
+      }
+    });
     return new CommonResult().success(list);
   }
 }

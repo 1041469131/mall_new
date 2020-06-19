@@ -119,9 +119,25 @@ public class PayController extends ApiBaseAction {
         }
     }
 
+
     /**
-     * 微信查询订单状态
+     * 获取支付的请求参数
      */
+    @SysLog(MODULE = "pay", REMARK = "获取订单详情")
+    @ApiOperation("获取订单详情,当在购物车里面进行支付的时候，id等于supplyId（相当于一个父订单），isParentOrder=0,当在我的订单中待付款的时候id等于id(订单的id)，isParentOrder=1")
+    @GetMapping("queryOrder")
+    public List<OmsOrder>  queryOrder(@RequestParam(value = "id", required = false, defaultValue = "0") Long id, String isParentOrder) {
+        List<OmsOrder> orderList = new ArrayList<>();
+        if(MagicConstant.IS_NOT_PARENT.equals(isParentOrder)){
+            orderList.add(orderService.getById(id));
+        }else {
+            orderList.addAll(orderService.list(new QueryWrapper<OmsOrder>().eq("supply_id",id)));
+        }
+        return orderList;
+    }
+        /**
+         * 微信查询订单状态
+         */
     @SysLog(MODULE = "pay", REMARK = "查询订单状态")
     @ApiOperation( "查询订单状态")
     @GetMapping("query")

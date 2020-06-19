@@ -277,9 +277,12 @@
       /**售后状态**/
       and os.type=#{orderParam.orderSaleType}
       </if>
-      <if test="orderParam.orderSaleStatus != null">
+      <if test="orderParam.orderSaleStatus != null and orderParam.orderSaleStatus.size()>0">
       /**售后状态**/
-      and os.`status`=#{orderParam.orderSaleStatus}
+        AND os.`status` IN
+        <foreach item="item" index="index" collection="orderParam.orderSaleStatus" open="("  close=")" separator=",">
+          #{item}
+        </foreach>
       </if>
 
       <if test="orderParam.payType != null">

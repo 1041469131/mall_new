@@ -293,6 +293,7 @@ public class PmsProductServiceImpl extends ServiceImpl<PmsProductMapper, PmsProd
         }
         pmsProduct.setDeleteStatus(MagicConstant.DEFAULT_STATUS_YES);
         pmsProductMapper.updateById(pmsProduct);
+        pmsProductCommissionMapper.delete(new QueryWrapper<PmsProductCommission>().lambda().eq(PmsProductCommission::getProductId,pmsProduct.getId()));
         return errMsg.toString();
     }
 

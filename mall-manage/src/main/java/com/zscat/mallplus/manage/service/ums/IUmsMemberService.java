@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zscat.mallplus.mbg.pms.entity.PmsProduct;
 import com.zscat.mallplus.mbg.ums.entity.UmsMember;
 import com.zscat.mallplus.mbg.ums.entity.VUmsMember;
+import com.zscat.mallplus.mbg.ums.vo.UmsMemberQueryParam;
 import com.zscat.mallplus.mbg.ums.vo.UmsMemberVo;
 import com.zscat.mallplus.mbg.ums.vo.VUmsMemberVo;
 import com.zscat.mallplus.mbg.utils.CommonResult;
@@ -93,7 +94,9 @@ public interface IUmsMemberService extends IService<UmsMember> {
      */
     String register4MiniProgram(UmsMemberVo umsMember)throws Exception;
 
-    Page<UmsMemberVo> pageUmsMembers(Page<UmsMemberVo> umsMemberPage, Map<String, Object> paramMap);
+    Page<UmsMember> pageUmsMembers(Page<UmsMember> umsMemberPage, UmsMemberQueryParam queryParam);
+
+    Page<UmsMemberVo> pageUmsMemberVOs(Page<UmsMemberVo> umsMemberPage, Map<String, Object> paramMap);
 
     Page<VUmsMemberVo> listVUmsMembers(VUmsMemberVo vUmsMemberVo);
 

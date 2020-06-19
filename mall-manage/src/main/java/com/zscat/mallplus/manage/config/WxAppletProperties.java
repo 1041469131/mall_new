@@ -27,6 +27,7 @@ public class WxAppletProperties {
     private String userMessage;
     private String webAccessTokenhttps;
     private  String templateId ;
+    private String serviceCompleteTemplateId;
 
 
 }

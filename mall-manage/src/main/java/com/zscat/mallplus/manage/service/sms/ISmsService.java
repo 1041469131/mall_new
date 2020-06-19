@@ -17,4 +17,9 @@ public interface ISmsService {
    */
   boolean verifyAuthCode(String authCode, String telephone);
 
+
+  void sendUserName(String telephone,String msg);
+
+  void deliveryNotify(String telephone,String deliverySn,String deliveryCompany);
+
 }

@@ -23,6 +23,7 @@ import com.zscat.mallplus.mbg.pms.entity.PmsProductUserMatchLibrary;
 import com.zscat.mallplus.mbg.pms.vo.PmsProductMatchLibraryVo;
 import com.zscat.mallplus.mbg.pms.vo.PmsProductQueryParam;
 import com.zscat.mallplus.mbg.pms.vo.PmsProductResult;
+import com.zscat.mallplus.mbg.utils.CommonRequest;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.IdGeneratorUtil;
 import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
@@ -131,6 +132,8 @@ public class PmsProductMatchController {
             }
         }
         iPmsProductUserMatchLibraryService.saveOrUpdateBatch(pmsProductUserMatchLibrarys);
+        //发送 搭配服务信息
+        iPmsProductUserMatchLibraryService.sendMatchLibraryMsg(pmsProductUserMatchLibrarys);
         return new CommonResult<List<PmsProductUserMatchLibrary>>().success(pmsProductUserMatchLibrarys);
     }
 
@@ -174,8 +177,8 @@ public class PmsProductMatchController {
     @ApiOperation("删除搭配库")
     @PostMapping(value = "/deleteMatchLibraryById")
     @PreAuthorize("hasAuthority('pms:PmsBrand:read')")
-    public CommonResult deleteMatchLibraryById(@ApiParam("搭配库id") Long matchId) {
-        iPmsProductMatchLibraryService.removeById(matchId);
+    public CommonResult deleteMatchLibraryById(@ApiParam("搭配库id") @RequestBody CommonRequest<PmsProductUserMatchLibrary> commonRequest) {
+        iPmsProductMatchLibraryService.removeById(commonRequest.getParamter().getId());
         return new CommonResult().success("成功删除该搭配库");
     }
 

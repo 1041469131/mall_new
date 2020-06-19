@@ -25,4 +25,6 @@ public class UmsMemberQueryParam {
 
   private Long id;
 
+  Long matcherUserId;
+
 }

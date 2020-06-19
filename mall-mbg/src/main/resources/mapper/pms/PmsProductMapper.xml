@@ -306,7 +306,13 @@
             </if>
 
         </where>
-        order by sort asc, create_time desc
+        <if test="queryParam.sort != null and queryParam.sort==0">
+            order by P.price desc
+        </if>
+        <if test="queryParam.sort != null and queryParam.sort==1">
+            order by P.price asc
+        </if>
+
     </select>
 
     <select id="listPmsProductCollectByPage" parameterType="com.zscat.mallplus.mbg.pms.vo.PmsProductQueryParam" resultMap="pmsProductVoMap">

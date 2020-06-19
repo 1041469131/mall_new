@@ -3,14 +3,20 @@ package com.zscat.mallplus.admin.oms.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zscat.mallplus.admin.po.OrderCommissionStatistics;
 import com.zscat.mallplus.manage.service.logistics.IlogisticsService;
+import com.zscat.mallplus.manage.service.oms.IOmsMatcherCommissionService;
 import com.zscat.mallplus.manage.service.oms.IOmsOrderService;
 import com.zscat.mallplus.manage.service.pms.IPmsBrandService;
 import com.zscat.mallplus.manage.service.pms.IPmsProductService;
+import com.zscat.mallplus.manage.service.sms.ISmsService;
 import com.zscat.mallplus.manage.service.sys.ISysUserService;
 import com.zscat.mallplus.manage.service.ums.IUmsApplyMatcherService;
+import com.zscat.mallplus.manage.service.ums.IUmsMemberService;
+import com.zscat.mallplus.manage.utils.UserUtils;
 import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
 import com.zscat.mallplus.mbg.annotation.SysLog;
+import com.zscat.mallplus.mbg.oms.entity.OmsMatcherCommission;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrder;
 import com.zscat.mallplus.mbg.oms.vo.OmsMoneyInfoParam;
 import com.zscat.mallplus.mbg.oms.vo.OmsOrderDeliveryParam;
@@ -21,18 +27,21 @@ import com.zscat.mallplus.mbg.pms.entity.PmsBrand;
 import com.zscat.mallplus.mbg.pms.entity.PmsProduct;
 import com.zscat.mallplus.mbg.sys.entity.SysUser;
 import com.zscat.mallplus.mbg.ums.entity.UmsApplyMatcher;
+import com.zscat.mallplus.mbg.ums.entity.UmsMember;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.ValidatorUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import java.math.BigDecimal;
+import java.util.Calendar;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -50,7 +59,7 @@ import java.util.List;
 public class OmsOrderController {
 
   @Autowired
-  private IOmsOrderService IOmsOrderService;
+  private IOmsOrderService omsOrderService;
   @Autowired
   private IUmsApplyMatcherService iUmsApplyMatcherService;
   @Autowired
@@ -61,7 +70,12 @@ public class OmsOrderController {
   private IPmsProductService iPmsProductService;
   @Autowired
   private IPmsBrandService iPmsBrandService;
-
+  @Autowired
+  private IUmsMemberService umsMemberService;
+  @Autowired
+  private IOmsMatcherCommissionService omsMatcherCommissionService;
+  @Autowired
+  private ISmsService smsService;
   @SysLog(MODULE = "oms", REMARK = "根据条件查询所有订单表列表")
   @ApiOperation("根据条件查询所有订单表列表")
   @GetMapping(value = "/list")
@@ -71,10 +85,8 @@ public class OmsOrderController {
     @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize
   ) {
     try {
-      IPage<OmsOrder> omsOrderIPage = IOmsOrderService
+      IPage<OmsOrder> omsOrderIPage = omsOrderService
         .page(new Page<>(pageNum, pageSize), new QueryWrapper<>(entity).orderByDesc("create_time"));
-
-
       return new CommonResult().success(omsOrderIPage);
     } catch (Exception e) {
       log.error("根据条件查询所有订单表列表：%s", e.getMessage(), e);
@@ -89,7 +101,7 @@ public class OmsOrderController {
   //@PreAuthorize("hasAuthority('oms:OmsOrder:read')")
   public CommonResult<Page<OrderResult>> getOrderByPage(@RequestBody @ApiParam("订单查询条件") OmsOrderQueryParam queryParam) {
     try {
-      Page<OrderResult> orderResultPage = IOmsOrderService.listOmsOrderByPage(queryParam);
+      Page<OrderResult> orderResultPage = omsOrderService.listOmsOrderByPage(queryParam);
       return new CommonResult().success(orderResultPage);
     } catch (Exception e) {
       log.error("根据条件查询所有订单表列表：%s", e.getMessage(), e);
@@ -104,7 +116,7 @@ public class OmsOrderController {
   @PreAuthorize("hasAuthority('oms:OmsOrder:create')")
   public Object saveOmsOrder(@RequestBody OmsOrder entity) {
     try {
-      if (IOmsOrderService.save(entity)) {
+      if (omsOrderService.save(entity)) {
         return new CommonResult().success();
       }
     } catch (Exception e) {
@@ -120,7 +132,7 @@ public class OmsOrderController {
   @PreAuthorize("hasAuthority('oms:OmsOrder:update')")
   public Object updateOmsOrder(@RequestBody OmsOrder entity) {
     try {
-      if (IOmsOrderService.updateById(entity)) {
+      if (omsOrderService.updateById(entity)) {
         return new CommonResult().success();
       }
     } catch (Exception e) {
@@ -139,7 +151,7 @@ public class OmsOrderController {
       if (ValidatorUtils.empty(id)) {
         return new CommonResult().paramFailed("订单表id");
       }
-      if (IOmsOrderService.removeById(id)) {
+      if (omsOrderService.removeById(id)) {
         return new CommonResult().success();
       }
     } catch (Exception e) {
@@ -160,7 +172,7 @@ public class OmsOrderController {
       }
       OmsOrderQueryParam queryParam=new OmsOrderQueryParam();
       queryParam.setOrderId(id);
-      Page<OrderResult> orderResultPage = IOmsOrderService.listOmsOrderByPage(queryParam);
+      Page<OrderResult> orderResultPage = omsOrderService.listOmsOrderByPage(queryParam);
       List<OrderResult> records = orderResultPage.getRecords();
 
       if(!CollectionUtils.isEmpty(records)){
@@ -197,7 +209,7 @@ public class OmsOrderController {
   @SysLog(MODULE = "pms", REMARK = "批量删除订单表")
   @PreAuthorize("hasAuthority('oms:OmsOrder:delete')")
   public Object deleteBatch(@RequestParam("ids") List<Long> ids) {
-    boolean count = IOmsOrderService.removeByIds(ids);
+    boolean count = omsOrderService.removeByIds(ids);
     if (count) {
       return new CommonResult().success(count);
     } else {
@@ -210,7 +222,7 @@ public class OmsOrderController {
   @RequestMapping(value = "/update/delivery", method = RequestMethod.POST)
   @ResponseBody
   public Object delivery(@RequestBody List<OmsOrderDeliveryParam> deliveryParamList) {
-    int count = IOmsOrderService.delivery(deliveryParamList);
+    int count = omsOrderService.delivery(deliveryParamList);
     if (count > 0) {
       return new CommonResult().success(count);
     }
@@ -222,7 +234,7 @@ public class OmsOrderController {
   @RequestMapping(value = "/update/close", method = RequestMethod.POST)
   @ResponseBody
   public Object close(@RequestParam("ids") List<Long> ids, @RequestParam String note) {
-    int count = IOmsOrderService.close(ids, note);
+    int count = omsOrderService.close(ids, note);
     if (count > 0) {
       return new CommonResult().success(count);
     }
@@ -234,7 +246,7 @@ public class OmsOrderController {
   @RequestMapping(value = "/update/receiverInfo", method = RequestMethod.POST)
   @ResponseBody
   public Object updateReceiverInfo(@RequestBody OmsReceiverInfoParam receiverInfoParam) {
-    int count = IOmsOrderService.updateReceiverInfo(receiverInfoParam);
+    int count = omsOrderService.updateReceiverInfo(receiverInfoParam);
     if (count > 0) {
       return new CommonResult().success(count);
     }
@@ -246,7 +258,7 @@ public class OmsOrderController {
   @RequestMapping(value = "/update/moneyInfo", method = RequestMethod.POST)
   @ResponseBody
   public Object updateReceiverInfo(@RequestBody OmsMoneyInfoParam moneyInfoParam) {
-    int count = IOmsOrderService.updateMoneyInfo(moneyInfoParam);
+    int count = omsOrderService.updateMoneyInfo(moneyInfoParam);
     if (count > 0) {
       return new CommonResult().success(count);
     }
@@ -260,7 +272,7 @@ public class OmsOrderController {
   public Object updateNote(@RequestParam("id") Long id,
     @RequestParam("note") String note,
     @RequestParam("status") Integer status) {
-    int count = IOmsOrderService.updateNote(id, note, status);
+    int count = omsOrderService.updateNote(id, note, status);
     if (count > 0) {
       return new CommonResult().success(count);
     }
@@ -279,4 +291,47 @@ public class OmsOrderController {
       return new CommonResult().failed(e.getMessage());
     }
   }
+
+
+
+  @ApiOperation(value = "首页首页统计")
+  @RequestMapping(value = "getOrderStatistics", method = RequestMethod.GET)
+  @ResponseBody
+  public Object getOrderStatistics() {
+    try {
+      OrderCommissionStatistics orderCommissionStatistics=new OrderCommissionStatistics();
+      Long matcherUserId = UserUtils.getCurrentMember().getId();
+      List<UmsMember> list = umsMemberService.list(new QueryWrapper<UmsMember>().lambda().eq(UmsMember::getMatchUserId, matcherUserId));
+      if(CollectionUtils.isEmpty(list)){
+        return  new CommonResult().success(orderCommissionStatistics);
+      }
+      List<OmsOrder> omsOrders = omsOrderService.list(
+        new QueryWrapper<OmsOrder>().lambda().in(OmsOrder::getMemberId, list.stream().map(UmsMember::getId).collect(Collectors.toList())));
+      BigDecimal avgPayAmount=BigDecimal.ZERO;
+      if(!CollectionUtils.isEmpty(omsOrders)){
+        avgPayAmount = omsOrders.stream().map(OmsOrder::getPayAmount).reduce(BigDecimal.ZERO, BigDecimal::add)
+          .divide(BigDecimal.valueOf(omsOrders.size()), 2, BigDecimal.ROUND_HALF_UP);
+      }
+      Calendar calendar=Calendar.getInstance();
+      calendar.add(Calendar.MONTH,-1);
+      List<OmsMatcherCommission> omsMatcherCommissions = omsMatcherCommissionService
+        .list(new QueryWrapper<OmsMatcherCommission>().lambda().eq(OmsMatcherCommission::getMatcherUserId, matcherUserId).gt(OmsMatcherCommission::getCreateDate,calendar.getTime()).in(OmsMatcherCommission::getStatus,"0","1","2"));
+      BigDecimal profitAmount = omsMatcherCommissions.stream().map(OmsMatcherCommission::getProfit).reduce(BigDecimal.ZERO, BigDecimal::add);
+      List<Long> orderIds = omsMatcherCommissions.stream().map(OmsMatcherCommission::getOrderId).collect(Collectors.toList());
+      BigDecimal totalPayAmount=BigDecimal.ZERO;
+      if(!CollectionUtils.isEmpty(orderIds)){
+
+        List<OmsOrder> omsOrderList = omsOrderService.list(new QueryWrapper<OmsOrder>().lambda().in(OmsOrder::getId, orderIds));
+        totalPayAmount=omsOrderList.stream().map(OmsOrder::getPayAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+      }
+      orderCommissionStatistics.setAvgPayAmount(avgPayAmount);
+      orderCommissionStatistics.setProfitAmount(profitAmount);
+      orderCommissionStatistics.setTotalPayAmount(totalPayAmount);
+      return new CommonResult().success(orderCommissionStatistics);
+    }catch (Exception e){
+      return new CommonResult().failed(e.getMessage());
+    }
+  }
+
+
 }

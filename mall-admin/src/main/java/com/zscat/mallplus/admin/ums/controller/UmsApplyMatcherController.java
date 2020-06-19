@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zscat.mallplus.admin.utils.GeneratorCodeUtil;
 import com.zscat.mallplus.manage.assemble.SysUserAssemble;
+import com.zscat.mallplus.manage.service.sms.ISmsService;
 import com.zscat.mallplus.manage.service.sys.ISysUserService;
 import com.zscat.mallplus.manage.service.ums.IUmsApplyMatcherService;
 import com.zscat.mallplus.manage.utils.UserUtils;
@@ -32,6 +33,8 @@ public class UmsApplyMatcherController {
 
     @Autowired
     private ISysUserService iSysUserService;
+    @Autowired
+    private ISmsService smsService;
 
     @ApiOperation(value = "搭配师审核列表")
     @RequestMapping(value = "/pageMatcher", method = RequestMethod.POST)
@@ -61,8 +64,10 @@ public class UmsApplyMatcherController {
         if(iUmsApplyMatcherService.updateById(umsApplyMatcherVo)){
             if(MagicConstant.AUDIT_STATUS_PASSED.equals(umsApplyMatcherVo.getAuditStatus())){
                 BeanUtils.copyProperties(umsApplyMatcher,umsApplyMatcherVo );
-                //TODO 设置随机用户名通知
-                SysUser sysUser = SysUserAssemble.assembleSysUser(umsApplyMatcherVo,generatorUserName());
+                //设置随机用户名通知
+                String userName = generatorUserName();
+                smsService.sendUserName(umsApplyMatcherVo.getPhone(),userName);
+                SysUser sysUser = SysUserAssemble.assembleSysUser(umsApplyMatcherVo,userName);
                 iSysUserService.saves(sysUser);
             }
         }

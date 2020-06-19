@@ -72,4 +72,18 @@ public class SmsServiceImpl implements ISmsService {
     String realAuthCode = redisService.get(REDIS_KEY_PREFIX_AUTH_CODE + telephone);
     return authCode.equals(realAuthCode);
   }
+
+  @Override
+  public void sendUserName(String telephone, String msg) {
+    String tempParam ="{\"username\":\""+msg+"\"}";
+    SendSmsUtil.sendMessage(telephone, tempParam, accessKeyId, accessSecret, "SMS_193246785");
+  }
+
+  @Override
+  public void deliveryNotify(String telephone, String deliverySn, String deliveryCompany) {
+    String contentFormat="{\"delivery_sn\":\"%s\",\"delivery_company\":\"%s\"}";
+    String tempParam = String.format(contentFormat, deliverySn,deliveryCompany);
+    SendSmsUtil.sendMessage(telephone, tempParam, accessKeyId, accessSecret, "SMS_180356338");
+
+  }
 }

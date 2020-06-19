@@ -71,6 +71,7 @@
       <if test="matcherCommission.matcherUserId != null">
           AND T5.MATCHER_USER_ID = #{matcherCommission.matcherUserId}
       </if>
+      order by T.CREATE_TIME desc
   </select>
 
     <select id="listOmsMathcerCommissions" parameterType="com.zscat.mallplus.mbg.oms.vo.OmsMatcherCommissionVo" resultMap="matcherCommissionMap">
