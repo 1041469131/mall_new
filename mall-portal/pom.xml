@@ -78,7 +78,7 @@
                     <imageName>mall/${project.artifactId}:${project.version}</imageName>
                     <dockerHost>${docker.host}</dockerHost>
                     <baseImage>java:8</baseImage>
-                    <entryPoint>["java", "-jar", "-Dspring.profiles.active=dev","/${project.build.finalName}.jar"]
+                    <entryPoint>["java", "-jar", "-Dspring.profiles.active=test","/${project.build.finalName}.jar"]
                     </entryPoint>
                     <resources>
                         <resource>

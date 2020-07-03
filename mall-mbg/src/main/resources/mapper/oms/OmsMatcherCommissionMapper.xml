@@ -33,13 +33,14 @@
     <result column="invite_nick_name" property="inviteNickName"/>
     <result column="invite_icon" property="inviteIcon"/>
     <result column="invite_name" property="inviteName"/>
+    <result column="receive_time" property="receiveTime"/>
   </resultMap>
 
   <select id="pageOmsMathcerCommissions" parameterType="com.zscat.mallplus.mbg.oms.vo.OmsMatcherCommissionVo" resultMap="matcherCommissionMap">
       SELECT T.`STATUS` AS ORDER_STATUS,T.ID AS ORDER_ID,T1.ICON,T1.NICKNAME,T1.PERSONALIZED_SIGNATURE,T1.PHONE,T2.ICON AS MATCHER_ICON,
       T2.NICK_NAME AS MATCHER_NICK_NAME,T2.`NAME` AS MATCHER_NAME,T.PAY_AMOUNT,
       T5.PROFIT_TYPE,T5.PROFIT,T.CREATE_TIME AS ORDER_CREATE_TIME,T4.NICK_NAME AS INVITE_NICK_NAME,T4.ICON AS INVITE_ICON,
-      T4.`NAME` AS INVITE_NAME,T5.`STATUS`,T5.ID
+      T4.`NAME` AS INVITE_NAME,T5.`STATUS`,T5.ID,T.receive_time
       FROM OMS_ORDER T
       LEFT JOIN UMS_MEMBER T1 ON T.MEMBER_ID = T1.ID
       LEFT JOIN SYS_USER T2 ON T1.MATCH_USER_ID = T2.ID
@@ -51,7 +52,7 @@
           AND T.ID = #{matcherCommission.orderId}
       </if>
       <if test="matcherCommission.startOrderDate != null">
-         AND T.CREATE_TIME > #{matcherCommission.startOrderDate}
+         AND T.CREATE_TIME &gt;= #{matcherCommission.startOrderDate}
       </if>
       <if test="matcherCommission.endOrderDate != null">
         AND T.CREATE_TIME &lt;= #{matcherCommission.endOrderDate}
@@ -78,7 +79,7 @@
         SELECT T.`STATUS` AS ORDER_STATUS,T.ID AS ORDER_ID,T1.ICON,T1.NICKNAME,T1.PERSONALIZED_SIGNATURE,T1.PHONE,T2.ICON AS MATCHER_ICON,
         T2.NICK_NAME AS MATCHER_NICK_NAME,T2.`NAME` AS MATCHER_NAME,T.PAY_AMOUNT,
         T5.PROFIT_TYPE,T5.PROFIT,T.CREATE_TIME AS ORDER_CREATE_TIME,T4.NICK_NAME AS INVITE_NICK_NAME,T4.ICON AS INVITE_ICON,
-        T4.`NAME` AS INVITE_NAME,T5.`STATUS`,T5.ID,T5.matcher_user_id as matcherUserId
+        T4.`NAME` AS INVITE_NAME,T5.`STATUS`,T5.ID,T5.matcher_user_id as matcherUserId,T.receive_time
         FROM OMS_ORDER T
         LEFT JOIN UMS_MEMBER T1 ON T.MEMBER_ID = T1.ID
         LEFT JOIN SYS_USER T2 ON T1.MATCH_USER_ID = T2.ID

@@ -9,9 +9,11 @@ import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
 import java.util.Date;
+import lombok.Data;
 
 @TableName("ums_apply_matcher")
 @ApiModel("会员申请搭配师")
+@Data
 public class UmsApplyMatcher implements Serializable {
 
     @JsonSerialize(using = ToStringSerializer.class)
@@ -97,148 +99,4 @@ public class UmsApplyMatcher implements Serializable {
     private String icon;
 
     private static final long serialVersionUID = 1L;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getMemberId() {
-        return memberId;
-    }
-
-    public void setMemberId(Long memberId) {
-        this.memberId = memberId;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getWechatNo() {
-        return wechatNo;
-    }
-
-    public void setWechatNo(String wechatNo) {
-        this.wechatNo = wechatNo;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getWechatTwoCode() {
-        return wechatTwoCode;
-    }
-
-    public void setWechatTwoCode(String wechatTwoCode) {
-        this.wechatTwoCode = wechatTwoCode;
-    }
-
-    public String getInvitePhone() {
-        return invitePhone;
-    }
-
-    public void setInvitePhone(String invitePhone) {
-        this.invitePhone = invitePhone;
-    }
-
-    public String getIntroduce() {
-        return introduce;
-    }
-
-    public void setIntroduce(String introduce) {
-        this.introduce = introduce;
-    }
-
-    public String getAuditStatus() {
-        return auditStatus;
-    }
-
-    public void setAuditStatus(String auditStatus) {
-        this.auditStatus = auditStatus;
-    }
-
-    public String getAuditReson() {
-        return auditReson;
-    }
-
-    public void setAuditReson(String auditReson) {
-        this.auditReson = auditReson;
-    }
-
-    public Date getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
-
-    public Long getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Long createTime) {
-        this.createTime = createTime;
-    }
-
-    public Date getUpdateDate() {
-        return updateDate;
-    }
-
-    public void setUpdateDate(Date updateDate) {
-        this.updateDate = updateDate;
-    }
-
-    public Long getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Long updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public Long getAuditId() {
-        return auditId;
-    }
-
-    public void setAuditId(Long auditId) {
-        this.auditId = auditId;
-    }
-
-    public String getRelateStatus() {
-        return relateStatus;
-    }
-
-    public void setRelateStatus(String relateStatus) {
-        this.relateStatus = relateStatus;
-    }
-
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    public String getIcon() {
-        return icon;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
 }

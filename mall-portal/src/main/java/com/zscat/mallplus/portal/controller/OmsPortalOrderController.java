@@ -73,8 +73,7 @@ public class OmsPortalOrderController extends ApiBaseAction {
     @RequestMapping(value = "/detail", method = RequestMethod.GET)
     @ResponseBody
     public Object detail(@RequestParam(value = "id", required = false, defaultValue = "0") Long id) {
-        OmsOrder orderDetailResult = null;
-        orderDetailResult = orderService.getById(id);
+        OmsOrder orderDetailResult = orderService.getById(id);
         OmsOrderItem query = new OmsOrderItem();
         query.setOrderId(id);
         List<OmsOrderItem> orderItemList = orderItemService.list(new QueryWrapper<>(query));

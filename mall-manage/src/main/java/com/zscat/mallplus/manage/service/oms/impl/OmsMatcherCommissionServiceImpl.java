@@ -1,15 +1,22 @@
 package com.zscat.mallplus.manage.service.oms.impl;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zscat.mallplus.manage.service.oms.IOmsMatcherCommissionService;
+import com.zscat.mallplus.manage.service.oms.IOmsOrderService;
 import com.zscat.mallplus.manage.service.sys.ISysMatcherStatisticsService;
 import com.zscat.mallplus.mbg.oms.entity.OmsMatcherCommission;
+import com.zscat.mallplus.mbg.oms.entity.OmsOrder;
 import com.zscat.mallplus.mbg.oms.mapper.OmsMatcherCommissionMapper;
 import com.zscat.mallplus.mbg.oms.vo.OmsMatcherCommissionVo;
 import com.zscat.mallplus.mbg.sys.entity.SysUser;
 import com.zscat.mallplus.mbg.sys.mapper.SysUserMapper;
 import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-import java.util.Date;
-import java.util.List;
 
 @Service
 public class OmsMatcherCommissionServiceImpl extends ServiceImpl<OmsMatcherCommissionMapper,OmsMatcherCommission> implements IOmsMatcherCommissionService{
@@ -31,6 +36,8 @@ public class OmsMatcherCommissionServiceImpl extends ServiceImpl<OmsMatcherCommi
 
     @Autowired
     private SysUserMapper sysUserMapper;
+    @Autowired
+    private IOmsOrderService omsOrderservice;
 
     @Override
     public Page<OmsMatcherCommissionVo> pageOmsMathcerCommissions(OmsMatcherCommissionVo omsMatcherCommissionVo) {
@@ -68,7 +75,16 @@ public class OmsMatcherCommissionServiceImpl extends ServiceImpl<OmsMatcherCommi
             this.updateBatchById(omsMatcherCommissions);
             Set<Long> collect = omsMatcherCommissionList.stream().map(OmsMatcherCommission::getMatcherUserId).collect(Collectors.toSet());
             List<SysUser> sysUsers = sysUserMapper.selectBatchIds(collect);
-            sysUsers.forEach(sysUser -> sysMatcherStatisticsService.accountMatcherStatics(sysUser));
+            Map<Long, List<Long>> longListMap = omsMatcherCommissionList.stream().collect(Collectors
+              .groupingBy(OmsMatcherCommission::getMatcherUserId,
+                Collectors.mapping(OmsMatcherCommission::getOrderId, Collectors.toList())));
+            sysUsers.forEach(sysUser -> {
+                List<Long> orderIds = longListMap.get(sysUser.getId());
+                if(!CollectionUtils.isEmpty(orderIds)) {
+                    List<OmsOrder> orderList = omsOrderservice.list(new QueryWrapper<OmsOrder>().lambda().in(OmsOrder::getId, orderIds));
+                    orderList.forEach(omsOrder -> sysMatcherStatisticsService.accountMatcherStatics(sysUser, omsOrder.getMemberId()));
+                }
+            });
         }
     }
 }

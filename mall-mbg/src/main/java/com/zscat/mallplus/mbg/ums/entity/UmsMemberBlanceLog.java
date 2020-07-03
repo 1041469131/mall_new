@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
+import lombok.Data;
 
 /**
  * <p>
@@ -17,6 +18,7 @@ import java.io.Serializable;
  * @since 2019-04-19
  */
 @TableName("ums_member_blance_log")
+@Data
 public class UmsMemberBlanceLog implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -35,65 +37,4 @@ public class UmsMemberBlanceLog implements Serializable {
 
     @TableField("create_time")
     private Date createTime;
-
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getMemberId() {
-        return memberId;
-    }
-
-    public void setMemberId(Long memberId) {
-        this.memberId = memberId;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    @Override
-    public String toString() {
-        return "UmsMemberBlanceLog{" +
-        ", id=" + id +
-        ", memberId=" + memberId +
-        ", price=" + price +
-        ", type=" + type +
-        ", note=" + note +
-        ", createTime=" + createTime +
-        "}";
-    }
 }

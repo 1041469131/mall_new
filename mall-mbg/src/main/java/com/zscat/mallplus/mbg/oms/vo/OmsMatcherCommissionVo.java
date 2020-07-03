@@ -3,16 +3,16 @@ package com.zscat.mallplus.mbg.oms.vo;
 import com.zscat.mallplus.mbg.oms.entity.OmsMatcherCommission;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
 import java.math.BigDecimal;
 import java.util.Date;
+import lombok.Data;
 
 /**
  * 订单佣金的扩展类
  */
 @ApiModel("订单佣金的实体对象")
+@Data
 public class OmsMatcherCommissionVo extends OmsMatcherCommission{
-
     @ApiModelProperty("订单状态")
     private String orderStatus;
 
@@ -73,165 +73,6 @@ public class OmsMatcherCommissionVo extends OmsMatcherCommission{
     @ApiModelProperty("页的总数据")
     private Integer pageSize;
 
-    public String getOrderStatus() {
-        return orderStatus;
-    }
-
-    public void setOrderStatus(String orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
-    @Override
-    public Long getOrderId() {
-        return orderId;
-    }
-
-    @Override
-    public void setOrderId(Long orderId) {
-        this.orderId = orderId;
-    }
-
-    public String getIcon() {
-        return icon;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
-
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    public String getPersonalizedSignature() {
-        return personalizedSignature;
-    }
-
-    public void setPersonalizedSignature(String personalizedSignature) {
-        this.personalizedSignature = personalizedSignature;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getMatcherIcon() {
-        return matcherIcon;
-    }
-
-    public void setMatcherIcon(String matcherIcon) {
-        this.matcherIcon = matcherIcon;
-    }
-
-    public String getMatcherNickName() {
-        return matcherNickName;
-    }
-
-    public void setMatcherNickName(String matcherNickName) {
-        this.matcherNickName = matcherNickName;
-    }
-
-    public String getMatcherName() {
-        return matcherName;
-    }
-
-    public void setMatcherName(String matcherName) {
-        this.matcherName = matcherName;
-    }
-
-    public BigDecimal getPayAmount() {
-        return payAmount;
-    }
-
-    public void setPayAmount(BigDecimal payAmount) {
-        this.payAmount = payAmount;
-    }
-
-    public Date getOrderCreateTime() {
-        return orderCreateTime;
-    }
-
-    public void setOrderCreateTime(Date orderCreateTime) {
-        this.orderCreateTime = orderCreateTime;
-    }
-
-    public String getInviteNickName() {
-        return inviteNickName;
-    }
-
-    public void setInviteNickName(String inviteNickName) {
-        this.inviteNickName = inviteNickName;
-    }
-
-    public String getInviteIcon() {
-        return inviteIcon;
-    }
-
-    public void setInviteIcon(String inviteIcon) {
-        this.inviteIcon = inviteIcon;
-    }
-
-    public String getInviteName() {
-        return inviteName;
-    }
-
-    public void setInviteName(String inviteName) {
-        this.inviteName = inviteName;
-    }
-
-    public Integer getPageNum() {
-        return pageNum;
-    }
-
-    public void setPageNum(Integer pageNum) {
-        this.pageNum = pageNum;
-    }
-
-    public Integer getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(Integer pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    public String getStartOrderDate() {
-        return startOrderDate;
-    }
-
-    public void setStartOrderDate(String startOrderDate) {
-        this.startOrderDate = startOrderDate;
-    }
-
-    public String getEndOrderDate() {
-        return endOrderDate;
-    }
-
-    public void setEndOrderDate(String endOrderDate) {
-        this.endOrderDate = endOrderDate;
-    }
-
-    public String getSettleStatuses() {
-        return settleStatuses;
-    }
-
-    public void setSettleStatuses(String settleStatuses) {
-        this.settleStatuses = settleStatuses;
-    }
-
-    public String[] getStatusList() {
-        return statusList;
-    }
-
-    public void setStatusList(String[] statusList) {
-        this.statusList = statusList;
-    }
+    @ApiModelProperty("确认收货时间")
+    private Date receiveTime;
 }

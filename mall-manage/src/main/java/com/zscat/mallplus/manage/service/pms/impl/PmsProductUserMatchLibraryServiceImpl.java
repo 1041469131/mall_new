@@ -106,25 +106,25 @@ public class PmsProductUserMatchLibraryServiceImpl extends ServiceImpl<PmsProduc
         }
         Long userId = pmsProductMatchLibrarys.get(0).getUserId();
         UmsMember umsMember = umsMemberService.getById(userId);
-        List<String> pmsProductUserIds = pmsProductMatchLibrarys.stream().map(p->p.getId().toString()).collect(Collectors.toList());
-        String formId = String.join(",", pmsProductUserIds);
-        SysUser sysUser = sysUserService.getById(pmsProductMatchLibrarys.get(0).getMatchUserId());
-        push(umsMember,sysUser,null,formId);
+        push(umsMember,"/pages/isLogin/isLogin");
     }
 
-    public void push(UmsMember umsMember,  SysUser sysUser, String page, String formId) {
-        logger.info("发送模版消息：userId=" + umsMember.getId() + ",formId=" + formId);
+    public void push(UmsMember umsMember,String page) {
+        logger.info("发送模版消息：userId=" + umsMember.getId());
         try {
             String accessToken = wechatApiService.getAccessToken();
             String templateId = wxAppletProperties.getServiceCompleteTemplateId();
             Map<String, TemplateData> param = new HashMap<>(4);
             param.put("thing1", new TemplateData("穿搭专属推荐", "#EE0000"));
             param.put("time2", new TemplateData(DateUtils.format(new Date(), "yyyy/MM/dd"), "#EE0000"));
-            String memo="您的订阅的1对1穿搭推荐服务，已推送至个搭小程序主页，请及时选购。如有疑问，请及时联系您的专属搭配师"+sysUser.getName();
+            String memo="本期穿搭推荐服务已推送，记得及时选购哦";
             param.put("thing4", new TemplateData(memo, "#EE0000"));
             JSONObject jsonObject = JSONObject.fromObject(param);
+            jsonObject.put("emphasis_keyword","thing1.DATA");
             //调用发送微信消息给用户的接口    ********这里写自己在微信公众平台拿到的模板ID
-            WX_TemplateMsgUtil.sendWechatMsgToUser(umsMember.getWeixinOpenid(), templateId, page,formId, jsonObject, accessToken);
+            String resultJson = WX_TemplateMsgUtil
+              .sendWechatMsgToUser(umsMember.getWeixinOpenid(), templateId, page, jsonObject, accessToken);
+            logger.info("送模版消息返回：userId=" + umsMember.getId() + ",resultJson="+resultJson);
         } catch (Exception e) {
             e.printStackTrace();
         }

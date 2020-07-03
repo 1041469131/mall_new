@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
+import lombok.Data;
 
 /**
  * <p>
@@ -15,6 +16,7 @@ import java.io.Serializable;
  * @since 2019-04-19
  */
 @TableName("ums_integration_consume_setting")
+@Data
 public class UmsIntegrationConsumeSetting implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -45,56 +47,4 @@ public class UmsIntegrationConsumeSetting implements Serializable {
      */
     @TableField("coupon_status")
     private Integer couponStatus;
-
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Integer getDeductionPerAmount() {
-        return deductionPerAmount;
-    }
-
-    public void setDeductionPerAmount(Integer deductionPerAmount) {
-        this.deductionPerAmount = deductionPerAmount;
-    }
-
-    public Integer getMaxPercentPerOrder() {
-        return maxPercentPerOrder;
-    }
-
-    public void setMaxPercentPerOrder(Integer maxPercentPerOrder) {
-        this.maxPercentPerOrder = maxPercentPerOrder;
-    }
-
-    public Integer getUseUnit() {
-        return useUnit;
-    }
-
-    public void setUseUnit(Integer useUnit) {
-        this.useUnit = useUnit;
-    }
-
-    public Integer getCouponStatus() {
-        return couponStatus;
-    }
-
-    public void setCouponStatus(Integer couponStatus) {
-        this.couponStatus = couponStatus;
-    }
-
-    @Override
-    public String toString() {
-        return "UmsIntegrationConsumeSetting{" +
-        ", id=" + id +
-        ", deductionPerAmount=" + deductionPerAmount +
-        ", maxPercentPerOrder=" + maxPercentPerOrder +
-        ", useUnit=" + useUnit +
-        ", couponStatus=" + couponStatus +
-        "}";
-    }
 }

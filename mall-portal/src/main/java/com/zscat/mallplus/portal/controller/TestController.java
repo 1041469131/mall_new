@@ -1,28 +1,38 @@
 package com.zscat.mallplus.portal.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.zscat.mallplus.mbg.oms.entity.OmsOrder;
-import com.zscat.mallplus.mbg.oms.entity.OmsOrderItem;
-import com.zscat.mallplus.mbg.oms.entity.OmsOrderReturnReason;
-import com.zscat.mallplus.mbg.oms.entity.OmsOrderTrade;
+import com.zscat.mallplus.manage.service.ums.IUmsMemberBlanceLogService;
+import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
+import com.zscat.mallplus.mbg.ums.entity.UmsMemberBlanceLog;
 import com.zscat.mallplus.mbg.utils.CommonResult;
-import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
 import com.zscat.mallplus.portal.single.ApiBaseAction;
 import io.swagger.annotations.ApiOperation;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author xiang.li create date 2020/5/19 description
  */
 
 @RequestMapping("/api/test")
+@RestController
 public class TestController extends ApiBaseAction {
+@Autowired
+  private IUmsMemberBlanceLogService umsMemberBlanceLogService;
+  @ApiOperation("根据订单id取消订单")
+  @RequestMapping(value = "/test", method = RequestMethod.POST)
+  @ResponseBody
+  @IgnoreAuth
+  public Object cancelOrderByOrderId(Long orderId) {
+   Date date=new Date();
+    UmsMemberBlanceLog umsMemberBlanceLog=new UmsMemberBlanceLog();
+    umsMemberBlanceLog.setCreateTime(new Date());
+    umsMemberBlanceLogService.save(umsMemberBlanceLog);
+    return new CommonResult().success(date);
+  }
 
 
 }

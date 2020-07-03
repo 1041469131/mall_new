@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
+import lombok.Data;
 
 /**
  * <p>
@@ -16,6 +17,7 @@ import java.io.Serializable;
  * @since 2019-04-19
  */
 @TableName("ums_member_level")
+@Data
 public class UmsMemberLevel implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -98,155 +100,4 @@ public class UmsMemberLevel implements Serializable {
     private BigDecimal price;
 
     private String note;
-
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Integer getGrowthPoint() {
-        return growthPoint;
-    }
-
-    public void setGrowthPoint(Integer growthPoint) {
-        this.growthPoint = growthPoint;
-    }
-
-    public Integer getDefaultStatus() {
-        return defaultStatus;
-    }
-
-    public void setDefaultStatus(Integer defaultStatus) {
-        this.defaultStatus = defaultStatus;
-    }
-
-    public BigDecimal getFreeFreightPoint() {
-        return freeFreightPoint;
-    }
-
-    public void setFreeFreightPoint(BigDecimal freeFreightPoint) {
-        this.freeFreightPoint = freeFreightPoint;
-    }
-
-    public Integer getCommentGrowthPoint() {
-        return commentGrowthPoint;
-    }
-
-    public void setCommentGrowthPoint(Integer commentGrowthPoint) {
-        this.commentGrowthPoint = commentGrowthPoint;
-    }
-
-    public Integer getPriviledgeFreeFreight() {
-        return priviledgeFreeFreight;
-    }
-
-    public void setPriviledgeFreeFreight(Integer priviledgeFreeFreight) {
-        this.priviledgeFreeFreight = priviledgeFreeFreight;
-    }
-
-    public Integer getPriviledgeSignIn() {
-        return priviledgeSignIn;
-    }
-
-    public void setPriviledgeSignIn(Integer priviledgeSignIn) {
-        this.priviledgeSignIn = priviledgeSignIn;
-    }
-
-    public Integer getPriviledgeComment() {
-        return priviledgeComment;
-    }
-
-    public void setPriviledgeComment(Integer priviledgeComment) {
-        this.priviledgeComment = priviledgeComment;
-    }
-
-    public Integer getPriviledgePromotion() {
-        return priviledgePromotion;
-    }
-
-    public void setPriviledgePromotion(Integer priviledgePromotion) {
-        this.priviledgePromotion = priviledgePromotion;
-    }
-
-    public Integer getPriviledgeMemberPrice() {
-        return priviledgeMemberPrice;
-    }
-
-    public void setPriviledgeMemberPrice(Integer priviledgeMemberPrice) {
-        this.priviledgeMemberPrice = priviledgeMemberPrice;
-    }
-
-    public Integer getPriviledgeBirthday() {
-        return priviledgeBirthday;
-    }
-
-    public void setPriviledgeBirthday(Integer priviledgeBirthday) {
-        this.priviledgeBirthday = priviledgeBirthday;
-    }
-
-    public Integer getArticlecount() {
-        return articlecount;
-    }
-
-    public void setArticlecount(Integer articlecount) {
-        this.articlecount = articlecount;
-    }
-
-    public Integer getGoodscount() {
-        return goodscount;
-    }
-
-    public void setGoodscount(Integer goodscount) {
-        this.goodscount = goodscount;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
-    }
-
-    @Override
-    public String toString() {
-        return "UmsMemberLevel{" +
-        ", id=" + id +
-        ", name=" + name +
-        ", growthPoint=" + growthPoint +
-        ", defaultStatus=" + defaultStatus +
-        ", freeFreightPoint=" + freeFreightPoint +
-        ", commentGrowthPoint=" + commentGrowthPoint +
-        ", priviledgeFreeFreight=" + priviledgeFreeFreight +
-        ", priviledgeSignIn=" + priviledgeSignIn +
-        ", priviledgeComment=" + priviledgeComment +
-        ", priviledgePromotion=" + priviledgePromotion +
-        ", priviledgeMemberPrice=" + priviledgeMemberPrice +
-        ", priviledgeBirthday=" + priviledgeBirthday +
-        ", articlecount=" + articlecount +
-        ", goodscount=" + goodscount +
-        ", price=" + price +
-        ", note=" + note +
-        "}";
-    }
 }

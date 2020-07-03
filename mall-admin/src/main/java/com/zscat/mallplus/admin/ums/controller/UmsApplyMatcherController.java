@@ -5,10 +5,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zscat.mallplus.admin.utils.GeneratorCodeUtil;
 import com.zscat.mallplus.manage.assemble.SysUserAssemble;
 import com.zscat.mallplus.manage.service.sms.ISmsService;
+import com.zscat.mallplus.manage.service.sys.ISysCertificateService;
 import com.zscat.mallplus.manage.service.sys.ISysUserService;
 import com.zscat.mallplus.manage.service.ums.IUmsApplyMatcherService;
 import com.zscat.mallplus.manage.utils.UserUtils;
 import com.zscat.mallplus.mbg.annotation.SysLog;
+import com.zscat.mallplus.mbg.sys.entity.SysCertificate;
 import com.zscat.mallplus.mbg.sys.entity.SysUser;
 import com.zscat.mallplus.mbg.ums.entity.UmsApplyMatcher;
 import com.zscat.mallplus.mbg.ums.vo.UmsApplyMatcherVo;
@@ -16,6 +18,8 @@ import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import java.util.Calendar;
+import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -24,7 +28,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@Api(tags = "UmsApplyMatcherController", description = "会员申请搭配师管理")
+@Api(tags = "UmsApplyMatcherController", description = "会员申请搭配师管理,搭配师审核")
 @RequestMapping("/ums/umsApplyMatcher")
 public class UmsApplyMatcherController {
 
@@ -33,8 +37,12 @@ public class UmsApplyMatcherController {
 
     @Autowired
     private ISysUserService iSysUserService;
+
     @Autowired
     private ISmsService smsService;
+
+    @Autowired
+    private ISysCertificateService sysCertificateService;
 
     @ApiOperation(value = "搭配师审核列表")
     @RequestMapping(value = "/pageMatcher", method = RequestMethod.POST)
@@ -69,6 +77,19 @@ public class UmsApplyMatcherController {
                 smsService.sendUserName(umsApplyMatcherVo.getPhone(),userName);
                 SysUser sysUser = SysUserAssemble.assembleSysUser(umsApplyMatcherVo,userName);
                 iSysUserService.saves(sysUser);
+                //设置证书
+                SysCertificate sysCertificate=new SysCertificate();
+                sysCertificate.setCardNumber(userName);
+                sysCertificate.setName(sysUser.getName());
+                sysCertificate.setPhone(sysUser.getPhone());
+                sysCertificate.setStatus(1);
+                sysCertificate.setSysUserId(sysUser.getId());
+                sysCertificate.setType(1);
+                sysCertificate.setCreateDate(new Date());
+                Calendar calendar= Calendar.getInstance();
+                calendar.add(Calendar.YEAR,1);
+                sysCertificate.setExpiryDate(calendar.getTime());
+                sysCertificateService.save(sysCertificate);
             }
         }
         return new CommonResult().success();

@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zscat.mallplus.admin.po.OrderCommissionStatistics;
 import com.zscat.mallplus.manage.service.logistics.IlogisticsService;
 import com.zscat.mallplus.manage.service.oms.IOmsMatcherCommissionService;
+import com.zscat.mallplus.manage.service.oms.IOmsOrderReturnSaleService;
 import com.zscat.mallplus.manage.service.oms.IOmsOrderService;
 import com.zscat.mallplus.manage.service.pms.IPmsBrandService;
 import com.zscat.mallplus.manage.service.pms.IPmsProductService;
@@ -18,6 +19,7 @@ import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
 import com.zscat.mallplus.mbg.annotation.SysLog;
 import com.zscat.mallplus.mbg.oms.entity.OmsMatcherCommission;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrder;
+import com.zscat.mallplus.mbg.oms.entity.OmsOrderReturnSale;
 import com.zscat.mallplus.mbg.oms.vo.OmsMoneyInfoParam;
 import com.zscat.mallplus.mbg.oms.vo.OmsOrderDeliveryParam;
 import com.zscat.mallplus.mbg.oms.vo.OmsOrderQueryParam;
@@ -74,6 +76,8 @@ public class OmsOrderController {
   private IUmsMemberService umsMemberService;
   @Autowired
   private IOmsMatcherCommissionService omsMatcherCommissionService;
+  @Autowired
+  private IOmsOrderReturnSaleService omsOrderReturnSaleService;
   @Autowired
   private ISmsService smsService;
   @SysLog(MODULE = "oms", REMARK = "根据条件查询所有订单表列表")
@@ -222,6 +226,13 @@ public class OmsOrderController {
   @RequestMapping(value = "/update/delivery", method = RequestMethod.POST)
   @ResponseBody
   public Object delivery(@RequestBody List<OmsOrderDeliveryParam> deliveryParamList) {
+    List<Long> orderIds = deliveryParamList.stream().map(OmsOrderDeliveryParam::getOrderId).collect(Collectors.toList());
+    List<OmsOrderReturnSale> omsOrderReturnSaleList = omsOrderReturnSaleService.list(
+      new QueryWrapper<OmsOrderReturnSale>().lambda().in(OmsOrderReturnSale::getOrderId, orderIds)
+        .in(OmsOrderReturnSale::getStatus, 0, 1, 5, 6));
+    if(!CollectionUtils.isEmpty(omsOrderReturnSaleList)){
+      return new CommonResult().failed("发货失败，用户已发起退款不能发货");
+    }
     int count = omsOrderService.delivery(deliveryParamList);
     if (count > 0) {
       return new CommonResult().success(count);

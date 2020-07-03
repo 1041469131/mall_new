@@ -9,6 +9,7 @@
     <result column="member_id" jdbcType="BIGINT" property="memberId" />
     <result column="member_username" jdbcType="VARCHAR" property="memberUsername" />
     <result column="return_amount" jdbcType="DECIMAL" property="returnAmount" />
+    <result column="real_return_amount" jdbcType="DECIMAL" property="realReturnAmount" />
     <result column="return_name" jdbcType="VARCHAR" property="returnName" />
     <result column="return_phone" jdbcType="VARCHAR" property="returnPhone" />
     <result column="status" jdbcType="INTEGER" property="status" />
@@ -31,8 +32,53 @@
     id, order_id, company_address_id, order_sn, member_id, member_username, return_amount, 
     return_name, return_phone, status, reason, description, proof_pics, handle_note, 
     handle_man, receive_man, receive_note, delivery_company, delivery_sn, update_time, 
-    create_time, receive_time, type
+    create_time, receive_time, type,real_return_amount
   </sql>
+  <select id="listByPage" resultMap="BaseResultMap" parameterType="com.zscat.mallplus.mbg.oms.vo.OmsOrderSaleParam">
+    SELECT
+    os.*
+    FROM
+    oms_order_return_sale os
+    LEFT JOIN oms_order_return_apply op ON os.id =op.sale_id
+    <where>
+      1=1
+      <if test="queryParam.orderSn != null">
+        /**订单编号**/
+        AND  os.order_sn =#{queryParam.orderSn}
+      </if>
 
+      <if test="queryParam.id != null">
+        /**订单编号**/
+        AND  os.id =#{queryParam.id}
+      </if>
 
+      <if test="queryParam.deliverySn != null">
+        /**物流单号**/
+        AND os.delivery_sn = #{queryParam.deliverySn}
+      </if>
+
+      <if test="queryParam.status != null">
+        /**待付款/已完成/已发货/待发货/已关闭**/
+        and os.`status`=#{queryParam.status}
+      </if>
+
+      <if test="queryParam.type != null">
+        /**订单类型**/
+        and os.type=#{queryParam.type}
+      </if>
+
+      <if test="queryParam.productName != null">
+        and op.product_name like "%"#{queryParam.productName}"%"
+      </if>
+
+      <if test="queryParam.startDate != null">
+        AND os.create_time <![CDATA[>=]]> #{queryParam.startDate}
+      </if>
+
+      <if test="queryParam.endDate != null">
+        AND os.create_time <![CDATA[<=]]>#{queryParam.endDate}
+      </if>
+    </where>
+    order  by os.update_time desc, os.create_time desc
+  </select>
 </mapper>

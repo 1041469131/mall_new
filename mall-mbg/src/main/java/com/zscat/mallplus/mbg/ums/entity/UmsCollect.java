@@ -8,11 +8,13 @@ import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
 import java.util.Date;
+import lombok.Data;
 
 /**
  * 喜欢/收藏表
  */
 @TableName("ums_collect")
+@Data
 public class UmsCollect implements Serializable {
 
     @JsonSerialize(using = ToStringSerializer.class)
@@ -74,100 +76,4 @@ public class UmsCollect implements Serializable {
     private Date createTime;
 
     private static final long serialVersionUID = 1L;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getMemberId() {
-        return memberId;
-    }
-
-    public void setMemberId(Long memberId) {
-        this.memberId = memberId;
-    }
-
-    public Long getAssemblyId() {
-        return assemblyId;
-    }
-
-    public void setAssemblyId(Long assemblyId) {
-        this.assemblyId = assemblyId;
-    }
-
-    public String getAssemblyName() {
-        return assemblyName;
-    }
-
-    public void setAssemblyName(String assemblyName) {
-        this.assemblyName = assemblyName;
-    }
-
-    public String getAssemblyPic() {
-        return assemblyPic;
-    }
-
-    public void setAssemblyPic(String assemblyPic) {
-        this.assemblyPic = assemblyPic;
-    }
-
-    public String getAssemblyPrice() {
-        return assemblyPrice;
-    }
-
-    public void setAssemblyPrice(String assemblyPrice) {
-        this.assemblyPrice = assemblyPrice;
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
-    public String getFavorType() {
-        return favorType;
-    }
-
-    public void setFavorType(String favorType) {
-        this.favorType = favorType;
-    }
-
-    public String getDislikeReason() {
-        return dislikeReason;
-    }
-
-    public void setDislikeReason(String dislikeReason) {
-        this.dislikeReason = dislikeReason;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getAssemblyTitle() {
-        return assemblyTitle;
-    }
-
-    public void setAssemblyTitle(String assemblyTitle) {
-        this.assemblyTitle = assemblyTitle;
-    }
 }

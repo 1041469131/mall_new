@@ -357,7 +357,7 @@ public class UmsMemberController {
 //    @PreAuthorize("hasAuthority('ums:UmsMember:read')")
   public CommonResult<List<VUmsMemberVo>> listUmsMember4Matcher(@ApiParam("查询参数")@RequestBody VUmsMemberVo vUmsMemberVo) {
     //当为搭配师平台的时候，将登陆用户的id赋值给搭配师
-    vUmsMemberVo.setMatchUserId(UserUtils.getCurrentMember().getId());
+   // vUmsMemberVo.setMatchUserId(UserUtils.getCurrentMember().getId());
     Page<VUmsMemberVo> umsMembers = umsMemberService.listVUmsMembers(vUmsMemberVo);
     //设置时间间隔
     Set<Long> memberIds = umsMembers.getRecords().stream().map(VUmsMemberVo::getId).collect(Collectors.toSet());

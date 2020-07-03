@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Date;
+import lombok.Data;
 
 /**
  * <p>
@@ -20,6 +21,7 @@ import java.util.Date;
  * @since 2019-04-19
  */
 @TableName("ums_member_statistics_info")
+@Data
 public class UmsMemberStatisticsInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -116,180 +118,4 @@ public class UmsMemberStatisticsInfo implements Serializable {
 
     @ApiModelProperty("用户标签")
     private String tagName;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getMemberId() {
-        return memberId;
-    }
-
-    public void setMemberId(Long memberId) {
-        this.memberId = memberId;
-    }
-
-    public BigDecimal getConsumeAmount() {
-        return consumeAmount;
-    }
-
-    public void setConsumeAmount(BigDecimal consumeAmount) {
-        this.consumeAmount = consumeAmount;
-    }
-
-    public Integer getOrderCount() {
-        return orderCount;
-    }
-
-    public void setOrderCount(Integer orderCount) {
-        this.orderCount = orderCount;
-    }
-
-    public Integer getCouponCount() {
-        return couponCount;
-    }
-
-    public void setCouponCount(Integer couponCount) {
-        this.couponCount = couponCount;
-    }
-
-    public Integer getCommentCount() {
-        return commentCount;
-    }
-
-    public void setCommentCount(Integer commentCount) {
-        this.commentCount = commentCount;
-    }
-
-    public Integer getReturnOrderCount() {
-        return returnOrderCount;
-    }
-
-    public void setReturnOrderCount(Integer returnOrderCount) {
-        this.returnOrderCount = returnOrderCount;
-    }
-
-    public Integer getLoginCount() {
-        return loginCount;
-    }
-
-    public void setLoginCount(Integer loginCount) {
-        this.loginCount = loginCount;
-    }
-
-    public Integer getAttendCount() {
-        return attendCount;
-    }
-
-    public void setAttendCount(Integer attendCount) {
-        this.attendCount = attendCount;
-    }
-
-    public Integer getFansCount() {
-        return fansCount;
-    }
-
-    public void setFansCount(Integer fansCount) {
-        this.fansCount = fansCount;
-    }
-
-    public Integer getCollectProductCount() {
-        return collectProductCount;
-    }
-
-    public void setCollectProductCount(Integer collectProductCount) {
-        this.collectProductCount = collectProductCount;
-    }
-
-    public Integer getCollectSubjectCount() {
-        return collectSubjectCount;
-    }
-
-    public void setCollectSubjectCount(Integer collectSubjectCount) {
-        this.collectSubjectCount = collectSubjectCount;
-    }
-
-    public Integer getCollectTopicCount() {
-        return collectTopicCount;
-    }
-
-    public void setCollectTopicCount(Integer collectTopicCount) {
-        this.collectTopicCount = collectTopicCount;
-    }
-
-    public Integer getCollectCommentCount() {
-        return collectCommentCount;
-    }
-
-    public void setCollectCommentCount(Integer collectCommentCount) {
-        this.collectCommentCount = collectCommentCount;
-    }
-
-    public Integer getInviteFriendCount() {
-        return inviteFriendCount;
-    }
-
-    public void setInviteFriendCount(Integer inviteFriendCount) {
-        this.inviteFriendCount = inviteFriendCount;
-    }
-
-    public Date getRecentOrderTime() {
-        return recentOrderTime;
-    }
-
-    public void setRecentOrderTime(Date recentOrderTime) {
-        this.recentOrderTime = recentOrderTime;
-    }
-
-    public Date getRecomendDate() {
-        return recomendDate;
-    }
-
-    public void setRecomendDate(Date recomendDate) {
-        this.recomendDate = recomendDate;
-    }
-
-    public Date getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
-
-    public Long getRecomendTime() {
-        return recomendTime;
-    }
-
-    public void setRecomendTime(Long recomendTime) {
-        this.recomendTime = recomendTime;
-    }
-
-    public String getRecommendStatus() {
-        return recommendStatus;
-    }
-
-    public void setRecommendStatus(String recommendStatus) {
-        this.recommendStatus = recommendStatus;
-    }
-
-    public Integer getRecommendCount() {
-        return recommendCount;
-    }
-
-    public void setRecommendCount(Integer recommendCount) {
-        this.recommendCount = recommendCount;
-    }
-
-    public String getTagName() {
-        return tagName;
-    }
-
-    public void setTagName(String tagName) {
-        this.tagName = tagName;
-    }
 }

@@ -27,7 +27,7 @@ public class MagicConstant {
     public final static String IS_PARENT = "0";
     public final static String IS_NOT_PARENT = "1";
 
-    /*******售后的状态 0->待处理；1->退货中（退货待寄回）；2->已完成；3->已拒绝 4-已撤销 5-寄回退货（已寄回待验收）,6-已收货 7-等待退款 8-退款失败***/
+    /*******售后的状态 0->待处理；1->退货中（退货待寄回）；2->已完成；3->已拒绝 4-已撤销 5-寄回退货（已寄回待验收）,6-已收货 7-等待退款 8-退款失败 ***/
     public final static Integer RETURN_STATUS_WAIT_DEAL = 0;
     public final static Integer RETURN_STATUS_REFUNDING = 1;
     public final static Integer RETURN_STATUS_FINISHED = 2;
@@ -37,6 +37,7 @@ public class MagicConstant {
     public final static Integer RETURN_STATUS_RECEIVED = 6;
     public final static Integer RETURN_STATUS_REFUND = 7;
     public final static Integer RETURN_STATUS_REFUND_FAILD = 8;
+
 
     /*******退货原因状态 0->不启用；1->启用***/
     public final static Integer RETURN_STATUS_OFF = 0;

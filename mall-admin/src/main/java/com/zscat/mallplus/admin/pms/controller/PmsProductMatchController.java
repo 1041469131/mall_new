@@ -1,5 +1,6 @@
 package com.zscat.mallplus.admin.pms.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zscat.mallplus.manage.assemble.MatchLibraryAssemble;
@@ -10,6 +11,7 @@ import com.zscat.mallplus.manage.service.pms.IPmsProductMatchLibraryService;
 import com.zscat.mallplus.manage.service.pms.IPmsProductService;
 import com.zscat.mallplus.manage.service.pms.IPmsProductUserMatchLibraryService;
 import com.zscat.mallplus.manage.service.pms.IPmsSkuStockService;
+import com.zscat.mallplus.manage.service.ums.RedisService;
 import com.zscat.mallplus.manage.utils.JsonUtil;
 import com.zscat.mallplus.manage.utils.UserUtils;
 import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
@@ -43,6 +45,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * 搭配相关的controller
@@ -57,19 +60,21 @@ public class PmsProductMatchController {
 
     @Autowired
     private IPmsProductMatchLibraryService iPmsProductMatchLibraryService;
-
     @Autowired
     private IPmsProductUserMatchLibraryService iPmsProductUserMatchLibraryService;
-
     @Autowired
     private IPmsProductService iPmsProductService;
-
     @Autowired
     private IOmsOrderService omsOrderService;
     @Autowired
     private IOmsOrderReturnSaleService omsOrderReturnSaleService;
     @Autowired
     private IOmsOrderItemService omsOrderItemService;
+    @Autowired
+    RestTemplate restTemplate;
+    @Autowired
+    private RedisService redisService;
+
 
     @IgnoreAuth
     @SysLog(MODULE = "pms", REMARK = "保存或者更新搭配库信息")
@@ -262,5 +267,24 @@ public class PmsProductMatchController {
         PmsProductMatchLibrary pmsProductMatchLibrary = MatchLibraryAssemble.assembleMatchLibrary(pmsProductUserMatchLibrary);
         iPmsProductMatchLibraryService.save(pmsProductMatchLibrary);
         return  new CommonResult<PmsProductUserMatchLibrary>().success();
+    }
+    @SysLog(MODULE = "pms", REMARK = "获取天气返回json")
+    @ApiOperation("获取天气返回json")
+    @PostMapping(value = "/getWeather")
+    public String getWeatherJson(String cityCode){
+        String result = redisService.get("weather:" + cityCode);
+        if(result!=null){
+            return  result;
+        }
+        String url="http://t.weather.sojson.com/api/weather/city/"+cityCode;
+        String json = restTemplate.getForObject(url,String.class);
+        log.info("url:"+url+",json:"+json);
+        String message = JSONObject.parseObject(json).getString("message");
+        if(message!=null&&message.contains("success")){
+            redisService.set("weather:" + cityCode, json);
+            redisService.expire("weather" + cityCode, 60*60*4);
+            return message;
+        }
+        return  null;
     }
 }

@@ -94,6 +94,9 @@ public class SysUser implements Serializable {
     @ApiModelProperty(value = "微信二维码地址")
     private String wechatQrcodeUrl;
 
+    @ApiModelProperty(value = "接入微信企业号Id")
+    private String plugId;
+
     @ApiModelProperty(value = "简介")
     private String introduction;
 

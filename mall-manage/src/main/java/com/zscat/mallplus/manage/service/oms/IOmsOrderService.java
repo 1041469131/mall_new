@@ -103,4 +103,5 @@ public interface IOmsOrderService extends IService<OmsOrder> {
     List<OmsOrder> listOmsOrders(String outTradeNo);
 
     Page<OrderResult> listOmsOrderByPage(OmsOrderQueryParam oderParam);
+
 }

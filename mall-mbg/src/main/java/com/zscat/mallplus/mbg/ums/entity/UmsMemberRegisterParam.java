@@ -11,9 +11,11 @@ import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
 import java.util.Date;
+import lombok.Data;
 
 @TableName("ums_member_register_param")
 @ApiModel("用户注册参数")
+@Data
 public class UmsMemberRegisterParam implements Serializable {
 
     @TableId(value = "id", type = IdType.AUTO)
@@ -63,92 +65,4 @@ public class UmsMemberRegisterParam implements Serializable {
     private Long parentId;
 
     private static final long serialVersionUID = 1L;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getTypeDescr() {
-        return typeDescr;
-    }
-
-    public void setTypeDescr(String typeDescr) {
-        this.typeDescr = typeDescr;
-    }
-
-    public String getTypeInput() {
-        return typeInput;
-    }
-
-    public void setTypeInput(String typeInput) {
-        this.typeInput = typeInput;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Long getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(Long parentId) {
-        this.parentId = parentId;
-    }
-
-    public Integer getOrderNum() {
-        return orderNum;
-    }
-
-    public void setOrderNum(Integer orderNum) {
-        this.orderNum = orderNum;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
 }

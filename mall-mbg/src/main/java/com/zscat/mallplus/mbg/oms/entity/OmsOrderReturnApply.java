@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import lombok.Data;
 
 /**
  * <p>
@@ -21,8 +22,8 @@ import java.util.Date;
  * @since 2019-04-17
  */
 @TableName("oms_order_return_apply")
+@Data
 public class OmsOrderReturnApply implements Serializable {
-
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.AUTO)
@@ -85,6 +86,14 @@ public class OmsOrderReturnApply implements Serializable {
     @ApiModelProperty("商品品牌")
     private String productBrand;
 
+
+    /**
+     * 货号
+     */
+    @TableField("product_sn")
+    @ApiModelProperty(value = "货号")
+    private String productSn;
+
     /**
      * 商品销售属性：颜色：红色；尺码：xl;
      */
@@ -105,7 +114,6 @@ public class OmsOrderReturnApply implements Serializable {
     @TableField("product_price")
     @ApiModelProperty("商品单价")
     private BigDecimal productPrice;
-
     /**
      * 商品实际支付单价
      */
@@ -113,127 +121,17 @@ public class OmsOrderReturnApply implements Serializable {
     @ApiModelProperty("商品实际支付单价")
     private BigDecimal productRealPrice;
 
+    @TableField("order_item_id")
+    @ApiModelProperty("订单明细")
+    private Long orderItemId;
+
+    @TableField("status")
+    @ApiModelProperty("单品退款状态 ：0->待处理；1->退货中；2->已完成；3->已拒绝;4-已撤销，5-寄回退款退货，6-已收货")
+    private Integer status;
     /**
      * 售后id
      */
     @TableField("sale_id")
     @ApiModelProperty("售后id")
     private Long saleId;
-
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(Long orderId) {
-        this.orderId = orderId;
-    }
-
-    public Long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Long productId) {
-        this.productId = productId;
-    }
-
-    public String getOrderSn() {
-        return orderSn;
-    }
-
-    public void setOrderSn(String orderSn) {
-        this.orderSn = orderSn;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public BigDecimal getReturnAmount() {
-        return returnAmount;
-    }
-
-    public void setReturnAmount(BigDecimal returnAmount) {
-        this.returnAmount = returnAmount;
-    }
-
-    public String getProductPic() {
-        return productPic;
-    }
-
-    public void setProductPic(String productPic) {
-        this.productPic = productPic;
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-
-    public String getProductBrand() {
-        return productBrand;
-    }
-
-    public void setProductBrand(String productBrand) {
-        this.productBrand = productBrand;
-    }
-
-    public String getProductAttr() {
-        return productAttr;
-    }
-
-    public void setProductAttr(String productAttr) {
-        this.productAttr = productAttr;
-    }
-
-    public Integer getProductCount() {
-        return productCount;
-    }
-
-    public void setProductCount(Integer productCount) {
-        this.productCount = productCount;
-    }
-
-    public BigDecimal getProductPrice() {
-        return productPrice;
-    }
-
-    public void setProductPrice(BigDecimal productPrice) {
-        this.productPrice = productPrice;
-    }
-
-    public BigDecimal getProductRealPrice() {
-        return productRealPrice;
-    }
-
-    public void setProductRealPrice(BigDecimal productRealPrice) {
-        this.productRealPrice = productRealPrice;
-    }
-
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
-    }
-
-    public Long getSaleId() {
-        return saleId;
-    }
-
-    public void setSaleId(Long saleId) {
-        this.saleId = saleId;
-    }
 }

@@ -21,6 +21,7 @@
         <result column="phone" property="phone" />
         <result column="type" property="type" />
         <result column="level" property="level" />
+        <result column="plug_id" property="plugId" />
         <result column="update_date" property="updateDate" />
         <result column="update_time" property="updateTime" />
         <result column="create_date" property="createDate" />
@@ -39,11 +40,11 @@
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         t.id, t.username, t.password, t.icon, t.email, t.nick_name, t.note, t.create_time, t.login_time, t.status, t.supply_id,t.wechat_name,t.wechat_qrcode_url,
-        t.introduction,t.phone,t.type,t.level,t.name,t.update_date,t.update_time,t.create_date
+        t.introduction,t.phone,t.type,t.level,t.name,t.update_date,t.update_time,t.create_date,t.plug_id
     </sql>
 
     <select id="getRandomSysUser" resultMap="BaseResultMap">
-        SELECT <include refid="Base_Column_List" /> FROM sys_user t WHERE t.type = '1' ORDER BY RAND() LIMIT 1
+        SELECT <include refid="Base_Column_List" /> FROM sys_user t WHERE t.type = '0' ORDER BY RAND() LIMIT 1
     </select>
 
     <select id="pageMatcherUsers" parameterType="com.zscat.mallplus.mbg.sys.vo.SysUserVO" resultMap="sysUserVoMap">

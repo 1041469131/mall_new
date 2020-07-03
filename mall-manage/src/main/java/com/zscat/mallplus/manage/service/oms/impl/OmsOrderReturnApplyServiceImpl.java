@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zscat.mallplus.manage.service.oms.IOmsOrderReturnApplyService;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrderReturnApply;
 import com.zscat.mallplus.mbg.oms.mapper.OmsOrderReturnApplyMapper;
+import com.zscat.mallplus.mbg.oms.vo.OmsOrderReturnApplyVO;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
 /**
@@ -16,4 +18,9 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class OmsOrderReturnApplyServiceImpl extends ServiceImpl<OmsOrderReturnApplyMapper, OmsOrderReturnApply> implements IOmsOrderReturnApplyService {
+
+  @Override
+  public List<OmsOrderReturnApplyVO> listBySaleId(Long saleId) {
+    return baseMapper.listBySaleId(saleId);
+  }
 }

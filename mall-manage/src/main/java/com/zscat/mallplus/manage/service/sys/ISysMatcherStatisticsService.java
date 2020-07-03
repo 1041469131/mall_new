@@ -21,5 +21,5 @@ public interface ISysMatcherStatisticsService extends IService<SysMatcherStatist
 
     SysMatcherStatisticsVo querySysMatcherStatistics(Long matcherUserId);
 
-    void accountMatcherStatics(SysUser matcherUser);
+    void accountMatcherStatics(SysUser matcherUser,Long matcherId);
 }

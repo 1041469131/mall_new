@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
+import lombok.Data;
 
 /**
  * <p>
@@ -16,6 +17,7 @@ import java.io.Serializable;
  * @since 2019-04-19
  */
 @TableName("ums_member_rule_setting")
+@Data
 public class UmsMemberRuleSetting implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -57,74 +59,4 @@ public class UmsMemberRuleSetting implements Serializable {
      * 类型：0->积分规则；1->成长值规则
      */
     private Integer type;
-
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Integer getContinueSignDay() {
-        return continueSignDay;
-    }
-
-    public void setContinueSignDay(Integer continueSignDay) {
-        this.continueSignDay = continueSignDay;
-    }
-
-    public Integer getContinueSignPoint() {
-        return continueSignPoint;
-    }
-
-    public void setContinueSignPoint(Integer continueSignPoint) {
-        this.continueSignPoint = continueSignPoint;
-    }
-
-    public BigDecimal getConsumePerPoint() {
-        return consumePerPoint;
-    }
-
-    public void setConsumePerPoint(BigDecimal consumePerPoint) {
-        this.consumePerPoint = consumePerPoint;
-    }
-
-    public BigDecimal getLowOrderAmount() {
-        return lowOrderAmount;
-    }
-
-    public void setLowOrderAmount(BigDecimal lowOrderAmount) {
-        this.lowOrderAmount = lowOrderAmount;
-    }
-
-    public Integer getMaxPointPerOrder() {
-        return maxPointPerOrder;
-    }
-
-    public void setMaxPointPerOrder(Integer maxPointPerOrder) {
-        this.maxPointPerOrder = maxPointPerOrder;
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
-    @Override
-    public String toString() {
-        return "UmsMemberRuleSetting{" +
-        ", id=" + id +
-        ", continueSignDay=" + continueSignDay +
-        ", continueSignPoint=" + continueSignPoint +
-        ", consumePerPoint=" + consumePerPoint +
-        ", lowOrderAmount=" + lowOrderAmount +
-        ", maxPointPerOrder=" + maxPointPerOrder +
-        ", type=" + type +
-        "}";
-    }
 }

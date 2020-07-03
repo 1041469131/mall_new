@@ -226,7 +226,11 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
   public UmsMember queryByOpenId(String openId) {
     UmsMember queryO = new UmsMember();
     queryO.setWeixinOpenid(openId);
-    return umsMemberMapper.selectOne(new QueryWrapper<>(queryO));
+    List<UmsMember> umsMembers = umsMemberMapper.selectList(new QueryWrapper<>(queryO));
+    if(!CollectionUtils.isEmpty(umsMembers)){
+      return umsMembers.get(0);
+    }
+    return null;
   }
 
   @Override
@@ -440,45 +444,39 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
 
   @Override
   @Transactional
-  public String register4MiniProgram(UmsMemberVo umsMember) throws Exception {
-    umsMember.setId(UserUtils.getCurrentUmsMember().getId());
+  public String register4MiniProgram(UmsMemberVo umsMember) {
+    Long memberId = UserUtils.getCurrentUmsMember().getId();
+    umsMember.setId(memberId);
     umsMember.setUpdateTime(new Date());
     if (MagicConstant.UMS_IS_COMPLETE_DONE.equals(umsMember.getIsRegister())) {
-      Long matchUserId;
-      if (!org.apache.commons.lang.StringUtils.isEmpty(umsMember.getMatcherUserPhone())) {
-        SysUser sysUser = iSysUserService.getOne(new QueryWrapper<SysUser>().eq("phone", umsMember.getMatcherUserPhone()));
-        if (sysUser == null) {
-          throw new Exception("搭配师填写的手机号不正确");
-        }
-        matchUserId = sysUser.getId();
-      } else {
+      Long matchUserId = umsMember.getMatchUserId();
+      if (umsMember.getMatchUserId() == null) {
         matchUserId = iSysUserService.getRandomSysUser().getId();
       }
       umsMember.setMatchUserId(matchUserId);
       setMatchTime(umsMember, matchUserId);
     }
-    if (updateById(umsMember)) {
-      if (MagicConstant.UMS_IS_COMPLETE_DONE.equals(umsMember.getIsRegister())) {
-        if (!org.apache.commons.lang.StringUtils.isEmpty(umsMember.getRecommendId())) {
-          Integer count = umsRecommendRelationMapper
-            .selectCount(new QueryWrapper<UmsRecommendRelation>().eq("recommended_id", UserUtils.getCurrentUmsMember().getId()).
-              eq("status", "1"));
-          if (count == 0) {
-            UmsRecommendRelation umsRecommendRelation = new UmsRecommendRelation();
-            umsRecommendRelation.setStatus("1");
-            umsRecommendRelation.setCreateTime(new Date());
-            umsRecommendRelation.setUpdateTime(new Date());
-            umsRecommendRelation.setRecommendedId(UserUtils.getCurrentUmsMember().getId());
-            umsRecommendRelation.setRecommendId(Long.valueOf(umsMember.getRecommendId()));
-            umsRecommendRelationMapper.insert(umsRecommendRelation);
-            //分享之后将优惠券发放给被推荐的人
+    updateById(umsMember);
+    if (MagicConstant.UMS_IS_COMPLETE_DONE.equals(umsMember.getIsRegister())) {
+      if (!org.apache.commons.lang.StringUtils.isEmpty(umsMember.getRecommendId())) {
+        Integer count = umsRecommendRelationMapper
+          .selectCount(new QueryWrapper<UmsRecommendRelation>().eq("recommended_id", memberId).eq("status", "1"));
+        if (count == 0) {
+          UmsRecommendRelation umsRecommendRelation = new UmsRecommendRelation();
+          umsRecommendRelation.setStatus("1");
+          umsRecommendRelation.setCreateTime(new Date());
+          umsRecommendRelation.setUpdateTime(new Date());
+          umsRecommendRelation.setRecommendedId(memberId);
+          umsRecommendRelation.setRecommendId(Long.valueOf(umsMember.getRecommendId()));
+          umsRecommendRelationMapper.insert(umsRecommendRelation);
+          //分享之后将优惠券发放给被推荐的人
           //  iSmsCouponService.allocateCoupon("4", umsMember.getId());
-            //将优惠券分享给推荐的人
-         //   iSmsCouponService.allocateCoupon("4", umsRecommendRelation.getRecommendId());
-            return "注册成功";
-          }
+          //将优惠券分享给推荐的人
+          //   iSmsCouponService.allocateCoupon("4", umsRecommendRelation.getRecommendId());
+          return "注册成功";
         }
       }
+    }
 //      if (MagicConstant.UMS_IS_COMPLETE_DONE.equals(umsMember.getIsComplete())) {
 //        //分配注册优惠券
 //        String msg = iSmsCouponService.allocateCoupon("3", umsMember.getId());
@@ -489,7 +487,6 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberMapper, UmsMember
 //          return "完善资料成功,优惠券已发放";
 //        }
 //      }
-    }
     return null;
   }
 

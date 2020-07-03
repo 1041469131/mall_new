@@ -3,11 +3,22 @@ package com.zscat.mallplus.portal.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.github.binarywang.wxpay.bean.notify.WxPayNotifyResponse;
+import com.github.binarywang.wxpay.bean.notify.WxPayRefundNotifyResult;
+import com.github.binarywang.wxpay.bean.request.WxPayRefundRequest;
+import com.github.binarywang.wxpay.bean.result.WxPayRefundResult;
+import com.github.binarywang.wxpay.constant.WxPayConstants.SignType;
+import com.github.binarywang.wxpay.exception.WxPayException;
+import com.github.binarywang.wxpay.service.WxPayService;
 import com.zscat.mallplus.manage.config.WxAppletProperties;
+import com.zscat.mallplus.manage.service.oms.IOmsMatcherCommissionItemService;
+import com.zscat.mallplus.manage.service.oms.IOmsMatcherCommissionService;
 import com.zscat.mallplus.manage.service.oms.IOmsOrderItemService;
+import com.zscat.mallplus.manage.service.oms.IOmsOrderReturnApplyService;
 import com.zscat.mallplus.manage.service.oms.IOmsOrderReturnSaleService;
 import com.zscat.mallplus.manage.service.oms.IOmsOrderService;
 import com.zscat.mallplus.manage.service.oms.IOmsOrderTradeService;
+import com.zscat.mallplus.manage.service.pms.IPmsProductService;
 import com.zscat.mallplus.manage.service.pms.IPmsSkuStockService;
 import com.zscat.mallplus.manage.service.sys.ISysMatcherStatisticsService;
 import com.zscat.mallplus.manage.utils.*;
@@ -15,10 +26,14 @@ import com.zscat.mallplus.manage.utils.applet.WechatRefundApiResult;
 import com.zscat.mallplus.manage.utils.applet.WechatUtil;
 import com.zscat.mallplus.mbg.annotation.IgnoreAuth;
 import com.zscat.mallplus.mbg.annotation.SysLog;
+import com.zscat.mallplus.mbg.oms.entity.OmsMatcherCommission;
+import com.zscat.mallplus.mbg.oms.entity.OmsMatcherCommissionItem;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrder;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrderItem;
+import com.zscat.mallplus.mbg.oms.entity.OmsOrderReturnApply;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrderReturnSale;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrderTrade;
+import com.zscat.mallplus.mbg.pms.entity.PmsProduct;
 import com.zscat.mallplus.mbg.ums.entity.UmsMember;
 import com.zscat.mallplus.mbg.utils.CommonResult;
 import com.zscat.mallplus.mbg.utils.IdGeneratorUtil;
@@ -27,6 +42,7 @@ import com.zscat.mallplus.portal.single.ApiBaseAction;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,9 +68,6 @@ import java.util.*;
 @RequestMapping("/api/pay")
 public class PayController extends ApiBaseAction {
 
-
-    private static Logger LOGGER = LoggerFactory.getLogger(PayController.class);
-
     @Autowired
     private IOmsOrderService orderService;
 
@@ -76,7 +89,20 @@ public class PayController extends ApiBaseAction {
     @Autowired
     private ISysMatcherStatisticsService iSysMatcherStatisticsService;
 
+    @Autowired
+    private IPmsProductService pmsProductService;
 
+    @Autowired
+    private WxPayService wxService;
+
+    @Autowired
+    private IOmsOrderReturnApplyService omsOrderReturnApplyService;
+
+    @Autowired
+    private IOmsMatcherCommissionService omsMatcherCommissionService;
+
+    @Autowired
+    private IOmsMatcherCommissionItemService omsMatcherCommissionItemService;
 
     /**
      */
@@ -99,17 +125,25 @@ public class PayController extends ApiBaseAction {
         String orderSn = "";
         if(MagicConstant.IS_NOT_PARENT.equals(isParentOrder)){
             orderInfo = orderService.getById(id);
-            totalFee = orderInfo.getTotalAmount().subtract(orderInfo.getCouponAmount()).subtract(orderInfo.getDiscountAmount());
+            totalFee = orderInfo.getPayAmount().subtract(orderInfo.getDiscountAmount());
             orderSn = orderInfo.getOrderSn();
+            if(!checkProduct(orderInfo)){
+                return ResponseUtil.toResponsFail("下单失败,该商品已下架");
+            }
         }else {
             orderList = orderService.list(new QueryWrapper<OmsOrder>().eq("supply_id",id));
             if(!CollectionUtils.isEmpty(orderList)){
                 for(OmsOrder omsOrder:orderList){
-                    totalFee = totalFee.add(omsOrder.getTotalAmount().subtract(omsOrder.getCouponAmount()).subtract(omsOrder.getDiscountAmount()));
+                    totalFee = totalFee.add(omsOrder.getPayAmount().subtract(omsOrder.getDiscountAmount()));
+                    if(!checkProduct(omsOrder)){
+                        return ResponseUtil.toResponsFail("下单失败,该商品已下架");
+                    }
                 }
             }
             orderSn = String.valueOf(id);
         }
+
+
         try {
             String ipStr = getClientIp();
             return orderService.payPrepay(ipStr,orderSn,totalFee,isParentOrder,orderInfo,orderList);
@@ -117,6 +151,17 @@ public class PayController extends ApiBaseAction {
             e.printStackTrace();
             return ResponseUtil.toResponsFail("下单失败,error=" + e.getMessage());
         }
+    }
+
+    private boolean checkProduct(OmsOrder orderInfo) {
+        List<OmsOrderItem> omsOrderItems = iOmsOrderItemService.list(new QueryWrapper<OmsOrderItem>().eq("order_id",orderInfo.getId()));
+        for (OmsOrderItem omsOrderItem : omsOrderItems) {
+            PmsProduct pmsProduct = pmsProductService.getById(omsOrderItem.getProductId());
+            if(pmsProduct.getPublishStatus()==0||pmsProduct.getDeleteStatus()==1){
+               return false;
+            }
+        }
+       return  true;
     }
 
 
@@ -249,33 +294,10 @@ public class PayController extends ApiBaseAction {
             } else if (result_code.equalsIgnoreCase("SUCCESS")) {
                 //订单编号
                 String outTradeNo = result.getOut_trade_no();
+                String transactionId = result.getTransaction_id();
                 log.error("订单" + outTradeNo + "支付成功");
                 // 业务处理
-                List<OmsOrder> list = orderService.listOmsOrders(outTradeNo);
-                List<OmsOrderTrade> omsOrderTrades = null;
-                if(!CollectionUtils.isEmpty(list)){
-                    omsOrderTrades = new ArrayList<>();
-                    for(OmsOrder orderInfo:list){
-                        if(orderInfo.getStatus().equals(MagicConstant.ORDER_STATUS_WAIT_SEND)){
-                            continue;
-                        }
-                        List<OmsOrderItem> omsOrderItems = iOmsOrderItemService.list(new QueryWrapper<OmsOrderItem>().eq("order_id",orderInfo.getId()));
-                        if(!CollectionUtils.isEmpty(omsOrderItems)){
-                            for(OmsOrderItem omsOrderItem : omsOrderItems){
-                                iPmsSkuStockService.updateStockCount(omsOrderItem.getProductSkuId(),omsOrderItem.getProductQuantity(),"1");
-                            }
-                        }
-                        orderInfo.setStatus(MagicConstant.ORDER_STATUS_WAIT_SEND);
-                        orderInfo.setPaymentTime(new Date());
-                        orderInfo.setTransactionId(result.getTransaction_id());
-                        omsOrderTrades.add(assemblyOmsTrade(orderInfo,MagicConstant.DIRECT_IN));
-                        iSysMatcherStatisticsService.refreshMatcherStatisticsByOrder(orderInfo);
-                    }
-                }
-                if(!CollectionUtils.isEmpty(omsOrderTrades)){
-                    orderService.saveOrUpdateBatch(list);
-                    iOmsOrderTradeService.saveBatch(omsOrderTrades);
-                }
+                dealOrder(outTradeNo, transactionId);
                 response.getWriter().write(setXml("SUCCESS", "OK"));
             }
         } catch (Exception e) {
@@ -284,44 +306,101 @@ public class PayController extends ApiBaseAction {
         }
     }
 
-    /**
-     * 订单退款请求
-     */
+    @ApiOperation(value = "退款回调通知处理")
+    @PostMapping("/notify/refund")
     @IgnoreAuth
-    @SysLog(MODULE = "pay", REMARK = "订单退款请求")
-    @ApiOperation(value = "订单退款请求")
-    @RequestMapping(value = "/refund",method = RequestMethod.POST)
-    public CommonResult refund(@ApiParam("售后id") String saleId, @ApiParam("订单总金额") String totalFee,
-                               @ApiParam("需要退款的金额") String refundMoney) {
-        try {
-            CommonResult commonResult = new CommonResult();
-            OmsOrderReturnSale omsOrderReturnSale = iOmsOrderReturnSaleService.getById(Long.valueOf(saleId));
-            OmsOrder omsOrder = orderService.getById(Long.valueOf(omsOrderReturnSale.getOrderId()));
-            OmsOrderTrade omsOrderTrade = assemblyOmsTrade(omsOrder,MagicConstant.DIRECT_OUT);
-            omsOrderTrade.setAmount(new BigDecimal(refundMoney));
-            WechatRefundApiResult result = WechatUtil.wxRefund(omsOrder.getSupplyId().toString(),
-                    Double.valueOf(totalFee),Double.valueOf(refundMoney));
-            omsOrderTrade.setResponseMsg(JSON.toJSONString(result));
-            if (result.getResult_code().equals("SUCCESS")) {
+    public String parseRefundNotifyResult(@RequestBody String xmlData) throws WxPayException {
+        final WxPayRefundNotifyResult result = this.wxService.parseRefundNotifyResult(xmlData);
+        String outRefundNo = result.getReqInfo().getOutRefundNo();
+        Long saleId=Long.valueOf(outRefundNo);
+        OmsOrderReturnSale omsOrderReturnSale = iOmsOrderReturnSaleService.getById(Long.valueOf(saleId));
+        Long orderId = omsOrderReturnSale.getOrderId();
+        OmsOrder omsOrder = orderService.getById(orderId);
+        if(!omsOrderReturnSale.getStatus().equals(MagicConstant.RETURN_STATUS_FINISHED)&&result.getReturnCode().equals("SUCCESS")) {
+            //退款回调处理
+            //查询出saleId的product明细
+            List<OmsOrderReturnApply> list = omsOrderReturnApplyService
+              .list(new QueryWrapper<OmsOrderReturnApply>().lambda().eq(OmsOrderReturnApply::getSaleId, saleId));
+            //查询不是该退款笔订单已退款的商品数量 用于计算是不是全额退款
+           int orderReturnApplyCount= omsOrderReturnApplyService.count(
+              new QueryWrapper<OmsOrderReturnApply>().lambda().eq(OmsOrderReturnApply::getOrderId, orderId)
+                .eq(OmsOrderReturnApply::getStatus, MagicConstant.RETURN_STATUS_FINISHED).ne(OmsOrderReturnApply::getSaleId,saleId));
+           //查询出订单里面的商品数量
+            int itemCount = iOmsOrderItemService.count(new QueryWrapper<OmsOrderItem>().lambda().eq(OmsOrderItem::getOrderId, orderId));
+            //查询出该笔订单的分佣
+            List<OmsMatcherCommission> omsMatcherCommissionList = omsMatcherCommissionService
+              .list(new QueryWrapper<OmsMatcherCommission>().lambda().eq(OmsMatcherCommission::getOrderId, orderId));
+            //退款的分佣明细
+            List<Long> orderItemIds = list.stream().map(OmsOrderReturnApply::getOrderItemId).collect(Collectors.toList());
+            List<OmsMatcherCommissionItem> omsMatcherCommissionItemList = omsMatcherCommissionItemService.list(
+              new QueryWrapper<OmsMatcherCommissionItem>().lambda().eq(OmsMatcherCommissionItem::getOrderId, orderId)
+                .in(OmsMatcherCommissionItem::getOrderItemId, orderItemIds));
+            if((orderReturnApplyCount+list.size())>=itemCount){
                 omsOrder.setStatus(MagicConstant.ORDER_STATUS_YET_SHUTDOWN);
-                omsOrderReturnSale.setStatus(MagicConstant.RETURN_STATUS_FINISHED);
-                omsOrderTrade.setStatus(MagicConstant.OMS_TRADE_STATUS_SUCCESS);
-                commonResult.success("退款成功");
-            } else {
-                omsOrder.setStatus(MagicConstant.ORDER_STATUS_INVALID_REFUND_FAILD);
-                omsOrderReturnSale.setStatus(MagicConstant.RETURN_STATUS_REFUND_FAILD);
-                omsOrderTrade.setStatus(MagicConstant.OMS_TRADE_STATUS_FAILD);
-                commonResult.success("退款失败");
+                omsMatcherCommissionList.forEach(omsMatcherCommission -> {
+                    omsMatcherCommission.setStatus(MagicConstant.SETTLE_STAUTS_NOSETTLED);
+                    omsMatcherCommission.setProfit(new BigDecimal(0));
+                });
+                omsMatcherCommissionItemList.forEach(item ->item.setStatus("0"));
+            }else{
+                //部分退款
+                //收益 需要减去退款部分
+                omsMatcherCommissionList.forEach(omsMatcherCommission ->{
+                    omsMatcherCommission.setStatus(MagicConstant.SETTLE_STAUTS_WAITE_PARTREFUND);
+                    omsMatcherCommissionItemList.forEach(item -> {
+                        if(item.getProfitType().equals(omsMatcherCommission.getProfitType())){
+                            omsMatcherCommission.setProfit(omsMatcherCommission.getProfit().subtract(item.getProfit()));
+                        }
+                        item.setStatus("0");
+                    });
+
+                });
             }
+            OmsOrderTrade omsOrderTrade = assemblyOmsTrade(omsOrder, MagicConstant.DIRECT_OUT);
+            omsOrderTrade.setResponseMsg(JSON.toJSONString(result));
+            omsOrderReturnSale.setStatus(MagicConstant.RETURN_STATUS_FINISHED);
+            omsOrderTrade.setStatus(MagicConstant.OMS_TRADE_STATUS_SUCCESS);
             orderService.updateById(omsOrder);
             iOmsOrderReturnSaleService.updateById(omsOrderReturnSale);
             iOmsOrderTradeService.save(omsOrderTrade);
-            return commonResult;
-        }catch (Exception e){
-            throw new RuntimeException(e);
+            list.forEach(l->l.setStatus(MagicConstant.RETURN_STATUS_FINISHED));
+            omsOrderReturnApplyService.saveOrUpdateBatch(list);
+            if(!CollectionUtils.isEmpty(omsMatcherCommissionList)){
+                omsMatcherCommissionService.saveBatch(omsMatcherCommissionList);
+                omsMatcherCommissionItemService.saveOrUpdateBatch(omsMatcherCommissionItemList);
+            }
         }
+        return WxPayNotifyResponse.success("成功");
     }
 
+
+    private void dealOrder(String outTradeNo, String transactionId) {
+        List<OmsOrder> list = orderService.listOmsOrders(outTradeNo);
+        List<OmsOrderTrade> omsOrderTrades = null;
+        if(!CollectionUtils.isEmpty(list)){
+            omsOrderTrades = new ArrayList<>();
+            for(OmsOrder orderInfo:list){
+                if(orderInfo.getStatus().equals(MagicConstant.ORDER_STATUS_WAIT_SEND)){
+                    continue;
+                }
+                List<OmsOrderItem> omsOrderItems = iOmsOrderItemService.list(new QueryWrapper<OmsOrderItem>().eq("order_id",orderInfo.getId()));
+                if(!CollectionUtils.isEmpty(omsOrderItems)){
+                    for(OmsOrderItem omsOrderItem : omsOrderItems){
+                        iPmsSkuStockService.updateStockCount(omsOrderItem.getProductSkuId(),omsOrderItem.getProductQuantity(),"1");
+                    }
+                }
+                orderInfo.setStatus(MagicConstant.ORDER_STATUS_WAIT_SEND);
+                orderInfo.setPaymentTime(new Date());
+                orderInfo.setTransactionId(transactionId);
+                omsOrderTrades.add(assemblyOmsTrade(orderInfo,MagicConstant.DIRECT_IN));
+                iSysMatcherStatisticsService.refreshMatcherStatisticsByOrder(orderInfo);
+            }
+        }
+        if(!CollectionUtils.isEmpty(omsOrderTrades)){
+            orderService.saveOrUpdateBatch(list);
+            iOmsOrderTradeService.saveBatch(omsOrderTrades);
+        }
+    }
 
     //返回微信服务
     public static String setXml(String return_code, String return_msg) {

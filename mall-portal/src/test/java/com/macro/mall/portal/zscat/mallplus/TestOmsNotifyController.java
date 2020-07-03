@@ -61,33 +61,10 @@ public class TestOmsNotifyController {
     @Test
     public void ordernotify() {
         //订单编号
-        String outTradeNo="665413386229514240";
+        String outTradeNo="678763810995044352";
+        String transactionId="4200000614202006259687940674";
         // 业务处理
-        OmsOrder param = new OmsOrder();
-        param.setOrderSn(outTradeNo);
-        List<OmsOrder> list = orderService.listOmsOrders(outTradeNo);
-        List<OmsOrderTrade> omsOrderTrades = null;
-        if (!CollectionUtils.isEmpty(list)) {
-            omsOrderTrades = new ArrayList<>();
-            for (OmsOrder orderInfo : list) {
-                List<OmsOrderItem> omsOrderItems = iOmsOrderItemService
-                  .list(new QueryWrapper<OmsOrderItem>().eq("order_id", orderInfo.getId()));
-                if (!CollectionUtils.isEmpty(omsOrderItems)) {
-                    for (OmsOrderItem omsOrderItem : omsOrderItems) {
-                        iPmsSkuStockService.updateStockCount(omsOrderItem.getProductSkuId(), omsOrderItem.getProductQuantity(), "1");
-                    }
-                }
-                orderInfo.setStatus(MagicConstant.ORDER_STATUS_WAIT_SEND);
-                orderInfo.setPaymentTime(new Date());
-                orderInfo.setTransactionId(System.currentTimeMillis()+"");
-                omsOrderTrades.add(assemblyOmsTrade(orderInfo, MagicConstant.DIRECT_IN));
-                iSysMatcherStatisticsService.refreshMatcherStatisticsByOrder(orderInfo);
-            }
-        }
-        if (!CollectionUtils.isEmpty(omsOrderTrades)) {
-            orderService.saveOrUpdateBatch(list);
-            iOmsOrderTradeService.saveBatch(omsOrderTrades);
-        }
+        dealOrder(outTradeNo,transactionId);
     }
     /**
      * 组装交易流水
@@ -105,7 +82,33 @@ public class TestOmsNotifyController {
         return omsOrderTrade;
     }
 
-
+    private void dealOrder(String outTradeNo, String transactionId) {
+        List<OmsOrder> list = orderService.listOmsOrders(outTradeNo);
+        List<OmsOrderTrade> omsOrderTrades = null;
+        if(!CollectionUtils.isEmpty(list)){
+            omsOrderTrades = new ArrayList<>();
+            for(OmsOrder orderInfo:list){
+                if(orderInfo.getStatus().equals(MagicConstant.ORDER_STATUS_WAIT_SEND)){
+                    continue;
+                }
+                List<OmsOrderItem> omsOrderItems = iOmsOrderItemService.list(new QueryWrapper<OmsOrderItem>().eq("order_id",orderInfo.getId()));
+                if(!CollectionUtils.isEmpty(omsOrderItems)){
+                    for(OmsOrderItem omsOrderItem : omsOrderItems){
+                        iPmsSkuStockService.updateStockCount(omsOrderItem.getProductSkuId(),omsOrderItem.getProductQuantity(),"1");
+                    }
+                }
+                orderInfo.setStatus(MagicConstant.ORDER_STATUS_WAIT_SEND);
+                orderInfo.setPaymentTime(new Date());
+                orderInfo.setTransactionId(transactionId);
+                omsOrderTrades.add(assemblyOmsTrade(orderInfo,MagicConstant.DIRECT_IN));
+                iSysMatcherStatisticsService.refreshMatcherStatisticsByOrder(orderInfo);
+            }
+        }
+        if(!CollectionUtils.isEmpty(omsOrderTrades)){
+            orderService.saveOrUpdateBatch(list);
+            iOmsOrderTradeService.saveBatch(omsOrderTrades);
+        }
+    }
     /**
      * 计算订单的收益
      * @param

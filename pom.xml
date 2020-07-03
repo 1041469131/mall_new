@@ -21,6 +21,7 @@
         <skipTests>true</skipTests>
         <docker.host>http://59.110.22.232:2375</docker.host>
         <docker.maven.plugin.version>1.1.0</docker.maven.plugin.version>
+        <weixin-java.version>3.8.0</weixin-java.version>
     </properties>
 
     <parent>
@@ -197,6 +198,27 @@
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
             <version>4.8</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.binarywang</groupId>
+            <artifactId>weixin-java-miniapp</artifactId>
+            <version>${weixin-java.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-io</groupId>
+                    <artifactId>commons-io</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.github.jedis-lock</groupId>
+            <artifactId>jedis-lock</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.binarywang</groupId>
+            <artifactId>weixin-java-pay</artifactId>
+            <version>${weixin-java.version}</version>
         </dependency>
     </dependencies>
 

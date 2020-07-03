@@ -16,6 +16,7 @@
         <result column="gender" jdbcType="INTEGER" property="gender" />
         <result column="birthday" jdbcType="VARCHAR" property="birthday" />
         <result column="city" jdbcType="VARCHAR" property="city" />
+        <result column="city_code" jdbcType="VARCHAR" property="cityCode" />
         <result column="job" jdbcType="VARCHAR" property="job" />
         <result column="personalized_signature" jdbcType="VARCHAR" property="personalizedSignature" />
         <result column="source_type" jdbcType="INTEGER" property="sourceType" />
@@ -33,6 +34,7 @@
         <result column="height" jdbcType="VARCHAR" property="height" />
         <result column="shirt_size" jdbcType="VARCHAR" property="shirtSize" />
         <result column="pants_size" jdbcType="VARCHAR" property="pantsSize" />
+        <result column="shoe_size" jdbcType="VARCHAR" property="shoeSize" />
         <result column="aspect" jdbcType="VARCHAR" property="aspect" />
         <result column="dress_style" jdbcType="VARCHAR" property="dressStyle" />
         <result column="dress_color" jdbcType="VARCHAR" property="dressColor" />
@@ -91,10 +93,10 @@
         id, member_level_id, username, password, nickname, phone, status, create_time, icon,
         gender, birthday, city, job, personalized_signature, source_type, integration, growth,
         luckey_count, history_integration, avatar, session_key, weixin_openid, invitecode, blance, school_id,
-        weight, height, shirt_size, pants_size, aspect, dress_style, dress_color, never_dress_style,
+        weight, height, shirt_size, pants_size,shoe_size, aspect, dress_style, dress_color, never_dress_style,
         never_dress_style_descr, never_dress_icon, never_dress_icon_descr, suite_lining,
         suite_lining_descr, enjoy_model, industry, item_budget, body_url, balance_body, balance_body_descr,
-        descr, is_complete, match_user_id, update_time,is_register,dress_freq,match_count,impression,budget_status
+        descr, is_complete, match_user_id, update_time,is_register,dress_freq,match_count,impression,budget_status,city_code
     </sql>
 
     <sql id="vums_column_list">
@@ -106,7 +108,7 @@
         t.id, t.member_level_id, t.username, t.password, t.nickname, t.phone, t.status, t.create_time, t.icon,
         t.gender, t.birthday, t.city, t.job, t.personalized_signature, t.source_type, t.integration, t.growth,
         t.luckey_count, t.history_integration, t.avatar, t.session_key, t.weixin_openid, t.invitecode, t.blance, t.school_id,
-        t.weight, t.height, t.shirt_size, t.pants_size, t.aspect, t.dress_style, t.dress_color, t.never_dress_style,
+        t.weight, t.height, t.shirt_size, t.pants_size,t.shoe_size,t.city_code, t.aspect, t.dress_style, t.dress_color, t.never_dress_style,
         t.never_dress_style_descr, t.never_dress_icon, t.never_dress_icon_descr, t.suite_lining,
         t.suite_lining_descr, t.enjoy_model, t.industry, t.item_budget, t.body_url, t.balance_body, t.balance_body_descr,
         t.descr, t.is_complete, t.match_user_id, t.update_time, t.is_register, t.dress_freq,t.match_count,t.impression,t.budget_status

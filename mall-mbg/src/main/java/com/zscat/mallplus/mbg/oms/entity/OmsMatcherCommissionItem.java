@@ -40,7 +40,7 @@ public class OmsMatcherCommissionItem implements Serializable {
    * 状态
    */
   @TableField("status")
-  @ApiModelProperty(value = "状态")
+  @ApiModelProperty(value = "状态  1 可用 0 退款(不可用)")
   private String status;
 
   private Date updateDate;

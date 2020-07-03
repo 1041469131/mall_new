@@ -83,7 +83,7 @@ public class WechatApiService {
      */
     public String getAccessToken(String appid, String appSecret) throws Exception {
 
-        String key = "access_token:" + appid;
+        String key = "wa:access_token:" + appid;
         jedis=jedisPool.getResource();
         if (jedis.ttl(key) > 30) {
         	try {

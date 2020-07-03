@@ -1,69 +1,79 @@
 package com.zscat.mallplus.manage.service.oms.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zscat.mallplus.manage.service.oms.IOmsOrderReturnSaleService;
 import com.zscat.mallplus.manage.service.sys.ISysMatcherStatisticsService;
 import com.zscat.mallplus.manage.utils.UserUtils;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrder;
+import com.zscat.mallplus.mbg.oms.entity.OmsOrderReturnApply;
 import com.zscat.mallplus.mbg.oms.entity.OmsOrderReturnSale;
 import com.zscat.mallplus.mbg.oms.mapper.OmsOrderMapper;
+import com.zscat.mallplus.mbg.oms.mapper.OmsOrderReturnApplyMapper;
 import com.zscat.mallplus.mbg.oms.mapper.OmsOrderReturnSaleMapper;
-import com.zscat.mallplus.mbg.oms.vo.OmsUpdateStatusParam;
-import com.zscat.mallplus.mbg.utils.constant.MagicConstant;
+import com.zscat.mallplus.mbg.oms.vo.OmsOrderReturnSaleVO;
+import com.zscat.mallplus.mbg.oms.vo.OmsOrderSaleParam;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 @Service
-public class OmsOrderReturnSaleServiceImpl extends ServiceImpl<OmsOrderReturnSaleMapper,OmsOrderReturnSale> implements IOmsOrderReturnSaleService {
+public class OmsOrderReturnSaleServiceImpl extends ServiceImpl<OmsOrderReturnSaleMapper, OmsOrderReturnSale> implements
+  IOmsOrderReturnSaleService {
 
-    @Autowired
-    private OmsOrderReturnSaleMapper omsOrderReturnSaleMapper;
+  @Autowired
+  private OmsOrderReturnSaleMapper omsOrderReturnSaleMapper;
 
-    @Autowired
-    private OmsOrderMapper omsOrderMapper;
+  @Autowired
+  private OmsOrderMapper omsOrderMapper;
 
-    @Autowired
-    private ISysMatcherStatisticsService iSysMatcherStatisticsService;
+  @Autowired
+  private ISysMatcherStatisticsService iSysMatcherStatisticsService;
 
-    @Override
-    @Transactional
-    public int updateStatus(Long id, Map<String,Object> saleMap) {
-        OmsOrderReturnSale oldOmsOrderReturnSale = omsOrderReturnSaleMapper.selectById(id);
-        OmsOrder omsOrder = omsOrderMapper.selectById(oldOmsOrderReturnSale.getOrderId());
-        Integer saleStatus = (Integer) saleMap.get("saleStatus");//售后装填
-        Integer orderStatus = omsOrder.getStatus();//订单状态
-        Integer saleType = oldOmsOrderReturnSale.getType();//售后的类型
-        OmsOrderReturnSale omsOrderReturnSale = new OmsOrderReturnSale();
-        omsOrderReturnSale.setReturnAmount(saleMap.get("returnAmount") == null? BigDecimal.ZERO:(BigDecimal) saleMap.get("returnAmount"));
-      if (saleStatus.equals(MagicConstant.RETURN_STATUS_REFUNDING)) {//退货中
-            omsOrderReturnSale.setId(id);
-            omsOrderReturnSale.setStatus(MagicConstant.RETURN_STATUS_REFUNDING);
-            omsOrderReturnSale.setCompanyAddressId(saleMap.get("companyAddressId") == null?0L:(Long) saleMap.get("companyAddressId"));
-            omsOrderReturnSale.setUpdateTime(new Date());
-            omsOrderReturnSale.setHandleMan(UserUtils.getCurrentMember().getUsername());
-            omsOrderReturnSale.setHandleNote((String)saleMap.get("note"));
-        } else if (saleStatus.equals(MagicConstant.RETURN_STATUS_FINISHED)) {//已完成
-            omsOrderReturnSale.setId(id);
-            omsOrderReturnSale.setStatus(MagicConstant.RETURN_STATUS_FINISHED);
-            omsOrderReturnSale.setReceiveTime(new Date());
-            omsOrderReturnSale.setReceiveMan((String)saleMap.get("reviceMan"));
-            omsOrderReturnSale.setReceiveNote((String)saleMap.get("receiveNote"));
-            omsOrder.setStatus(MagicConstant.ORDER_STATUS_YET_SHUTDOWN);
-            omsOrderMapper.updateById(omsOrder);
-        } else {
-            omsOrderReturnSale.setId(id);
-            omsOrderReturnSale.setStatus(saleStatus);
-            omsOrderReturnSale.setUpdateTime(new Date());
-            omsOrderReturnSale.setHandleMan(UserUtils.getCurrentMember().getUsername());
-            omsOrderReturnSale.setHandleNote((String)saleMap.get("note"));
-        }
-        iSysMatcherStatisticsService.refreshMatcherStatisticsByOrder(omsOrder);
-        return omsOrderReturnSaleMapper.updateById(omsOrderReturnSale);
-    }
+  @Autowired
+  private OmsOrderReturnApplyMapper omsOrderReturnApplyMapper;
+
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  public int updateStatus(OmsOrderReturnSale returnSale) {
+    OmsOrderReturnSale oldOmsOrderReturnSale = omsOrderReturnSaleMapper.selectById(returnSale.getId());
+    List<OmsOrderReturnApply> omsOrderReturnApplies = omsOrderReturnApplyMapper
+      .selectList(new QueryWrapper<OmsOrderReturnApply>().lambda().eq(OmsOrderReturnApply::getSaleId, returnSale.getId()));
+    omsOrderReturnApplies.forEach(omsOrderReturnApply -> {
+      omsOrderReturnApply.setStatus(returnSale.getStatus());
+      omsOrderReturnApplyMapper.updateById(omsOrderReturnApply);
+    });
+    OmsOrder omsOrder = omsOrderMapper.selectById(oldOmsOrderReturnSale.getOrderId());
+    //售后装填
+    returnSale.setHandleMan(UserUtils.getCurrentMember().getUsername());
+    returnSale.setUpdateTime(new Date());
+    iSysMatcherStatisticsService.refreshMatcherStatisticsByOrder(omsOrder);
+    return omsOrderReturnSaleMapper.updateById(returnSale);
+  }
+
+  @Override
+  public Page<OmsOrderReturnSale> listByPage(OmsOrderSaleParam queryParam) {
+    Page<OmsOrderReturnSale> page = new Page<>(queryParam.getPageNum(), queryParam.getPageSize());
+    return omsOrderReturnSaleMapper.listByPage(page, queryParam);
+  }
+
+  @Override
+  public Page<OmsOrderReturnSaleVO> listVoByPage(OmsOrderSaleParam queryParam) {
+    Page<OmsOrderReturnSale> page = listByPage(queryParam);
+    List<OmsOrderReturnSaleVO> omsOrderReturnSaleVOS = page.getRecords().stream().map(sale -> {
+      OmsOrderReturnSaleVO omsOrderSaleParamVO = new OmsOrderReturnSaleVO();
+      omsOrderSaleParamVO.setOmsOrderReturnSale(sale);
+      List<OmsOrderReturnApply> omsOrderReturnApplyList = omsOrderReturnApplyMapper
+        .selectList(new QueryWrapper<OmsOrderReturnApply>().lambda().eq(OmsOrderReturnApply::getSaleId, sale.getId()));
+      omsOrderSaleParamVO.setOmsOrderReturnApplyList(omsOrderReturnApplyList);
+      return omsOrderSaleParamVO;
+    }).collect(Collectors.toList());
+    Page<OmsOrderReturnSaleVO> omsOrderReturnSaleVOPage = new Page<>(page.getCurrent(), page.getSize(), page.getTotal());
+    omsOrderReturnSaleVOPage.setRecords(omsOrderReturnSaleVOS);
+    return omsOrderReturnSaleVOPage;
+  }
 }

@@ -1,6 +1,7 @@
 package com.zscat.mallplus.admin.oms.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zscat.mallplus.manage.service.oms.IOmsOrderItemService;
 import com.zscat.mallplus.mbg.annotation.SysLog;
@@ -42,7 +43,9 @@ public class OmsOrderItemController {
                                         @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize
     ) {
         try {
-            return new CommonResult().success(IOmsOrderItemService.page(new Page<OmsOrderItem>(pageNum, pageSize), new QueryWrapper<>(entity)));
+            IPage<OmsOrderItem> page = IOmsOrderItemService.page(new Page<OmsOrderItem>(pageNum, pageSize), new QueryWrapper<>(entity));
+            //List<OmsOrderItem> records = page.getRecords();
+            return new CommonResult().success(page);
         } catch (Exception e) {
             log.error("根据条件查询所有订单中所包含的商品列表：%s", e.getMessage(), e);
         }

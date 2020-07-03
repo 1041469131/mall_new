@@ -10,9 +10,11 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import lombok.Data;
 
 @TableName("v_ums_member")
 @ApiModel("粉丝和平台管理")
+@Data
 public class VUmsMember implements Serializable {
 
     @JsonSerialize(using = ToStringSerializer.class)
@@ -68,132 +70,4 @@ public class VUmsMember implements Serializable {
     private String icon;
 
     private static final long serialVersionUID = 1L;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getMatchUserId() {
-        return matchUserId;
-    }
-
-    public void setMatchUserId(Long matchUserId) {
-        this.matchUserId = matchUserId;
-    }
-
-    public String getFanName() {
-        return fanName;
-    }
-
-    public void setFanName(String fanName) {
-        this.fanName = fanName;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getMatchUserName() {
-        return matchUserName;
-    }
-
-    public void setMatchUserName(String matchUserName) {
-        this.matchUserName = matchUserName;
-    }
-
-    public String getInviteName() {
-        return inviteName;
-    }
-
-    public void setInviteName(String inviteName) {
-        this.inviteName = inviteName;
-    }
-
-    public BigDecimal getTotalAmount() {
-        return totalAmount;
-    }
-
-    public void setTotalAmount(BigDecimal totalAmount) {
-        this.totalAmount = totalAmount;
-    }
-
-    public BigDecimal getAvaAmount() {
-        return avaAmount;
-    }
-
-    public void setAvaAmount(BigDecimal avaAmount) {
-        this.avaAmount = avaAmount;
-    }
-
-    public String getDressFreqName() {
-        return dressFreqName;
-    }
-
-    public void setDressFreqName(String dressFreqName) {
-        this.dressFreqName = dressFreqName;
-    }
-
-    public String getDressFreqCode() {
-        return dressFreqCode;
-    }
-
-    public void setDressFreqCode(String dressFreqCode) {
-        this.dressFreqCode = dressFreqCode;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public BigDecimal getOrderCount() {
-        return orderCount;
-    }
-
-    public void setOrderCount(BigDecimal orderCount) {
-        this.orderCount = orderCount;
-    }
-
-    public String getTagname() {
-        return tagname;
-    }
-
-    public void setTagname(String tagname) {
-        this.tagname = tagname;
-    }
-
-    public String getIcon() {
-        return icon;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
-
-    public Long getRecomendTime() {
-        return recomendTime;
-    }
-
-    public void setRecomendTime(Long recomendTime) {
-        this.recomendTime = recomendTime;
-    }
-
-    public Date getRecomendDate() {
-        return recomendDate;
-    }
-
-    public void setRecomendDate(Date recomendDate) {
-        this.recomendDate = recomendDate;
-    }
 }

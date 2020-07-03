@@ -70,10 +70,10 @@ public class WechatUtil {
      * @param
      * @return
      */
-    public static WechatRefundApiResult wxRefund(String outTradeNo, Double orderMoney, Double refundMoney) {
+    public static WechatRefundApiResult wxRefund(String outTradeNo, BigDecimal orderMoney, BigDecimal refundMoney) {
         //转换金钱格式
-        BigDecimal bdOrderMoney = new BigDecimal(orderMoney, MathContext.DECIMAL32);
-        BigDecimal bdRefundMoney = new BigDecimal(refundMoney, MathContext.DECIMAL32);
+        BigDecimal bdOrderMoney = new BigDecimal(orderMoney.doubleValue(), MathContext.DECIMAL32);
+        BigDecimal bdRefundMoney = new BigDecimal(refundMoney.doubleValue(), MathContext.DECIMAL32);
         //构建请求参数
         Map<Object, Object> params = buildRequsetMapParam(outTradeNo, bdOrderMoney, bdRefundMoney);
         String mapToXml = MapUtils.convertMap2Xml(params);

@@ -76,26 +76,25 @@ public class WX_TemplateMsgUtil {
      * @param touser 用户 OpenID
      * @param templatId 模板消息ID
      * @param page URL置空，则在发送后，点击模板消息会进入一个空白页面（ios），或无法点击（android）。
-     * @param formId
      * @param data 详细内容
      * @return
      */
-    public static String sendWechatMsgToUser(String touser, String templatId, String page, String formId, JSONObject data,String token) {
-        String tmpurl = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token="+ token;
+    public static String sendWechatMsgToUser(String touser, String templatId, String page,JSONObject data,String token) {
+        String tmpurl = "https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token="+ token;
 
         JSONObject json = new JSONObject();
         json.put("touser", touser);
-        json.put("form_id", formId);
+       // json.put("form_id", formId);
         json.put("page", page);
         json.put("template_id", templatId);
         json.put("data", data);
         try{
             JSONObject resultJson = WX_HttpsUtil.httpsRequest(tmpurl, "POST", json.toString());
-          // JSONObject resultJson = new JSONObject(result);
+            // JSONObject resultJson = new JSONObject(result);
             log.info("发送微信消息返回信息：" + resultJson.get("errcode"));
             String errmsg = (String) resultJson.get("errmsg");
             if(!"ok".equals(errmsg)){  //如果为errmsg为ok，则代表发送成功，公众号推送信息给用户了。
-                return "error";
+                return resultJson.toString();
             }
          }catch(Exception e){
             e.printStackTrace();

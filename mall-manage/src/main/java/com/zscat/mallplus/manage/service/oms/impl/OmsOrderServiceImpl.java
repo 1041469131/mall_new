@@ -465,8 +465,7 @@ public class OmsOrderServiceImpl extends ServiceImpl<OmsOrderMapper, OmsOrder> i
 
       JSONObject jsonObject = JSONObject.fromObject(param);
       //调用发送微信消息给用户的接口    ********这里写自己在微信公众平台拿到的模板ID
-      WX_TemplateMsgUtil.sendWechatMsgToUser(umsMember.getWeixinOpenid(), templateId, page + "?id=" + order.getId(),
-        formId, jsonObject, accessToken);
+      WX_TemplateMsgUtil.sendWechatMsgToUser(umsMember.getWeixinOpenid(), templateId, page + "?id=" + order.getId(), jsonObject, accessToken);
 
     } catch (Exception e) {
       e.printStackTrace();
@@ -568,8 +567,7 @@ public class OmsOrderServiceImpl extends ServiceImpl<OmsOrderMapper, OmsOrder> i
 
       JSONObject jsonObject = JSONObject.fromObject(param);
       //调用发送微信消息给用户的接口    ********这里写自己在微信公众平台拿到的模板ID
-      WX_TemplateMsgUtil.sendWechatMsgToUser(umsMember.getWxid(), templateId, page + "?id=" + order.getId(),
-        formId, jsonObject, accessToken);
+      WX_TemplateMsgUtil.sendWechatMsgToUser(umsMember.getWxid(), templateId, page + "?id=" + order.getId(), jsonObject, accessToken);
 
     } catch (Exception e) {
       e.printStackTrace();
@@ -1082,9 +1080,7 @@ public class OmsOrderServiceImpl extends ServiceImpl<OmsOrderMapper, OmsOrder> i
         push(currentMember, order, orderParam.getPage(), orderParam.getFormId(), name);
       }
     }
-
     return new CommonResult().success("下单成功", supplyId.toString());
-
   }
 
   /**
@@ -1331,4 +1327,5 @@ public class OmsOrderServiceImpl extends ServiceImpl<OmsOrderMapper, OmsOrder> i
     Page<OrderResult> orderResultPage = orderMapper.listOmsOrderByPage(page, oderParam);
     return orderResultPage;
   }
+
 }

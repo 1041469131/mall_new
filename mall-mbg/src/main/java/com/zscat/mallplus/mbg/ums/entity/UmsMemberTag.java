@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiParam;
 
 import java.io.Serializable;
+import lombok.Data;
 
 /**
  * <p>
@@ -23,6 +24,7 @@ import java.io.Serializable;
  */
 @ApiModel("标签")
 @TableName("ums_member_tag")
+@Data
 public class UmsMemberTag implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -63,69 +65,4 @@ public class UmsMemberTag implements Serializable {
     @TableField("remark")
     @ApiModelProperty("备注有就传 没有就不传")
     private String remark;
-
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
-    public Integer getGenType() {
-        return genType;
-    }
-
-    public void setGenType(Integer genType) {
-        this.genType = genType;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Long getMatchUserId() {
-        return matchUserId;
-    }
-
-    public void setMatchUserId(Long matchUserId) {
-        this.matchUserId = matchUserId;
-    }
-
-    public String getPlatformType() {
-        return platformType;
-    }
-
-    public void setPlatformType(String platformType) {
-        this.platformType = platformType;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
 }

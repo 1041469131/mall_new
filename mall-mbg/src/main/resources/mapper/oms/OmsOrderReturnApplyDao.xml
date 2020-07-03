@@ -21,6 +21,7 @@
         <result column="product_brand" property="productBrand" />
         <result column="product_attr" property="productAttr" />
         <result column="product_count" property="productCount" />
+        <result column="product_sn" property="productSn" />
         <result column="product_price" property="productPrice" />
         <result column="product_real_price" property="productRealPrice" />
         <result column="reason" property="reason" />
@@ -31,11 +32,25 @@
         <result column="receive_man" property="receiveMan" />
         <result column="receive_time" property="receiveTime" />
         <result column="receive_note" property="receiveNote" />
+        <result column="order_item_id" property="orderItemId" />
+        <result column="status" property="status" />
     </resultMap>
-
+    <resultMap id="ApplyVOMap" type="com.zscat.mallplus.mbg.oms.vo.OmsOrderReturnApplyVO" extends="BaseResultMap">
+        <result column="order_status" property="orderStatus" />
+        <result column="type" property="type" />
+    </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, order_id, company_address_id, product_id, order_sn, create_time, member_username, return_amount, return_name, return_phone, status, handle_time, product_pic, product_name, product_brand, product_attr, product_count, product_price, product_real_price, reason, description, proof_pics, handle_note, handle_man, receive_man, receive_time, receive_note
+        id, order_id, company_address_id, product_id, order_sn, create_time, member_username, return_amount, return_name, return_phone, status, handle_time, product_pic, product_name, product_brand, product_attr, product_count, product_price, product_real_price, reason, description, proof_pics, handle_note, handle_man, receive_man, receive_time, receive_note,order_item_id,status,product_sn
     </sql>
+    <select id="listBySaleId" resultMap="ApplyVOMap" parameterType="java.lang.Long">
+        SELECT
+        os.*,op.status as order_status,oos.type
+        FROM
+        oms_order_return_apply os
+        LEFT JOIN oms_order op ON os.order_id =op.id
+        left join oms_order_return_sale oos on oos.id=os.sale_id
+        where os.sale_id =#{saleId}
+    </select>
 
 </mapper>
